@@ -22,7 +22,7 @@
     
     NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsPath = [searchPaths objectAtIndex:0];
-    NSString *filename = @"May 6, 2015, 4:17:31 PM.mp4";
+    NSString *filename = @"May 6, 2015, 4:49:33 PM.mp4";
     NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:[NSString pathWithComponents:@[documentsPath, filename]]];
     
     self.moviePlayerController = [[MPMoviePlayerController alloc] initWithContentURL:fileURL];

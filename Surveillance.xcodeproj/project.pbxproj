@@ -10,8 +10,9 @@
 		9749EB201AF663D8004D9785 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9749EB1F1AF663D8004D9785 /* AudioToolbox.framework */; };
 		9749EB231AF6B284004D9785 /* ConfigureMonitoringTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9749EB221AF6B284004D9785 /* ConfigureMonitoringTableViewController.m */; };
 		9749EB261AF6B2CB004D9785 /* EventsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9749EB251AF6B2CB004D9785 /* EventsTableViewController.m */; };
-		9749EB511AF6BE7B004D9785 /* UIAlertView+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 9749EB501AF6BE7B004D9785 /* UIAlertView+Blocks.m */; };
 		976979771AFAB1000029D82D /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976979761AFAB1000029D82D /* MediaPlayer.framework */; };
+		976979791AFAB5690029D82D /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976979781AFAB5690029D82D /* opencv2.framework */; };
+		9769797D1AFAB5BA0029D82D /* UIAlertView+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 9769797C1AFAB5BA0029D82D /* UIAlertView+Blocks.m */; };
 		976AFADE1AF3CAC300F91585 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 976AFADD1AF3CAC300F91585 /* main.m */; };
 		976AFAE11AF3CAC300F91585 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 976AFAE01AF3CAC300F91585 /* AppDelegate.m */; };
 		976AFAE41AF3CAC300F91585 /* Surveillance.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 976AFAE21AF3CAC300F91585 /* Surveillance.xcdatamodeld */; };
@@ -20,7 +21,6 @@
 		976AFAEF1AF3CAC300F91585 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 976AFAED1AF3CAC300F91585 /* LaunchScreen.xib */; };
 		976AFAFB1AF3CAC300F91585 /* SurveillanceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 976AFAFA1AF3CAC300F91585 /* SurveillanceTests.m */; };
 		976AFB4F1AF4077000F91585 /* ObservationViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 976AFB4E1AF4077000F91585 /* ObservationViewController.mm */; };
-		976AFB511AF4078700F91585 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976AFB501AF4078700F91585 /* opencv2.framework */; };
 		976AFB541AF40B3800F91585 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976AFB531AF40B3800F91585 /* Accelerate.framework */; };
 		976AFB561AF40B3E00F91585 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976AFB551AF40B3E00F91585 /* AssetsLibrary.framework */; };
 		976AFB581AF40B4400F91585 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976AFB571AF40B4400F91585 /* AVFoundation.framework */; };
@@ -49,9 +49,10 @@
 		9749EB221AF6B284004D9785 /* ConfigureMonitoringTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigureMonitoringTableViewController.m; sourceTree = "<group>"; };
 		9749EB241AF6B2CB004D9785 /* EventsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsTableViewController.h; sourceTree = "<group>"; };
 		9749EB251AF6B2CB004D9785 /* EventsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsTableViewController.m; sourceTree = "<group>"; };
-		9749EB4F1AF6BE7B004D9785 /* UIAlertView+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+Blocks.h"; sourceTree = "<group>"; };
-		9749EB501AF6BE7B004D9785 /* UIAlertView+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+Blocks.m"; sourceTree = "<group>"; };
 		976979761AFAB1000029D82D /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		976979781AFAB5690029D82D /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = Surveillance/opencv2.framework; sourceTree = "<group>"; };
+		9769797B1AFAB5BA0029D82D /* UIAlertView+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+Blocks.h"; sourceTree = "<group>"; };
+		9769797C1AFAB5BA0029D82D /* UIAlertView+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+Blocks.m"; sourceTree = "<group>"; };
 		976AFAD81AF3CAC300F91585 /* Surveillance.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Surveillance.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		976AFADC1AF3CAC300F91585 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		976AFADD1AF3CAC300F91585 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -87,6 +88,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				976979791AFAB5690029D82D /* opencv2.framework in Frameworks */,
 				976979771AFAB1000029D82D /* MediaPlayer.framework in Frameworks */,
 				9749EB201AF663D8004D9785 /* AudioToolbox.framework in Frameworks */,
 				976AFB621AF40B6600F91585 /* QuartzCore.framework in Frameworks */,
@@ -97,7 +99,6 @@
 				976AFB581AF40B4400F91585 /* AVFoundation.framework in Frameworks */,
 				976AFB561AF40B3E00F91585 /* AssetsLibrary.framework in Frameworks */,
 				976AFB541AF40B3800F91585 /* Accelerate.framework in Frameworks */,
-				976AFB511AF4078700F91585 /* opencv2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -114,8 +115,6 @@
 		9749EB521AF6BEA8004D9785 /* Utility Classes */ = {
 			isa = PBXGroup;
 			children = (
-				9749EB4F1AF6BE7B004D9785 /* UIAlertView+Blocks.h */,
-				9749EB501AF6BE7B004D9785 /* UIAlertView+Blocks.m */,
 			);
 			name = "Utility Classes";
 			sourceTree = "<group>";
@@ -167,6 +166,8 @@
 		976AFADA1AF3CAC300F91585 /* Surveillance */ = {
 			isa = PBXGroup;
 			children = (
+				9769797B1AFAB5BA0029D82D /* UIAlertView+Blocks.h */,
+				9769797C1AFAB5BA0029D82D /* UIAlertView+Blocks.m */,
 				976AFAE81AF3CAC300F91585 /* Main.storyboard */,
 				976AFAEB1AF3CAC300F91585 /* Images.xcassets */,
 				976AFAED1AF3CAC300F91585 /* LaunchScreen.xib */,
@@ -210,6 +211,7 @@
 		97CA02321AF5511A00B86C4D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				976979781AFAB5690029D82D /* opencv2.framework */,
 				976979761AFAB1000029D82D /* MediaPlayer.framework */,
 				9749EB1F1AF663D8004D9785 /* AudioToolbox.framework */,
 				976AFB611AF40B6600F91585 /* QuartzCore.framework */,
@@ -326,9 +328,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				9749EB261AF6B2CB004D9785 /* EventsTableViewController.m in Sources */,
-				9749EB511AF6BE7B004D9785 /* UIAlertView+Blocks.m in Sources */,
 				976AFAE11AF3CAC300F91585 /* AppDelegate.m in Sources */,
 				97E62DBD1AF6E58200CECBCB /* SegmentedControlCell.m in Sources */,
+				9769797D1AFAB5BA0029D82D /* UIAlertView+Blocks.m in Sources */,
 				976AFADE1AF3CAC300F91585 /* main.m in Sources */,
 				97CA02351AF5513C00B86C4D /* AVObservationViewController.mm in Sources */,
 				976AFAE41AF3CAC300F91585 /* Surveillance.xcdatamodeld in Sources */,
@@ -464,6 +466,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Surveillance",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Surveillance/PrefixHeader.pch;
@@ -480,6 +483,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Surveillance",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Surveillance/PrefixHeader.pch;
