@@ -217,7 +217,7 @@ static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
     }
 }
 
-// This method processes the frames and hanldes the recording process when motion is detected
+// This method processes the frames and handles the recording process when motion is detected
 - (void)captureOutput:(AVCaptureOutput *)captureOutput
 didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
        fromConnection:(AVCaptureConnection *)connection

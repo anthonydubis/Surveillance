@@ -85,6 +85,7 @@
                                         <constraint firstItem="5tE-Cg-Zgr" firstAttribute="trailing" secondItem="Alu-Pg-TEW" secondAttribute="trailingMargin" id="T7d-Oc-e2O"/>
                                         <constraint firstItem="pdY-83-cdb" firstAttribute="centerY" secondItem="5tE-Cg-Zgr" secondAttribute="centerY" constant="-0.5" id="VCt-64-o6m"/>
                                         <constraint firstAttribute="centerY" secondItem="pdY-83-cdb" secondAttribute="centerY" id="od9-00-VQm"/>
+                                        <constraint firstItem="5tE-Cg-Zgr" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="pdY-83-cdb" secondAttribute="trailing" constant="10" id="rCj-rj-FYe"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
