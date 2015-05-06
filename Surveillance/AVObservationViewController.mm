@@ -19,10 +19,10 @@ static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 
 @interface AVObservationViewController ()
 {
-    BOOL isMonitoring;
-    BOOL isPreparingToRecord;
-    BOOL isRecording;
-    int frameNumber;
+    BOOL isMonitoring;          // is the camera focused and monitoring the area
+    BOOL isPreparingToRecord;   // is the assetWriter being prepared to record
+    BOOL isRecording;           // is the assetWriter recording
+    int frameNumber;            // the frame number we are on in the recorded video
 }
 
 @property (nonatomic) BOOL isUsingFrontFacingCamera;
@@ -31,9 +31,7 @@ static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *previewLayer;
 @property (nonatomic, strong) UIImage *borderImage;
 @property (nonatomic, strong) CIDetector *faceDetector;
-// For motion detection
 @property (nonatomic, assign) cv::Mat background;
-// For recording
 @property (nonatomic, strong) NSURL *recordingURL;
 @property (nonatomic, strong) AVAssetWriter *assetWriter;
 @property (nonatomic, strong) AVAssetWriterInput *assetWriterInput;
@@ -45,6 +43,7 @@ static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 
 #pragma mark - View lifecycle
 
+// This is called when the view about to be presented (with the output of the camera) is loaded into memory
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -59,6 +58,7 @@ static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
     [self listFileAtPath:[self documentsPath]];
 }
 
+// This is called when the view is on screen (or at least, about to be) and the views have been resized to fill the screen
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
@@ -66,11 +66,13 @@ static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
     [self performSelector:@selector(beginMonitoring) withObject:nil afterDelay:3.0];
 }
 
+// Sets the isMonitoring flag that causes work to be done when processing frames
 - (void)beginMonitoring
 {
     isMonitoring = YES;
 }
 
+// This is when the view is unloaded - in this simple app, it's likely called when the app terminates
 - (void)viewDidUnload
 {
     [super viewDidUnload];
@@ -81,11 +83,22 @@ static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
     self.borderImage = nil;
 }
 
+// Clean up capture setup
+- (void)teardownAVCapture
+{
+    self.videoDataOutput = nil;
+    self.videoDataOutputQueue = nil;
+    [self.previewLayer removeFromSuperlayer];
+    self.previewLayer = nil;
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // We support only Portrait.
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
+
+// Sets up the session, it's inputs/outputs, and the assetWriter for recording video
 - (void)setupAVCapture
 {
     NSError *error = nil;
@@ -204,13 +217,67 @@ static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
     }
 }
 
-// clean up capture setup
-- (void)teardownAVCapture
+// This method processes the frames and hanldes the recording process when motion is detected
+- (void)captureOutput:(AVCaptureOutput *)captureOutput
+didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
+       fromConnection:(AVCaptureConnection *)connection
 {
-    self.videoDataOutput = nil;
-    self.videoDataOutputQueue = nil;
-    [self.previewLayer removeFromSuperlayer];
-    self.previewLayer = nil;
+    // get the image
+    CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    
+    if (isRecording && self.assetWriterInput.isReadyForMoreMediaData) {
+        if (frameNumber > 100)
+            [self stopRecording];
+        else
+            [self.pixelBufferAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:CMTimeMake(frameNumber++, 30)];
+    }
+    
+    CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+    int bufferWidth = (int)CVPixelBufferGetWidth(pixelBuffer);
+    int bufferHeight = (int)CVPixelBufferGetHeight(pixelBuffer);
+    unsigned char *pixel = (unsigned char *)CVPixelBufferGetBaseAddress(pixelBuffer);
+    
+    if (isMonitoring) {
+        cv::Mat image = cv::Mat(bufferHeight, bufferWidth, CV_8UC4, pixel); //put buffer in open cv, no memory copied
+        
+        //Processing here
+        cv::Mat gray;
+        cv::cvtColor(image, gray, CV_RGB2GRAY);
+        if (self.background.empty()) {
+            self.background = gray.clone();
+        } else {
+            cv::Mat diff;
+            cv::absdiff(gray, self.background, diff);
+            cv::threshold(diff, diff, 50, 255, cv::THRESH_TOZERO);
+            // cv::threshold(diff[0], diff[0], 30, 255, cv::THRESH_TOZERO);
+            unsigned long diffVal = sum(diff)[0];
+            NSLog(@"%lu", diffVal);
+            if (diffVal > self.motionSensitivity && !isPreparingToRecord) {
+                isPreparingToRecord = YES;
+                [self startRecording];
+            }
+        }
+    }
+    
+    //End processing
+    CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+}
+
+- (void)startRecording
+{
+    NSLog(@"Starting the recording");
+    [self.assetWriter startWriting];
+    [self.assetWriter startSessionAtSourceTime:kCMTimeZero];
+    isRecording = YES;
+}
+
+- (void)stopRecording
+{
+    NSLog(@"Stopping the recording");
+    isRecording = NO;
+    [self.assetWriter finishWritingWithCompletionHandler:^{
+        [self listFileAtPath:[self documentsPath]];
+    }];
 }
 
 // utility routine to display error aleart if takePicture fails
@@ -419,68 +486,6 @@ static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
             break;
     }
     return [NSNumber numberWithInt:exifOrientation];
-}
-
-- (void)captureOutput:(AVCaptureOutput *)captureOutput
-didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
-       fromConnection:(AVCaptureConnection *)connection
-{
-    // get the image
-    CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-    
-    if (isRecording && self.assetWriterInput.isReadyForMoreMediaData) {
-        if (frameNumber > 100)
-            [self stopRecording];
-        else
-            [self.pixelBufferAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:CMTimeMake(frameNumber++, 30)];
-    }
-    
-    CVPixelBufferLockBaseAddress(pixelBuffer, 0);
-    int bufferWidth = (int)CVPixelBufferGetWidth(pixelBuffer);
-    int bufferHeight = (int)CVPixelBufferGetHeight(pixelBuffer);
-    unsigned char *pixel = (unsigned char *)CVPixelBufferGetBaseAddress(pixelBuffer);
-    
-    if (isMonitoring) {
-        cv::Mat image = cv::Mat(bufferHeight, bufferWidth, CV_8UC4, pixel); //put buffer in open cv, no memory copied
-        
-        //Processing here
-        cv::Mat gray;
-        cv::cvtColor(image, gray, CV_RGB2GRAY);
-        if (self.background.empty()) {
-            self.background = gray.clone();
-        } else {
-            cv::Mat diff;
-            cv::absdiff(gray, self.background, diff);
-            cv::threshold(diff, diff, 50, 255, cv::THRESH_TOZERO);
-            // cv::threshold(diff[0], diff[0], 30, 255, cv::THRESH_TOZERO);
-            unsigned long diffVal = sum(diff)[0];
-            NSLog(@"%lu", diffVal);
-            if (diffVal > self.motionSensitivity && !isPreparingToRecord) {
-                isPreparingToRecord = YES;
-                [self startRecording];
-            }
-        }
-    }
-    
-    //End processing
-    CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-}
-
-- (void)startRecording
-{
-    NSLog(@"Starting the recording");
-    [self.assetWriter startWriting];
-    [self.assetWriter startSessionAtSourceTime:kCMTimeZero];
-    isRecording = YES;
-}
-
-- (void)stopRecording
-{
-    NSLog(@"Stopping the recording");
-    isRecording = NO;
-    [self.assetWriter finishWritingWithCompletionHandler:^{
-        [self listFileAtPath:[self documentsPath]];
-    }];
 }
 
 -(NSArray *)listFileAtPath:(NSString *)path
