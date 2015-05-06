@@ -7,8 +7,11 @@
 //
 
 #import "EventsTableViewController.h"
+#import <MediaPlayer/MediaPlayer.h>
 
 @interface EventsTableViewController ()
+
+@property (nonatomic, strong) MPMoviePlayerController *moviePlayerController;
 
 @end
 
@@ -17,11 +20,26 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
+    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsPath = [searchPaths objectAtIndex:0];
+    NSString *filename = @"May 6, 2015, 4:17:31 PM.mp4";
+    NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:[NSString pathWithComponents:@[documentsPath, filename]]];
     
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    self.moviePlayerController = [[MPMoviePlayerController alloc] initWithContentURL:fileURL];
+    [self.moviePlayerController.view setFrame:CGRectMake(0, 70, 320, 270)];
+    [self.view addSubview:self.moviePlayerController.view];
+    self.moviePlayerController.fullscreen = YES;
+    [self.moviePlayerController play];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    // Return YES for supported orientations
+    if (interfaceOrientation == UIInterfaceOrientationPortrait || interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) {
+        [self.moviePlayerController.view setFrame:CGRectMake(0, 70, 320, 270)];
+    } else if (interfaceOrientation == UIInterfaceOrientationLandscapeLeft || interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
+        [self.moviePlayerController.view setFrame:CGRectMake(0, 0, 480, 320)];
+    }
+    return YES;
 }
 
 - (void)didReceiveMemoryWarning {

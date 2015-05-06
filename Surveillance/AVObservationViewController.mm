@@ -20,6 +20,9 @@ static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 @interface AVObservationViewController ()
 {
     BOOL isMonitoring;
+    BOOL isPreparingToRecord;
+    BOOL isRecording;
+    int frameNumber;
 }
 
 @property (nonatomic) BOOL isUsingFrontFacingCamera;
@@ -30,6 +33,11 @@ static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 @property (nonatomic, strong) CIDetector *faceDetector;
 // For motion detection
 @property (nonatomic, assign) cv::Mat background;
+// For recording
+@property (nonatomic, strong) NSURL *recordingURL;
+@property (nonatomic, strong) AVAssetWriter *assetWriter;
+@property (nonatomic, strong) AVAssetWriterInput *assetWriterInput;
+@property (nonatomic, strong) AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor;
 
 @end
 
@@ -43,11 +51,18 @@ static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
     
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     
-    [self setupAVCapture];
     self.borderImage = [UIImage imageNamed:@"border"];
     NSDictionary *detectorOptions = [[NSDictionary alloc] initWithObjectsAndKeys:CIDetectorAccuracyLow, CIDetectorAccuracy, nil];
     self.faceDetector = [CIDetector detectorOfType:CIDetectorTypeFace context:nil options:detectorOptions];
+    frameNumber = 0;
     
+    [self listFileAtPath:[self documentsPath]];
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    [self setupAVCapture];
     [self performSelector:@selector(beginMonitoring) withObject:nil afterDelay:3.0];
 }
 
@@ -75,19 +90,20 @@ static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 {
     NSError *error = nil;
     
+    // Create the session (manages data flow from input to output
     AVCaptureSession *session = [[AVCaptureSession alloc] init];
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone){
         [session setSessionPreset:AVCaptureSessionPreset640x480];
     } else {
+        // Was using AVCaptureSessionPresetPhoto
         [session setSessionPreset:AVCaptureSessionPresetPhoto];
     }
     
-    // Select a video device, make an input
+    // Specify an input (one of the cameras)
     AVCaptureDevice *device;
-    
     AVCaptureDevicePosition desiredPosition = AVCaptureDevicePositionFront;
     
-    // find the front facing camera
+    // Find the front facing camera
     for (AVCaptureDevice *d in [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo]) {
         if ([d position] == desiredPosition) {
             device = d;
@@ -96,17 +112,22 @@ static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
         }
     }
     
-    // fall back to the default camera.
+    // Fall back to the default camera.
     if (!device) {
         self.isUsingFrontFacingCamera = NO;
         device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     }
     
-    // get the input device
+    [device lockForConfiguration:nil];
+    [device setActiveVideoMinFrameDuration:CMTimeMake(1, 30)];
+    [device setActiveVideoMaxFrameDuration:CMTimeMake(1, 30)];
+    [device unlockForConfiguration];
+    
+    // Create the input device
     AVCaptureDeviceInput *deviceInput = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
     
     if(!error) {
-        // add the input to the session
+        // Add the input to the session
         if ([session canAddInput:deviceInput]) {
             [session addInput:deviceInput];
         }
@@ -114,7 +135,7 @@ static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
         // Make a video data output
         self.videoDataOutput = [[AVCaptureVideoDataOutput alloc] init];
         
-        // we want BGRA, both CoreGraphics and OpenGL work well with 'BGRA'
+        // BGRA work well with CoreGraphics and OpenGL
         NSDictionary *rgbOutputSettings = [NSDictionary dictionaryWithObject:
                                            [NSNumber numberWithInt:kCMPixelFormat_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
         [self.videoDataOutput setVideoSettings:rgbOutputSettings];
@@ -142,6 +163,32 @@ static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
         [self.previewLayer setFrame:[rootLayer bounds]];
         [rootLayer addSublayer:self.previewLayer];
         [session startRunning];
+        
+        // Setup the AssetWriter
+        NSDictionary *outputSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                        [NSNumber numberWithInt:640], AVVideoWidthKey,
+                                        [NSNumber numberWithInt:480], AVVideoHeightKey,
+                                        AVVideoCodecH264, AVVideoCodecKey, nil];
+        
+        self.assetWriterInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
+                                                                   outputSettings:outputSettings];
+        
+        /* I'm going to push pixel buffers to it, so will need a
+         AVAssetWriterPixelBufferAdaptor, to expect the same 32BGRA input as I've
+         asked the AVCaptureVideDataOutput to supply */
+         self.pixelBufferAdaptor = [[AVAssetWriterInputPixelBufferAdaptor alloc]
+                                    initWithAssetWriterInput:self.assetWriterInput
+                                    sourcePixelBufferAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                 [NSNumber numberWithInt:kCVPixelFormatType_32BGRA],kCVPixelBufferPixelFormatTypeKey, nil]];
+        
+        self.assetWriter = [[AVAssetWriter alloc] initWithURL:self.recordingURL
+                                                     fileType:AVFileTypeMPEG4
+                                                        error:&error];
+        [self.assetWriter addInput:self.assetWriterInput];
+        
+        /* we need to warn the input to expect real time data incoming, so that it tries
+         to avoid being unavailable at inopportune moments */
+        self.assetWriterInput.expectsMediaDataInRealTime = YES;
     }
     
     session = nil;
@@ -381,6 +428,13 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     // get the image
     CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     
+    if (isRecording && self.assetWriterInput.isReadyForMoreMediaData) {
+        if (frameNumber > 100)
+            [self stopRecording];
+        else
+            [self.pixelBufferAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:CMTimeMake(frameNumber++, 30)];
+    }
+    
     CVPixelBufferLockBaseAddress(pixelBuffer, 0);
     int bufferWidth = (int)CVPixelBufferGetWidth(pixelBuffer);
     int bufferHeight = (int)CVPixelBufferGetHeight(pixelBuffer);
@@ -401,44 +455,61 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             // cv::threshold(diff[0], diff[0], 30, 255, cv::THRESH_TOZERO);
             unsigned long diffVal = sum(diff)[0];
             NSLog(@"%lu", diffVal);
+            if (diffVal > self.motionSensitivity && !isPreparingToRecord) {
+                isPreparingToRecord = YES;
+                [self startRecording];
+            }
         }
     }
     
     //End processing
     CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-    
-    
-//    
-//    CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, sampleBuffer, kCMAttachmentMode_ShouldPropagate);
-//    CIImage *ciImage = [[CIImage alloc] initWithCVPixelBuffer:pixelBuffer
-//                                                      options:(__bridge NSDictionary *)attachments];
-//    if (attachments) {
-//        CFRelease(attachments);
-//    }
-//    
-//    // make sure your device orientation is not locked.
-//    UIDeviceOrientation curDeviceOrientation = [[UIDevice currentDevice] orientation];
-//    
-//    NSDictionary *imageOptions = nil;
-//    
-//    imageOptions = [NSDictionary dictionaryWithObject:[self exifOrientation:curDeviceOrientation]
-//                                               forKey:CIDetectorImageOrientation];
-//    
-//    NSArray *features = [self.faceDetector featuresInImage:ciImage
-//                                                   options:imageOptions];
-//    
-//    // get the clean aperture
-//    // the clean aperture is a rectangle that defines the portion of the encoded pixel dimensions
-//    // that represents image data valid for display.
-//    CMFormatDescriptionRef fdesc = CMSampleBufferGetFormatDescription(sampleBuffer);
-//    CGRect cleanAperture = CMVideoFormatDescriptionGetCleanAperture(fdesc, false /*originIsTopLeft == false*/);
-//    
-//    dispatch_async(dispatch_get_main_queue(), ^(void) {
-//        [self drawFaces:features
-//            forVideoBox:cleanAperture
-//            orientation:curDeviceOrientation];
-//    });
 }
 
+- (void)startRecording
+{
+    NSLog(@"Starting the recording");
+    [self.assetWriter startWriting];
+    [self.assetWriter startSessionAtSourceTime:kCMTimeZero];
+    isRecording = YES;
+}
+
+- (void)stopRecording
+{
+    NSLog(@"Stopping the recording");
+    isRecording = NO;
+    [self.assetWriter finishWritingWithCompletionHandler:^{
+        [self listFileAtPath:[self documentsPath]];
+    }];
+}
+
+-(NSArray *)listFileAtPath:(NSString *)path
+{
+    //-----> LIST ALL FILES <-----//
+    NSLog(@"LISTING ALL FILES FOUND");
+    
+    int count;
+    
+    NSArray *directoryContent = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL];
+    for (count = 0; count < (int)[directoryContent count]; count++)
+    {
+        NSLog(@"File %d: %@", (count + 1), [directoryContent objectAtIndex:count]);
+    }
+    return directoryContent;
+}
+
+- (NSURL *)recordingURL
+{
+    NSString *filename = [NSString stringWithFormat:@"%@.mp4", [NSDateFormatter localizedStringFromDate:[NSDate date]
+                                                                                              dateStyle:NSDateFormatterMediumStyle
+                                                                                              timeStyle:NSDateFormatterMediumStyle]];
+    return [[NSURL alloc] initFileURLWithPath:[NSString pathWithComponents:@[[self documentsPath], filename]]];
+}
+
+- (NSString *)documentsPath
+{
+    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    return [searchPaths objectAtIndex:0];
+}
 
 @end

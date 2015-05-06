@@ -11,7 +11,7 @@
 		9749EB231AF6B284004D9785 /* ConfigureMonitoringTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9749EB221AF6B284004D9785 /* ConfigureMonitoringTableViewController.m */; };
 		9749EB261AF6B2CB004D9785 /* EventsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9749EB251AF6B2CB004D9785 /* EventsTableViewController.m */; };
 		9749EB511AF6BE7B004D9785 /* UIAlertView+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 9749EB501AF6BE7B004D9785 /* UIAlertView+Blocks.m */; };
-		976979731AFA6AFC0029D82D /* MovieRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 976979721AFA6AFC0029D82D /* MovieRecorder.m */; };
+		976979771AFAB1000029D82D /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976979761AFAB1000029D82D /* MediaPlayer.framework */; };
 		976AFADE1AF3CAC300F91585 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 976AFADD1AF3CAC300F91585 /* main.m */; };
 		976AFAE11AF3CAC300F91585 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 976AFAE01AF3CAC300F91585 /* AppDelegate.m */; };
 		976AFAE41AF3CAC300F91585 /* Surveillance.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 976AFAE21AF3CAC300F91585 /* Surveillance.xcdatamodeld */; };
@@ -51,8 +51,7 @@
 		9749EB251AF6B2CB004D9785 /* EventsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsTableViewController.m; sourceTree = "<group>"; };
 		9749EB4F1AF6BE7B004D9785 /* UIAlertView+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+Blocks.h"; sourceTree = "<group>"; };
 		9749EB501AF6BE7B004D9785 /* UIAlertView+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+Blocks.m"; sourceTree = "<group>"; };
-		976979711AFA6AFC0029D82D /* MovieRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MovieRecorder.h; sourceTree = "<group>"; };
-		976979721AFA6AFC0029D82D /* MovieRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MovieRecorder.m; sourceTree = "<group>"; };
+		976979761AFAB1000029D82D /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		976AFAD81AF3CAC300F91585 /* Surveillance.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Surveillance.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		976AFADC1AF3CAC300F91585 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		976AFADD1AF3CAC300F91585 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -88,6 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				976979771AFAB1000029D82D /* MediaPlayer.framework in Frameworks */,
 				9749EB201AF663D8004D9785 /* AudioToolbox.framework in Frameworks */,
 				976AFB621AF40B6600F91585 /* QuartzCore.framework in Frameworks */,
 				976AFB601AF40B5F00F91585 /* CoreVideo.framework in Frameworks */,
@@ -114,12 +114,34 @@
 		9749EB521AF6BEA8004D9785 /* Utility Classes */ = {
 			isa = PBXGroup;
 			children = (
-				976979711AFA6AFC0029D82D /* MovieRecorder.h */,
-				976979721AFA6AFC0029D82D /* MovieRecorder.m */,
 				9749EB4F1AF6BE7B004D9785 /* UIAlertView+Blocks.h */,
 				9749EB501AF6BE7B004D9785 /* UIAlertView+Blocks.m */,
 			);
 			name = "Utility Classes";
+			sourceTree = "<group>";
+		};
+		976979741AFAB09F0029D82D /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				97E62DBB1AF6E58200CECBCB /* SegmentedControlCell.h */,
+				97E62DBC1AF6E58200CECBCB /* SegmentedControlCell.m */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
+		976979751AFAB0AE0029D82D /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				9749EB211AF6B284004D9785 /* ConfigureMonitoringTableViewController.h */,
+				9749EB221AF6B284004D9785 /* ConfigureMonitoringTableViewController.m */,
+				9749EB241AF6B2CB004D9785 /* EventsTableViewController.h */,
+				9749EB251AF6B2CB004D9785 /* EventsTableViewController.m */,
+				976AFB4D1AF4077000F91585 /* ObservationViewController.h */,
+				976AFB4E1AF4077000F91585 /* ObservationViewController.mm */,
+				97CA02331AF5513C00B86C4D /* AVObservationViewController.h */,
+				97CA02341AF5513C00B86C4D /* AVObservationViewController.mm */,
+			);
+			name = "View Controllers";
 			sourceTree = "<group>";
 		};
 		976AFACF1AF3CAC300F91585 = {
@@ -145,22 +167,14 @@
 		976AFADA1AF3CAC300F91585 /* Surveillance */ = {
 			isa = PBXGroup;
 			children = (
-				976AFADF1AF3CAC300F91585 /* AppDelegate.h */,
-				976AFAE01AF3CAC300F91585 /* AppDelegate.m */,
-				9749EB211AF6B284004D9785 /* ConfigureMonitoringTableViewController.h */,
-				9749EB221AF6B284004D9785 /* ConfigureMonitoringTableViewController.m */,
-				9749EB241AF6B2CB004D9785 /* EventsTableViewController.h */,
-				9749EB251AF6B2CB004D9785 /* EventsTableViewController.m */,
-				976AFB4D1AF4077000F91585 /* ObservationViewController.h */,
-				976AFB4E1AF4077000F91585 /* ObservationViewController.mm */,
-				97CA02331AF5513C00B86C4D /* AVObservationViewController.h */,
-				97CA02341AF5513C00B86C4D /* AVObservationViewController.mm */,
 				976AFAE81AF3CAC300F91585 /* Main.storyboard */,
 				976AFAEB1AF3CAC300F91585 /* Images.xcassets */,
 				976AFAED1AF3CAC300F91585 /* LaunchScreen.xib */,
 				976AFAE21AF3CAC300F91585 /* Surveillance.xcdatamodeld */,
-				97E62DBB1AF6E58200CECBCB /* SegmentedControlCell.h */,
-				97E62DBC1AF6E58200CECBCB /* SegmentedControlCell.m */,
+				976AFADF1AF3CAC300F91585 /* AppDelegate.h */,
+				976AFAE01AF3CAC300F91585 /* AppDelegate.m */,
+				976979751AFAB0AE0029D82D /* View Controllers */,
+				976979741AFAB09F0029D82D /* Cells */,
 				976AFADB1AF3CAC300F91585 /* Supporting Files */,
 			);
 			path = Surveillance;
@@ -196,6 +210,7 @@
 		97CA02321AF5511A00B86C4D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				976979761AFAB1000029D82D /* MediaPlayer.framework */,
 				9749EB1F1AF663D8004D9785 /* AudioToolbox.framework */,
 				976AFB611AF40B6600F91585 /* QuartzCore.framework */,
 				976AFB5F1AF40B5F00F91585 /* CoreVideo.framework */,
@@ -314,7 +329,6 @@
 				9749EB511AF6BE7B004D9785 /* UIAlertView+Blocks.m in Sources */,
 				976AFAE11AF3CAC300F91585 /* AppDelegate.m in Sources */,
 				97E62DBD1AF6E58200CECBCB /* SegmentedControlCell.m in Sources */,
-				976979731AFA6AFC0029D82D /* MovieRecorder.m in Sources */,
 				976AFADE1AF3CAC300F91585 /* main.m in Sources */,
 				97CA02351AF5513C00B86C4D /* AVObservationViewController.mm in Sources */,
 				976AFAE41AF3CAC300F91585 /* Surveillance.xcdatamodeld in Sources */,

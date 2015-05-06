@@ -101,7 +101,7 @@
                     <navigationItem key="navigationItem" title="Monitoring Settings" id="83E-AZ-iKb">
                         <barButtonItem key="rightBarButtonItem" title="Start" style="done" id="zCm-zR-lgv">
                             <connections>
-                                <segue destination="pDj-hG-ElP" kind="presentation" identifier="StartMonitoring" id="Csu-Zh-CSA"/>
+                                <segue destination="SnD-NC-ZCP" kind="presentation" identifier="AVStartMonitoring" id="TKP-gK-SwD"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -157,12 +157,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lkQ-fN-fpL">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lkQ-fN-fpL">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="lkQ-fN-fpL" secondAttribute="width" id="6SJ-bO-FVG"/>
+                            <constraint firstAttribute="height" secondItem="lkQ-fN-fpL" secondAttribute="height" id="7Nq-lz-1gw"/>
+                            <constraint firstAttribute="centerX" secondItem="lkQ-fN-fpL" secondAttribute="centerX" id="Xjc-4W-wLT"/>
+                            <constraint firstAttribute="centerY" secondItem="lkQ-fN-fpL" secondAttribute="centerY" id="YOJ-5t-xOd"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="aKr-7H-xPe"/>
                     <connections>
