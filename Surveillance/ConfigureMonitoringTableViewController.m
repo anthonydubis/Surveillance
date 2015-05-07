@@ -66,6 +66,35 @@
     }
 }
 
-#pragma mark - Getters/Setters
+- (NSArray *)listFileAtPath:(NSString *)path
+{
+    //-----> LIST ALL FILES <-----//
+    NSLog(@"LISTING ALL FILES FOUND");
+    
+    int count;
+    
+    NSArray *directoryContent = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL];
+    for (count = 0; count < (int)[directoryContent count]; count++)
+    {
+        NSLog(@"File %d: %@", (count + 1), [directoryContent objectAtIndex:count]);
+    }
+    return directoryContent;
+}
+
+- (NSString *)documentsPath
+{
+    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    return [searchPaths objectAtIndex:0];
+}
+
+- (void)deleteFilesAtPath:(NSString *)path
+{
+    NSArray *directoryContent = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL];
+    for (NSString *filename in directoryContent) {
+        NSString *fullPath = [path stringByAppendingPathComponent:filename];
+        NSLog(@"About to remove: %@", fullPath);
+        [[NSFileManager defaultManager] removeItemAtPath:fullPath error:nil];
+    }
+}
 
 @end

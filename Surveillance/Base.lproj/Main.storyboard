@@ -33,10 +33,18 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="dby-Lm-dbT">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="BasicCell" textLabel="wuq-eG-Hep" style="IBUITableViewCellStyleDefault" id="dby-Lm-dbT">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="dby-Lm-dbT" id="WdY-Wp-Jux">
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="wuq-eG-Hep">
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
                                 </tableViewCellContentView>
                             </tableViewCell>
                         </prototypes>
@@ -146,7 +154,7 @@
             </objects>
             <point key="canvasLocation" x="1583" y="-479"/>
         </scene>
-        <!--Observation View Controller-->
+        <!--Monitoring-->
         <scene sceneID="shb-S2-jlT">
             <objects>
                 <viewController id="8vq-su-lud" customClass="AVObservationViewController" sceneMemberID="viewController">
@@ -160,7 +168,7 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lkQ-fN-fpL">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -171,7 +179,13 @@
                             <constraint firstAttribute="centerY" secondItem="lkQ-fN-fpL" secondAttribute="centerY" id="YOJ-5t-xOd"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="aKr-7H-xPe"/>
+                    <navigationItem key="navigationItem" title="Monitoring" id="aKr-7H-xPe">
+                        <barButtonItem key="rightBarButtonItem" title="Finished" id="3tf-lR-JwW">
+                            <connections>
+                                <action selector="dismissSelf:" destination="8vq-su-lud" id="hRC-ky-QsP"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="previewView" destination="lkQ-fN-fpL" id="Efb-Z0-D6W"/>
                     </connections>

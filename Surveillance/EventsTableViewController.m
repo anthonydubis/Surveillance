@@ -9,8 +9,13 @@
 #import "EventsTableViewController.h"
 #import <MediaPlayer/MediaPlayer.h>
 
+// Core Data Related
+#import "AppDelegate.h"
+#import "MonitoringEvent+AD.h"
+
 @interface EventsTableViewController ()
 
+@property (nonatomic, strong) NSArray *events;
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayerController;
 
 @end
@@ -19,18 +24,19 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    
-    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsPath = [searchPaths objectAtIndex:0];
-    NSString *filename = @"May 7, 2015, 7:28:58 AM.mp4";
-    NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:[NSString pathWithComponents:@[documentsPath, filename]]];
-    
-    self.moviePlayerController = [[MPMoviePlayerController alloc] initWithContentURL:fileURL];
-    [self.moviePlayerController.view setFrame:CGRectMake(0, 70, 320, 270)];
-    [self.view addSubview:self.moviePlayerController.view];
-    self.moviePlayerController.fullscreen = YES;
-    [self.moviePlayerController play];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self reloadData];
+}
+
+// Refresh the events array and reload the tableView
+- (void)reloadData
+{
+    self.events = nil;
+    [self.tableView reloadData];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -43,77 +49,56 @@
     return YES;
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-#warning Potentially incomplete method implementation.
     // Return the number of sections.
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    return 0;
+    return self.events.count;
 }
 
-/*
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"BasicCell" forIndexPath:indexPath];
+    MonitoringEvent *event = [self.events objectAtIndex:indexPath.row];
+    cell.textLabel.text = event.filename;
     return cell;
 }
-*/
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    MonitoringEvent *event = [self.events objectAtIndex:indexPath.row];
+    NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:[NSString pathWithComponents:@[documentsPath, event.filename]]];
+    [self showVideoAtURL:fileURL];
 }
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+- (void)showVideoAtURL:(NSURL *)fileURL
+{
+    self.moviePlayerController = [[MPMoviePlayerController alloc] initWithContentURL:fileURL];
+    [self.moviePlayerController.view setFrame:CGRectMake(0, 70, 320, 270)];
+    [self.view addSubview:self.moviePlayerController.view];
+    self.moviePlayerController.fullscreen = YES;
+    [self.moviePlayerController play];
 }
-*/
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+#pragma mark - Getters/Setters
+
+- (NSArray *)events
+{
+    if (!_events) {
+        _events = [MonitoringEvent eventsInContext:self.appDelegate.managedObjectContext orderedByDateAscd:NO];
+    }
+    return _events;
 }
-*/
 
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
+- (AppDelegate *)appDelegate
+{
+    return [[UIApplication sharedApplication] delegate];
 }
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

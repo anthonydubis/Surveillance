@@ -31,6 +31,8 @@
 		976AFB621AF40B6600F91585 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976AFB611AF40B6600F91585 /* QuartzCore.framework */; };
 		97CA02351AF5513C00B86C4D /* AVObservationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97CA02341AF5513C00B86C4D /* AVObservationViewController.m */; };
 		97E02BE71AFB74D900E34B31 /* ADMotionDetector.mm in Sources */ = {isa = PBXBuildFile; fileRef = 97E02BE61AFB74D900E34B31 /* ADMotionDetector.mm */; };
+		97E2F89D1AFC0EC900E472F2 /* MonitoringEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 97E2F89C1AFC0EC900E472F2 /* MonitoringEvent.m */; };
+		97E2F8A11AFC0F6200E472F2 /* MonitoringEvent+AD.m in Sources */ = {isa = PBXBuildFile; fileRef = 97E2F8A01AFC0F6200E472F2 /* MonitoringEvent+AD.m */; };
 		97E62DBD1AF6E58200CECBCB /* SegmentedControlCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 97E62DBC1AF6E58200CECBCB /* SegmentedControlCell.m */; };
 /* End PBXBuildFile section */
 
@@ -81,6 +83,10 @@
 		97CA02341AF5513C00B86C4D /* AVObservationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVObservationViewController.m; sourceTree = "<group>"; };
 		97E02BE51AFB74D900E34B31 /* ADMotionDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADMotionDetector.h; sourceTree = "<group>"; };
 		97E02BE61AFB74D900E34B31 /* ADMotionDetector.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ADMotionDetector.mm; sourceTree = "<group>"; };
+		97E2F89B1AFC0EC900E472F2 /* MonitoringEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MonitoringEvent.h; path = Model/MonitoringEvent.h; sourceTree = "<group>"; };
+		97E2F89C1AFC0EC900E472F2 /* MonitoringEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MonitoringEvent.m; path = Model/MonitoringEvent.m; sourceTree = "<group>"; };
+		97E2F89F1AFC0F6200E472F2 /* MonitoringEvent+AD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "MonitoringEvent+AD.h"; path = "Model/MonitoringEvent+AD.h"; sourceTree = "<group>"; };
+		97E2F8A01AFC0F6200E472F2 /* MonitoringEvent+AD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "MonitoringEvent+AD.m"; path = "Model/MonitoringEvent+AD.m"; sourceTree = "<group>"; };
 		97E62DBB1AF6E58200CECBCB /* SegmentedControlCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SegmentedControlCell.h; sourceTree = "<group>"; };
 		97E62DBC1AF6E58200CECBCB /* SegmentedControlCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SegmentedControlCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -168,14 +174,14 @@
 		976AFADA1AF3CAC300F91585 /* Surveillance */ = {
 			isa = PBXGroup;
 			children = (
-				9769797B1AFAB5BA0029D82D /* UIAlertView+Blocks.h */,
-				9769797C1AFAB5BA0029D82D /* UIAlertView+Blocks.m */,
+				97E2F89E1AFC0EE200E472F2 /* Model */,
 				976AFAE81AF3CAC300F91585 /* Main.storyboard */,
-				976AFAEB1AF3CAC300F91585 /* Images.xcassets */,
 				976AFAED1AF3CAC300F91585 /* LaunchScreen.xib */,
-				976AFAE21AF3CAC300F91585 /* Surveillance.xcdatamodeld */,
+				976AFAEB1AF3CAC300F91585 /* Images.xcassets */,
 				976AFADF1AF3CAC300F91585 /* AppDelegate.h */,
 				976AFAE01AF3CAC300F91585 /* AppDelegate.m */,
+				9769797B1AFAB5BA0029D82D /* UIAlertView+Blocks.h */,
+				9769797C1AFAB5BA0029D82D /* UIAlertView+Blocks.m */,
 				97E02BE51AFB74D900E34B31 /* ADMotionDetector.h */,
 				97E02BE61AFB74D900E34B31 /* ADMotionDetector.mm */,
 				976979751AFAB0AE0029D82D /* View Controllers */,
@@ -228,6 +234,18 @@
 				976AFB531AF40B3800F91585 /* Accelerate.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		97E2F89E1AFC0EE200E472F2 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				976AFAE21AF3CAC300F91585 /* Surveillance.xcdatamodeld */,
+				97E2F89B1AFC0EC900E472F2 /* MonitoringEvent.h */,
+				97E2F89C1AFC0EC900E472F2 /* MonitoringEvent.m */,
+				97E2F89F1AFC0F6200E472F2 /* MonitoringEvent+AD.h */,
+				97E2F8A01AFC0F6200E472F2 /* MonitoringEvent+AD.m */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -332,6 +350,8 @@
 			files = (
 				9749EB261AF6B2CB004D9785 /* EventsTableViewController.m in Sources */,
 				976AFAE11AF3CAC300F91585 /* AppDelegate.m in Sources */,
+				97E2F89D1AFC0EC900E472F2 /* MonitoringEvent.m in Sources */,
+				97E2F8A11AFC0F6200E472F2 /* MonitoringEvent+AD.m in Sources */,
 				97E62DBD1AF6E58200CECBCB /* SegmentedControlCell.m in Sources */,
 				9769797D1AFAB5BA0029D82D /* UIAlertView+Blocks.m in Sources */,
 				976AFADE1AF3CAC300F91585 /* main.m in Sources */,

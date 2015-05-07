@@ -12,6 +12,9 @@
 #import <AssertMacros.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 
+// Core Data Related
+#import "AppDelegate.h"
+#import "MonitoringEvent+AD.h"
 
 static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; };
 
@@ -28,12 +31,15 @@ static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; 
 @property (nonatomic, strong) AVCaptureVideoDataOutput *videoDataOutput;
 @property (nonatomic) dispatch_queue_t videoDataOutputQueue;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *previewLayer;
-@property (nonatomic, strong) UIImage *borderImage;
-@property (nonatomic, strong) CIDetector *faceDetector;
 @property (nonatomic, strong) NSURL *recordingURL;
 @property (nonatomic, strong) AVAssetWriter *assetWriter;
 @property (nonatomic, strong) AVAssetWriterInput *assetWriterInput;
 @property (nonatomic, strong) AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor;
+@property (nonatomic, strong) MonitoringEvent *event;
+
+// Face detection
+@property (nonatomic, strong) CIDetector *faceDetector;
+@property (nonatomic, strong) UIImage *borderImage;
 
 @end
 
@@ -52,8 +58,6 @@ static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; 
     NSDictionary *detectorOptions = [[NSDictionary alloc] initWithObjectsAndKeys:CIDetectorAccuracyLow, CIDetectorAccuracy, nil];
     self.faceDetector = [CIDetector detectorOfType:CIDetectorTypeFace context:nil options:detectorOptions];
     frameNumber = 0;
-    
-    [self listFileAtPath:[self documentsPath]];
 }
 
 // This is called when the view is on screen (or at least, about to be) and the views have been resized to fill the screen
@@ -257,8 +261,15 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     NSLog(@"Stopping the recording");
     isRecording = NO;
     [self.assetWriter finishWritingWithCompletionHandler:^{
+        [self.appDelegate saveContext];
+        self.event = nil;
         [self listFileAtPath:[self documentsPath]];
     }];
+}
+
+- (IBAction)dismissSelf:(id)sender
+{
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 // utility routine to display error aleart if takePicture fails
@@ -469,7 +480,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     return [NSNumber numberWithInt:exifOrientation];
 }
 
--(NSArray *)listFileAtPath:(NSString *)path
+- (NSArray *)listFileAtPath:(NSString *)path
 {
     //-----> LIST ALL FILES <-----//
     NSLog(@"LISTING ALL FILES FOUND");
@@ -486,10 +497,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 - (NSURL *)recordingURL
 {
-    NSString *filename = [NSString stringWithFormat:@"%@.mp4", [NSDateFormatter localizedStringFromDate:[NSDate date]
-                                                                                              dateStyle:NSDateFormatterMediumStyle
-                                                                                              timeStyle:NSDateFormatterMediumStyle]];
-    return [[NSURL alloc] initFileURLWithPath:[NSString pathWithComponents:@[[self documentsPath], filename]]];
+    return [[NSURL alloc] initFileURLWithPath:[NSString pathWithComponents:@[[self documentsPath], self.event.filename]]];
 }
 
 - (NSString *)documentsPath
@@ -505,6 +513,23 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         _motionDetector.sensitivity = self.motionSensitivity;
     }
     return _motionDetector;
+}
+
+- (AppDelegate *)appDelegate
+{
+    return [[UIApplication sharedApplication] delegate];
+}
+
+- (MonitoringEvent *)event
+{
+    if (!_event) {
+        NSDate *date = [NSDate date];
+        NSString *filename = [NSString stringWithFormat:@"%@.mp4", [NSDateFormatter localizedStringFromDate:date
+                                                                                                  dateStyle:NSDateFormatterMediumStyle
+                                                                                                  timeStyle:NSDateFormatterMediumStyle]];
+        _event = [MonitoringEvent newEventWithDate:date andFilename:filename inContext:self.appDelegate.managedObjectContext];
+    }
+    return _event;
 }
 
 @end
