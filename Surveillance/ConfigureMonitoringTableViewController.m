@@ -59,11 +59,7 @@
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"StartMonitoring"]) {
-        UINavigationController *navCon = (UINavigationController *)segue.destinationViewController;
-        ObservationViewController *ovc = (ObservationViewController *)navCon.topViewController;
-        ovc.motionSensitivity = self.motionSensitivity;
-    } else if ([segue.identifier isEqualToString:@"AVStartMonitoring"]) {
+    if ([segue.identifier isEqualToString:@"AVStartMonitoring"]) {
         UINavigationController *navCon = (UINavigationController *)segue.destinationViewController;
         AVObservationViewController *avovc = (AVObservationViewController *)navCon.topViewController;
         avovc.motionSensitivity = self.motionSensitivity;

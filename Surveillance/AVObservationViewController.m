@@ -13,7 +13,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 
 
-static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
+static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; };
 
 @interface AVObservationViewController ()
 {
@@ -233,7 +233,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     
     // Handle motion detection
     if (isMonitoring) {
-        if ([self.motionDetector isBackgroundSet]) {
+        if (![self.motionDetector isBackgroundSet]) {
             [self.motionDetector setBackgroundWithPixelBuffer:pixelBuffer];
         } else {
             if ([self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer] && !isPreparingToRecord) {

@@ -24,7 +24,7 @@ const int Low_Motion_Sensitivity    = 50000;
 
 - (BOOL)isBackgroundSet
 {
-    return self.background.empty();
+    return !self.background.empty();
 }
 
 /*
