@@ -68,7 +68,6 @@
 		976AFAFA1AF3CAC300F91585 /* SurveillanceTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SurveillanceTests.m; sourceTree = "<group>"; };
 		976AFB4D1AF4077000F91585 /* ObservationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationViewController.h; sourceTree = "<group>"; };
 		976AFB4E1AF4077000F91585 /* ObservationViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObservationViewController.mm; sourceTree = "<group>"; };
-		976AFB501AF4078700F91585 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
 		976AFB521AF407D000F91585 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		976AFB531AF40B3800F91585 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		976AFB551AF40B3E00F91585 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
@@ -227,7 +226,6 @@
 				976AFB571AF40B4400F91585 /* AVFoundation.framework */,
 				976AFB551AF40B3E00F91585 /* AssetsLibrary.framework */,
 				976AFB531AF40B3800F91585 /* Accelerate.framework */,
-				976AFB501AF4078700F91585 /* opencv2.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

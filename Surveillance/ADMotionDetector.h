@@ -10,9 +10,9 @@
 
 typedef NS_ENUM(NSInteger, MotionDetectorSensitivity )
 {
-    MotionDetectorSensitivityHigh = 0,
+    MotionDetectorSensitivityLow = 0,
     MotionDetectorSensitivityMedium,
-    MotionDetectorSensitivityLow
+    MotionDetectorSensitivityHigh
 };
 
 @interface ADMotionDetector : NSObject

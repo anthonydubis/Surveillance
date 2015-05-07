@@ -9,10 +9,10 @@
 #import "ADMotionDetector.h"
 #import <opencv2/highgui/cap_ios.h>
 
-const int Significant_Difference_Threshold = 50;
-const int High_Motion_Sensitivity   = 1000;
-const int Medium_Motion_Sensitivity = 10000;
-const int Low_Motion_Sensitivity    = 50000;
+const int SignificantDifferenceThreshold = 50;
+const float HighMotionSensitivityPct     = 0.005;
+const float MediumMotionSensitivityPct   = 0.03;
+const float LowMotionSensitivityPct      = 0.06;
 
 @interface ADMotionDetector()
 
@@ -41,21 +41,27 @@ const int Low_Motion_Sensitivity    = 50000;
 /*
  * Detect motion in this new pixelBufferRef. Motion is determined by taking the absolute difference of
  * this new frame from the background, thresholding the values to eliminate small differences, 
- * then summing all of the pixel values to determine the overall change.
+ * then summing over all the values to get the total number of pixels that changed. This number over
+ * over the total number of pixels gives us a percentage that we compare to the motoinSensitivityThreshold.
  */
 - (BOOL)didMotionOccurInPixelBufferRef:(CVPixelBufferRef)pixelBuffer
 {
     if (self.background.empty()) return NO;
     
+    // Get the difference matrix for changes in pixel values
     CVPixelBufferLockBaseAddress(pixelBuffer, 0);
     cv::Mat gray = [self grayMatFromPixelBuffer:pixelBuffer];
     cv::Mat diff;
     cv::absdiff(gray, self.background, diff);
-    cv::threshold(diff, diff, Significant_Difference_Threshold, 255, cv::THRESH_TOZERO);
-    unsigned long diffVal = sum(diff)[0];
     CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-    NSLog(@"%lu", diffVal);
-    return (diffVal > [self motionSensitivityThreshold]);
+    
+    // Make all differences <= Significant_Difference_Threshold equal to 0, all others 1
+    cv::threshold(diff, diff, SignificantDifferenceThreshold, 1, cv::THRESH_BINARY);
+    long unsigned diffVal = sum(diff)[0];
+    long unsigned numPixels = diff.cols * diff.rows;
+    NSLog(@"%lu / %lu = %f against threshold %f", diffVal, numPixels, ((float)diffVal) / numPixels, [self motionSensitivityThreshold]);
+    
+    return ((((float)diffVal) / numPixels) > [self motionSensitivityThreshold]);
 }
 
 /*
@@ -81,12 +87,15 @@ const int Low_Motion_Sensitivity    = 50000;
     return image;
 }
 
-- (int)motionSensitivityThreshold
+/*
+ * The percentage of pixels that must have a significant change to say that motion occured.
+ */
+- (float)motionSensitivityThreshold
 {
     switch (self.sensitivity) {
-        case MotionDetectorSensitivityHigh:   return High_Motion_Sensitivity;
-        case MotionDetectorSensitivityMedium: return Medium_Motion_Sensitivity;
-        case MotionDetectorSensitivityLow:    return Low_Motion_Sensitivity;
+        case MotionDetectorSensitivityHigh:   return HighMotionSensitivityPct;
+        case MotionDetectorSensitivityMedium: return MediumMotionSensitivityPct;
+        case MotionDetectorSensitivityLow:    return LowMotionSensitivityPct;
     }
 }
 
