@@ -10,14 +10,11 @@
 #import "ObservationViewController.h"
 #import "SegmentedControlCell.h"
 #import "AVObservationViewController.h"
-
-const int High_Motion_Sensitivity   = 1000;
-const int Medium_Motion_Sensitivity = 10000;
-const int Low_Motion_Sensitivity    = 50000;
+#import "ADMotionDetector.h"
 
 @interface ConfigureMonitoringTableViewController ()
 
-@property (nonatomic, assign) int motionSensitivity;
+@property (nonatomic, assign) MotionDetectorSensitivity motionSensitivity;
 
 @end
 
@@ -25,6 +22,7 @@ const int Low_Motion_Sensitivity    = 50000;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.motionSensitivity = MotionDetectorSensitivityHigh;
 }
 
 #pragma mark - Table view data source
@@ -47,57 +45,15 @@ const int Low_Motion_Sensitivity    = 50000;
 
 - (void)configureMotionSensitivityCell:(SegmentedControlCell *)cell
 {
-    switch (self.motionSensitivity) {
-        case Low_Motion_Sensitivity:    cell.segmentedControl.selectedSegmentIndex = 0; break;
-        case Medium_Motion_Sensitivity: cell.segmentedControl.selectedSegmentIndex = 1; break;
-        case High_Motion_Sensitivity:   cell.segmentedControl.selectedSegmentIndex = 2; break;
-    }
+    cell.segmentedControl.selectedSegmentIndex = self.motionSensitivity;
     [cell.segmentedControl addTarget:self action:@selector(motionSensitivityChanged:)
                     forControlEvents:UIControlEventValueChanged];
 }
 
 - (void)motionSensitivityChanged:(UISegmentedControl *)sender
 {
-    switch (sender.selectedSegmentIndex) {
-        case 0: self.motionSensitivity = Low_Motion_Sensitivity;    break;
-        case 1: self.motionSensitivity = Medium_Motion_Sensitivity; break;
-        case 2: self.motionSensitivity = High_Motion_Sensitivity;   break;
-    }
+    self.motionSensitivity = (MotionDetectorSensitivity)sender.selectedSegmentIndex;
 }
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 #pragma mark - Navigation
 
@@ -115,13 +71,5 @@ const int Low_Motion_Sensitivity    = 50000;
 }
 
 #pragma mark - Getters/Setters
-
-- (int)motionSensitivity
-{
-    if (_motionSensitivity == 0) {
-        _motionSensitivity = High_Motion_Sensitivity;
-    }
-    return _motionSensitivity;
-}
 
 @end

@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
+#import "ADMotionDetector.h"
 
 @interface AVObservationViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *previewView;
-@property (nonatomic, assign) int motionSensitivity;
+@property (nonatomic, assign) MotionDetectorSensitivity motionSensitivity;
 
 @end

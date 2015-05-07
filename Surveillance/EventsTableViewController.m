@@ -20,11 +20,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    /*
     
     NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsPath = [searchPaths objectAtIndex:0];
-    NSString *filename = @"May 6, 2015, 4:49:33 PM.mp4";
+    NSString *filename = @"May 7, 2015, 7:28:58 AM.mp4";
     NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:[NSString pathWithComponents:@[documentsPath, filename]]];
     
     self.moviePlayerController = [[MPMoviePlayerController alloc] initWithContentURL:fileURL];
@@ -32,7 +31,6 @@
     [self.view addSubview:self.moviePlayerController.view];
     self.moviePlayerController.fullscreen = YES;
     [self.moviePlayerController play];
-     */
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {

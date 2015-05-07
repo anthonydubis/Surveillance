@@ -11,8 +11,6 @@
 #import <ImageIO/ImageIO.h>
 #import <AssertMacros.h>
 #import <AssetsLibrary/AssetsLibrary.h>
-#import <opencv2/highgui/cap_ios.h>
-#import <opencv2/highgui/ios.h>
 
 
 static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
@@ -25,13 +23,13 @@ static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
     int frameNumber;            // the frame number we are on in the recorded video
 }
 
+@property (nonatomic, strong) ADMotionDetector *motionDetector;
 @property (nonatomic) BOOL isUsingFrontFacingCamera;
 @property (nonatomic, strong) AVCaptureVideoDataOutput *videoDataOutput;
 @property (nonatomic) dispatch_queue_t videoDataOutputQueue;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *previewLayer;
 @property (nonatomic, strong) UIImage *borderImage;
 @property (nonatomic, strong) CIDetector *faceDetector;
-@property (nonatomic, assign) cv::Mat background;
 @property (nonatomic, strong) NSURL *recordingURL;
 @property (nonatomic, strong) AVAssetWriter *assetWriter;
 @property (nonatomic, strong) AVAssetWriterInput *assetWriterInput;
@@ -222,9 +220,10 @@ static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
        fromConnection:(AVCaptureConnection *)connection
 {
-    // get the image
+    // Get the image
     CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     
+    // Handle recording
     if (isRecording && self.assetWriterInput.isReadyForMoreMediaData) {
         if (frameNumber > 100)
             [self stopRecording];
@@ -232,35 +231,17 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             [self.pixelBufferAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:CMTimeMake(frameNumber++, 30)];
     }
     
-    CVPixelBufferLockBaseAddress(pixelBuffer, 0);
-    int bufferWidth = (int)CVPixelBufferGetWidth(pixelBuffer);
-    int bufferHeight = (int)CVPixelBufferGetHeight(pixelBuffer);
-    unsigned char *pixel = (unsigned char *)CVPixelBufferGetBaseAddress(pixelBuffer);
-    
+    // Handle motion detection
     if (isMonitoring) {
-        cv::Mat image = cv::Mat(bufferHeight, bufferWidth, CV_8UC4, pixel); //put buffer in open cv, no memory copied
-        
-        //Processing here
-        cv::Mat gray;
-        cv::cvtColor(image, gray, CV_RGB2GRAY);
-        if (self.background.empty()) {
-            self.background = gray.clone();
+        if ([self.motionDetector isBackgroundSet]) {
+            [self.motionDetector setBackgroundWithPixelBuffer:pixelBuffer];
         } else {
-            cv::Mat diff;
-            cv::absdiff(gray, self.background, diff);
-            cv::threshold(diff, diff, 50, 255, cv::THRESH_TOZERO);
-            // cv::threshold(diff[0], diff[0], 30, 255, cv::THRESH_TOZERO);
-            unsigned long diffVal = sum(diff)[0];
-            NSLog(@"%lu", diffVal);
-            if (diffVal > self.motionSensitivity && !isPreparingToRecord) {
+            if ([self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer] && !isPreparingToRecord) {
                 isPreparingToRecord = YES;
                 [self startRecording];
             }
         }
     }
-    
-    //End processing
-    CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
 }
 
 - (void)startRecording
@@ -515,6 +496,15 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 {
     NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     return [searchPaths objectAtIndex:0];
+}
+
+- (ADMotionDetector *)motionDetector
+{
+    if (!_motionDetector) {
+        _motionDetector = [[ADMotionDetector alloc] init];
+        _motionDetector.sensitivity = self.motionSensitivity;
+    }
+    return _motionDetector;
 }
 
 @end
