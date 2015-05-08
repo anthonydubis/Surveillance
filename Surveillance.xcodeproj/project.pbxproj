@@ -56,8 +56,8 @@
 		974E160A1AFC2E7D00514C57 /* beep-07.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "beep-07.wav"; sourceTree = "<group>"; };
 		976979761AFAB1000029D82D /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		976979781AFAB5690029D82D /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = Surveillance/opencv2.framework; sourceTree = "<group>"; };
-		9769797B1AFAB5BA0029D82D /* UIAlertView+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+Blocks.h"; sourceTree = "<group>"; };
-		9769797C1AFAB5BA0029D82D /* UIAlertView+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+Blocks.m"; sourceTree = "<group>"; };
+		9769797B1AFAB5BA0029D82D /* UIAlertView+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIAlertView+Blocks.h"; path = "Surveillance/UIAlertView+Blocks.h"; sourceTree = "<group>"; };
+		9769797C1AFAB5BA0029D82D /* UIAlertView+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIAlertView+Blocks.m"; path = "Surveillance/UIAlertView+Blocks.m"; sourceTree = "<group>"; };
 		976AFAD81AF3CAC300F91585 /* Surveillance.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Surveillance.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		976AFADC1AF3CAC300F91585 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		976AFADD1AF3CAC300F91585 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -125,8 +125,27 @@
 		9749EB521AF6BEA8004D9785 /* Utility Classes */ = {
 			isa = PBXGroup;
 			children = (
+				9769797B1AFAB5BA0029D82D /* UIAlertView+Blocks.h */,
+				9769797C1AFAB5BA0029D82D /* UIAlertView+Blocks.m */,
 			);
 			name = "Utility Classes";
+			sourceTree = "<group>";
+		};
+		974E160C1AFCCACB00514C57 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				97E02BE51AFB74D900E34B31 /* ADMotionDetector.h */,
+				97E02BE61AFB74D900E34B31 /* ADMotionDetector.mm */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		974E160D1AFCCAD100514C57 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				974E160A1AFC2E7D00514C57 /* beep-07.wav */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		976979741AFAB09F0029D82D /* Cells */ = {
@@ -182,10 +201,7 @@
 				976AFAEB1AF3CAC300F91585 /* Images.xcassets */,
 				976AFADF1AF3CAC300F91585 /* AppDelegate.h */,
 				976AFAE01AF3CAC300F91585 /* AppDelegate.m */,
-				9769797B1AFAB5BA0029D82D /* UIAlertView+Blocks.h */,
-				9769797C1AFAB5BA0029D82D /* UIAlertView+Blocks.m */,
-				97E02BE51AFB74D900E34B31 /* ADMotionDetector.h */,
-				97E02BE61AFB74D900E34B31 /* ADMotionDetector.mm */,
+				974E160C1AFCCACB00514C57 /* Classes */,
 				976979751AFAB0AE0029D82D /* View Controllers */,
 				976979741AFAB09F0029D82D /* Cells */,
 				976AFADB1AF3CAC300F91585 /* Supporting Files */,
@@ -196,10 +212,10 @@
 		976AFADB1AF3CAC300F91585 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				974E160A1AFC2E7D00514C57 /* beep-07.wav */,
 				976AFADC1AF3CAC300F91585 /* Info.plist */,
 				976AFADD1AF3CAC300F91585 /* main.m */,
 				976AFB521AF407D000F91585 /* PrefixHeader.pch */,
+				974E160D1AFCCAD100514C57 /* Resources */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";

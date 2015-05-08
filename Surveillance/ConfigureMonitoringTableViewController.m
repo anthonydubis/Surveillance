@@ -25,6 +25,12 @@
     self.motionSensitivity = MotionDetectorSensitivityHigh;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self listFileAtPath:[self documentsPath]];
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

@@ -28,4 +28,15 @@
     return [context executeFetchRequest:fetchRequest error:&error];
 }
 
+- (void)prepareForDeletion
+{
+    NSError *error = nil;
+    NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:[NSString pathWithComponents:@[documentsPath, self.filename]]];
+    [[NSFileManager defaultManager] removeItemAtURL:fileURL error:&error];
+    if (error) {
+        NSLog(@"Error deleting underlying video: %@", error);
+    }
+}
+
 @end

@@ -15,8 +15,9 @@
 
 @interface EventsTableViewController ()
 
-@property (nonatomic, strong) NSArray *events;
+@property (nonatomic, strong) NSMutableArray *events;
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayerController;
+@property (nonatomic, strong) AppDelegate *appDelegate;
 
 @end
 
@@ -24,6 +25,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.navigationItem.leftBarButtonItem = self.editButtonItem;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -69,6 +71,8 @@
     return cell;
 }
 
+#pragma mark - Table view delegate
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     MonitoringEvent *event = [self.events objectAtIndex:indexPath.row];
@@ -86,12 +90,29 @@
     [self.moviePlayerController play];
 }
 
+// Allow deletations
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        MonitoringEvent *event = [self.events objectAtIndex:indexPath.row];
+        [self.events removeObjectAtIndex:indexPath.row];
+        [self.appDelegate.managedObjectContext deleteObject:event];
+        [self.appDelegate saveContext];
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+}
+
 #pragma mark - Getters/Setters
 
-- (NSArray *)events
+- (NSMutableArray *)events
 {
     if (!_events) {
-        _events = [MonitoringEvent eventsInContext:self.appDelegate.managedObjectContext orderedByDateAscd:NO];
+        _events = [[MonitoringEvent eventsInContext:self.appDelegate.managedObjectContext orderedByDateAscd:NO] mutableCopy];
     }
     return _events;
 }
