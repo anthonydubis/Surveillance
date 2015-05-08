@@ -10,6 +10,7 @@
 		9749EB201AF663D8004D9785 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9749EB1F1AF663D8004D9785 /* AudioToolbox.framework */; };
 		9749EB231AF6B284004D9785 /* ConfigureMonitoringTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9749EB221AF6B284004D9785 /* ConfigureMonitoringTableViewController.m */; };
 		9749EB261AF6B2CB004D9785 /* EventsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9749EB251AF6B2CB004D9785 /* EventsTableViewController.m */; };
+		974E160B1AFC2E7D00514C57 /* beep-07.wav in Resources */ = {isa = PBXBuildFile; fileRef = 974E160A1AFC2E7D00514C57 /* beep-07.wav */; };
 		976979771AFAB1000029D82D /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976979761AFAB1000029D82D /* MediaPlayer.framework */; };
 		976979791AFAB5690029D82D /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976979781AFAB5690029D82D /* opencv2.framework */; };
 		9769797D1AFAB5BA0029D82D /* UIAlertView+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 9769797C1AFAB5BA0029D82D /* UIAlertView+Blocks.m */; };
@@ -52,6 +53,7 @@
 		9749EB221AF6B284004D9785 /* ConfigureMonitoringTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigureMonitoringTableViewController.m; sourceTree = "<group>"; };
 		9749EB241AF6B2CB004D9785 /* EventsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsTableViewController.h; sourceTree = "<group>"; };
 		9749EB251AF6B2CB004D9785 /* EventsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsTableViewController.m; sourceTree = "<group>"; };
+		974E160A1AFC2E7D00514C57 /* beep-07.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "beep-07.wav"; sourceTree = "<group>"; };
 		976979761AFAB1000029D82D /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		976979781AFAB5690029D82D /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = Surveillance/opencv2.framework; sourceTree = "<group>"; };
 		9769797B1AFAB5BA0029D82D /* UIAlertView+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+Blocks.h"; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 		976AFADB1AF3CAC300F91585 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				974E160A1AFC2E7D00514C57 /* beep-07.wav */,
 				976AFADC1AF3CAC300F91585 /* Info.plist */,
 				976AFADD1AF3CAC300F91585 /* main.m */,
 				976AFB521AF407D000F91585 /* PrefixHeader.pch */,
@@ -331,6 +334,7 @@
 				976AFAEA1AF3CAC300F91585 /* Main.storyboard in Resources */,
 				976AFAEF1AF3CAC300F91585 /* LaunchScreen.xib in Resources */,
 				976AFAEC1AF3CAC300F91585 /* Images.xcassets in Resources */,
+				974E160B1AFC2E7D00514C57 /* beep-07.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

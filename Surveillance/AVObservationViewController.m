@@ -26,6 +26,7 @@ static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; 
     int frameNumber;            // the frame number we are on in the recorded video
 }
 
+@property (nonatomic, strong) AVAudioPlayer *beep;
 @property (nonatomic, strong) ADMotionDetector *motionDetector;
 @property (nonatomic) BOOL isUsingFrontFacingCamera;
 @property (nonatomic, strong) AVCaptureVideoDataOutput *videoDataOutput;
@@ -65,7 +66,6 @@ static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; 
 {
     [super viewDidLayoutSubviews];
     [self setupAVCapture];
-    [self performSelector:@selector(beginMonitoring) withObject:nil afterDelay:3.0];
 }
 
 // Sets the isMonitoring flag that causes work to be done when processing frames
@@ -180,30 +180,10 @@ static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; 
         [session startRunning];
         
         // Setup the AssetWriter
-        NSDictionary *outputSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                        [NSNumber numberWithInt:640], AVVideoWidthKey,
-                                        [NSNumber numberWithInt:480], AVVideoHeightKey,
-                                        AVVideoCodecH264, AVVideoCodecKey, nil];
+        [self setAssetWriterComponents];
         
-        self.assetWriterInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
-                                                                   outputSettings:outputSettings];
-        
-        /* I'm going to push pixel buffers to it, so will need a
-         AVAssetWriterPixelBufferAdaptor, to expect the same 32BGRA input as I've
-         asked the AVCaptureVideDataOutput to supply */
-         self.pixelBufferAdaptor = [[AVAssetWriterInputPixelBufferAdaptor alloc]
-                                    initWithAssetWriterInput:self.assetWriterInput
-                                    sourcePixelBufferAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                                 [NSNumber numberWithInt:kCVPixelFormatType_32BGRA],kCVPixelBufferPixelFormatTypeKey, nil]];
-        
-        self.assetWriter = [[AVAssetWriter alloc] initWithURL:self.recordingURL
-                                                     fileType:AVFileTypeMPEG4
-                                                        error:&error];
-        [self.assetWriter addInput:self.assetWriterInput];
-        
-        /* we need to warn the input to expect real time data incoming, so that it tries
-         to avoid being unavailable at inopportune moments */
-        self.assetWriterInput.expectsMediaDataInRealTime = YES;
+        // Begin monitoring after a few seconds so the camera can focus.
+        [self performSelector:@selector(beginMonitoring) withObject:nil afterDelay:3.0];
     }
     
     session = nil;
@@ -219,6 +199,40 @@ static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; 
     }
 }
 
+/*
+ * Creates the asset writer components to record frames on demand.
+ * Must be done together and before the assetWriter begins writing
+ */
+- (void)setAssetWriterComponents
+{
+    NSError *error = nil;
+    // Moved this into lazily instantiated getters
+    NSDictionary *outputSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+    [NSNumber numberWithInt:640], AVVideoWidthKey,
+    [NSNumber numberWithInt:480], AVVideoHeightKey,
+    AVVideoCodecH264, AVVideoCodecKey, nil];
+
+    self.assetWriterInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
+    outputSettings:outputSettings];
+
+    /* I'm going to push pixel buffers to it, so will need a
+    AVAssetWriterPixelBufferAdaptor, to expect the same 32BGRA input as I've
+    asked the AVCaptureVideDataOutput to supply */
+    self.pixelBufferAdaptor = [[AVAssetWriterInputPixelBufferAdaptor alloc]
+    initWithAssetWriterInput:self.assetWriterInput
+    sourcePixelBufferAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+    [NSNumber numberWithInt:kCVPixelFormatType_32BGRA],kCVPixelBufferPixelFormatTypeKey, nil]];
+
+    self.assetWriter = [[AVAssetWriter alloc] initWithURL:self.recordingURL
+                                              fileType:AVFileTypeMPEG4
+                                                 error:&error];
+    [self.assetWriter addInput:self.assetWriterInput];
+
+    /* we need to warn the input to expect real time data incoming, so that it tries
+    to avoid being unavailable at inopportune moments */
+    self.assetWriterInput.expectsMediaDataInRealTime = YES;
+}
+
 // This method processes the frames and handles the recording process when motion is detected
 - (void)captureOutput:(AVCaptureOutput *)captureOutput
 didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
@@ -227,17 +241,16 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     // Get the image
     CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     
-    // Handle recording
-    if (isRecording && self.assetWriterInput.isReadyForMoreMediaData) {
+    if (isRecording && self.assetWriterInput.isReadyForMoreMediaData) { // Handle recording
+        [self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer];
         if (frameNumber > 100)
             [self stopRecording];
         else
-            [self.pixelBufferAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:CMTimeMake(frameNumber++, 30)];
-    }
-    
-    // Handle motion detection
-    if (isMonitoring) {
+            [self.pixelBufferAdaptor appendPixelBuffer:pixelBuffer
+                                  withPresentationTime:CMTimeMake(frameNumber++, 30)];
+    } else if (isMonitoring) { // Handle motion detection
         if (![self.motionDetector isBackgroundSet]) {
+            NSLog(@"Setting motionDetector's Background");
             [self.motionDetector setBackgroundWithPixelBuffer:pixelBuffer];
         } else {
             if ([self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer] && !isPreparingToRecord) {
@@ -251,20 +264,33 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 - (void)startRecording
 {
     NSLog(@"Starting the recording");
+    [self.beep play];
     [self.assetWriter startWriting];
     [self.assetWriter startSessionAtSourceTime:kCMTimeZero];
     isRecording = YES;
+    isMonitoring = NO;
+    isPreparingToRecord = NO;
 }
 
 - (void)stopRecording
 {
     NSLog(@"Stopping the recording");
+    [self.beep play];
     isRecording = NO;
+    [self.appDelegate saveContext];
     [self.assetWriter finishWritingWithCompletionHandler:^{
-        [self.appDelegate saveContext];
-        self.event = nil;
-        [self listFileAtPath:[self documentsPath]];
+        [self prepareForNewRecording];
     }];
+}
+
+- (void)prepareForNewRecording
+{
+    self.event = nil;
+    [self listFileAtPath:[self documentsPath]];
+    [self.motionDetector setBackgroundWithPixelBuffer:nil];
+    [self setAssetWriterComponents];
+    frameNumber = 0;
+    isMonitoring = YES;
 }
 
 - (IBAction)dismissSelf:(id)sender
@@ -495,6 +521,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     return directoryContent;
 }
 
+#pragma mark - Getters/Setters
+
 - (NSURL *)recordingURL
 {
     return [[NSURL alloc] initFileURLWithPath:[NSString pathWithComponents:@[[self documentsPath], self.event.filename]]];
@@ -530,6 +558,17 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         _event = [MonitoringEvent newEventWithDate:date andFilename:filename inContext:self.appDelegate.managedObjectContext];
     }
     return _event;
+}
+
+- (AVAudioPlayer *)beep
+{
+    if (!_beep) {
+        // Setup beep sound
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"beep-07" ofType:@"wav"];
+        NSURL *url = [NSURL fileURLWithPath:path];
+        _beep = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
+    }
+    return _beep;
 }
 
 @end
