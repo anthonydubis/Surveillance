@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9712DB861AFD1B9C00533A1C /* ADFaceDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 9712DB851AFD1B9C00533A1C /* ADFaceDetector.m */; };
 		9749EB201AF663D8004D9785 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9749EB1F1AF663D8004D9785 /* AudioToolbox.framework */; };
 		9749EB231AF6B284004D9785 /* ConfigureMonitoringTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9749EB221AF6B284004D9785 /* ConfigureMonitoringTableViewController.m */; };
 		9749EB261AF6B2CB004D9785 /* EventsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9749EB251AF6B2CB004D9785 /* EventsTableViewController.m */; };
@@ -48,6 +49,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9712DB841AFD1B9C00533A1C /* ADFaceDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADFaceDetector.h; sourceTree = "<group>"; };
+		9712DB851AFD1B9C00533A1C /* ADFaceDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADFaceDetector.m; sourceTree = "<group>"; };
 		9749EB1F1AF663D8004D9785 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		9749EB211AF6B284004D9785 /* ConfigureMonitoringTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigureMonitoringTableViewController.h; sourceTree = "<group>"; };
 		9749EB221AF6B284004D9785 /* ConfigureMonitoringTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigureMonitoringTableViewController.m; sourceTree = "<group>"; };
@@ -122,6 +125,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9712DB831AFD1A8000533A1C /* Old */ = {
+			isa = PBXGroup;
+			children = (
+				976AFB4D1AF4077000F91585 /* ObservationViewController.h */,
+				976AFB4E1AF4077000F91585 /* ObservationViewController.mm */,
+			);
+			name = Old;
+			path = Surveillance;
+			sourceTree = "<group>";
+		};
 		9749EB521AF6BEA8004D9785 /* Utility Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -129,6 +142,7 @@
 				9769797C1AFAB5BA0029D82D /* UIAlertView+Blocks.m */,
 			);
 			name = "Utility Classes";
+			path = ..;
 			sourceTree = "<group>";
 		};
 		974E160C1AFCCACB00514C57 /* Classes */ = {
@@ -136,6 +150,8 @@
 			children = (
 				97E02BE51AFB74D900E34B31 /* ADMotionDetector.h */,
 				97E02BE61AFB74D900E34B31 /* ADMotionDetector.mm */,
+				9712DB841AFD1B9C00533A1C /* ADFaceDetector.h */,
+				9712DB851AFD1B9C00533A1C /* ADFaceDetector.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -164,8 +180,6 @@
 				9749EB221AF6B284004D9785 /* ConfigureMonitoringTableViewController.m */,
 				9749EB241AF6B2CB004D9785 /* EventsTableViewController.h */,
 				9749EB251AF6B2CB004D9785 /* EventsTableViewController.m */,
-				976AFB4D1AF4077000F91585 /* ObservationViewController.h */,
-				976AFB4E1AF4077000F91585 /* ObservationViewController.mm */,
 				97CA02331AF5513C00B86C4D /* AVObservationViewController.h */,
 				97CA02341AF5513C00B86C4D /* AVObservationViewController.m */,
 			);
@@ -175,9 +189,8 @@
 		976AFACF1AF3CAC300F91585 = {
 			isa = PBXGroup;
 			children = (
-				97CA02321AF5511A00B86C4D /* Frameworks */,
-				9749EB521AF6BEA8004D9785 /* Utility Classes */,
 				976AFADA1AF3CAC300F91585 /* Surveillance */,
+				9712DB831AFD1A8000533A1C /* Old */,
 				976AFAF71AF3CAC300F91585 /* SurveillanceTests */,
 				976AFAD91AF3CAC300F91585 /* Products */,
 			);
@@ -195,7 +208,6 @@
 		976AFADA1AF3CAC300F91585 /* Surveillance */ = {
 			isa = PBXGroup;
 			children = (
-				97E2F89E1AFC0EE200E472F2 /* Model */,
 				976AFAE81AF3CAC300F91585 /* Main.storyboard */,
 				976AFAED1AF3CAC300F91585 /* LaunchScreen.xib */,
 				976AFAEB1AF3CAC300F91585 /* Images.xcassets */,
@@ -204,6 +216,9 @@
 				974E160C1AFCCACB00514C57 /* Classes */,
 				976979751AFAB0AE0029D82D /* View Controllers */,
 				976979741AFAB09F0029D82D /* Cells */,
+				97E2F89E1AFC0EE200E472F2 /* Model */,
+				9749EB521AF6BEA8004D9785 /* Utility Classes */,
+				97CA02321AF5511A00B86C4D /* Frameworks */,
 				976AFADB1AF3CAC300F91585 /* Supporting Files */,
 			);
 			path = Surveillance;
@@ -253,6 +268,7 @@
 				976AFB531AF40B3800F91585 /* Accelerate.framework */,
 			);
 			name = Frameworks;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		97E2F89E1AFC0EE200E472F2 /* Model */ = {
@@ -370,6 +386,7 @@
 			files = (
 				9749EB261AF6B2CB004D9785 /* EventsTableViewController.m in Sources */,
 				976AFAE11AF3CAC300F91585 /* AppDelegate.m in Sources */,
+				9712DB861AFD1B9C00533A1C /* ADFaceDetector.m in Sources */,
 				97E2F89D1AFC0EC900E472F2 /* MonitoringEvent.m in Sources */,
 				97E2F8A11AFC0F6200E472F2 /* MonitoringEvent+AD.m in Sources */,
 				97E62DBD1AF6E58200CECBCB /* SegmentedControlCell.m in Sources */,

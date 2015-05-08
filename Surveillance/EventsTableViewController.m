@@ -32,6 +32,27 @@
 {
     [super viewWillAppear:animated];
     [self reloadData];
+    // Movie Player Notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(movieEventFullscreenHandler:)
+                                                 name:MPMoviePlayerDidExitFullscreenNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(movieEventFullscreenHandler:)
+                                                 name:MPMoviePlayerPlaybackDidFinishNotification
+                                               object:nil];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)movieEventFullscreenHandler:(NSNotification *)notif
+{
+    NSLog(@"Handler was called.");
+    [self.moviePlayerController.view removeFromSuperview];
 }
 
 // Refresh the events array and reload the tableView
