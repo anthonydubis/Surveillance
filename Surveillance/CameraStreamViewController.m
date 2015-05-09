@@ -131,4 +131,12 @@
     }
 }
 
+- (void)captureOutput:(AVCaptureOutput *)captureOutput
+didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
+       fromConnection:(AVCaptureConnection *)connection
+{
+    // Access the frames being captured by the camera
+    // Override in subclasses to process the frames
+}
+
 @end
