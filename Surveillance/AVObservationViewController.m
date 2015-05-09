@@ -11,6 +11,7 @@
 #import <ImageIO/ImageIO.h>
 #import <AssertMacros.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "ADFaceDetector.h"
 
 // Core Data Related
 #import "AppDelegate.h"
@@ -54,10 +55,6 @@ static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; 
     [super viewDidLoad];
     
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-    
-    self.borderImage = [UIImage imageNamed:@"border"];
-    NSDictionary *detectorOptions = [[NSDictionary alloc] initWithObjectsAndKeys:CIDetectorAccuracyLow, CIDetectorAccuracy, nil];
-    self.faceDetector = [CIDetector detectorOfType:CIDetectorTypeFace context:nil options:detectorOptions];
     frameNumber = 0;
 }
 
@@ -88,6 +85,7 @@ static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; 
 // Clean up capture setup
 - (void)teardownAVCapture
 {
+#warning You need to teardown the asset writer as well
     self.videoDataOutput = nil;
     self.videoDataOutputQueue = nil;
     [self.previewLayer removeFromSuperlayer];
@@ -240,9 +238,16 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 {
     // Get the image
     CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    NSLog(@"Working on frame");
     
+    NSArray *detectedFaces = [self detectFacesFromSampleBuffer:sampleBuffer andPixelBufferRef:pixelBuffer];
+    if (detectedFaces.count > 0) {
+        [self.beep play];
+        NSLog(@"Found faces.");
+    }
+    
+    /*
     if (isRecording && self.assetWriterInput.isReadyForMoreMediaData) { // Handle recording
-        [self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer];
         if (frameNumber > 100)
             [self stopRecording];
         else
@@ -250,7 +255,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
                                   withPresentationTime:CMTimeMake(frameNumber++, 30)];
     } else if (isMonitoring) { // Handle motion detection
         if (![self.motionDetector isBackgroundSet]) {
-            NSLog(@"Setting motionDetector's Background");
             [self.motionDetector setBackgroundWithPixelBuffer:pixelBuffer];
         } else {
             if ([self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer] && !isPreparingToRecord) {
@@ -259,6 +263,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             }
         }
     }
+     */
 }
 
 - (void)startRecording
@@ -296,6 +301,28 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 - (IBAction)dismissSelf:(id)sender
 {
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (NSArray *)detectFacesFromSampleBuffer:(CMSampleBufferRef)sampleBuffer andPixelBufferRef:(CVPixelBufferRef)pixelBuffer
+{
+    CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, sampleBuffer, kCMAttachmentMode_ShouldPropagate);
+    CIImage *ciImage = [[CIImage alloc] initWithCVPixelBuffer:pixelBuffer
+                                                      options:(__bridge NSDictionary *)attachments];
+    if (attachments) {
+        CFRelease(attachments);
+    }
+    
+    // make sure your device orientation is not locked.
+    UIDeviceOrientation curDeviceOrientation = [[UIDevice currentDevice] orientation];
+    
+    NSDictionary *imageOptions = nil;
+    
+    imageOptions = [NSDictionary dictionaryWithObject:[self exifOrientation:curDeviceOrientation]
+                                               forKey:CIDetectorImageOrientation];
+    
+    NSArray *features = [self.faceDetector featuresInImage:ciImage
+                                                   options:imageOptions];
+    return features;
 }
 
 // utility routine to display error aleart if takePicture fails
@@ -508,9 +535,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 - (NSArray *)listFileAtPath:(NSString *)path
 {
-    //-----> LIST ALL FILES <-----//
     NSLog(@"LISTING ALL FILES FOUND");
-    
     int count;
     
     NSArray *directoryContent = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL];
@@ -569,6 +594,15 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         _beep = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
     }
     return _beep;
+}
+
+- (CIDetector *)faceDetector
+{
+    if (!_faceDetector) {
+        NSDictionary *detectorOptions = [[NSDictionary alloc] initWithObjectsAndKeys:CIDetectorAccuracyHigh, CIDetectorAccuracy, nil];
+        _faceDetector = [CIDetector detectorOfType:CIDetectorTypeFace context:nil options:detectorOptions];
+    }
+    return _faceDetector;
 }
 
 @end

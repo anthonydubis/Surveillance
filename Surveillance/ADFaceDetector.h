@@ -10,4 +10,6 @@
 
 @interface ADFaceDetector : NSObject
 
+- (NSArray *)detectFacesInPixelBufferRef:(CVPixelBufferRef)pixelBuffer;
+
 @end
