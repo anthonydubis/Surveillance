@@ -10,6 +10,11 @@
 
 @interface ADVideoRecorder : NSObject
 
+@property (nonatomic, readonly) int frameNumber;
+
+#warning This should be implemented now - try it out WITHOUT face detection
+#warning Right now, this assumes 30 frames per second - this should be customizable
+
 /*
  * Create the recorder with an initial URL to record to
  */
@@ -34,6 +39,6 @@
 /*
  * The method called to append frames to the video
  */
-- (void)appendFrameAsPixelBuffer:(CVPixelBufferRef)pixelBuffer;
+- (void)appendFrameFromPixelBuffer:(CVPixelBufferRef)pixelBuffer;
 
 @end

@@ -86,10 +86,11 @@
     [self setupAssetWriterComponentsWithRecordingURL:url];
 }
 
-- (void)appendFrameAsPixelBuffer:(CVPixelBufferRef)pixelBuffer
+- (void)appendFrameFromPixelBuffer:(CVPixelBufferRef)pixelBuffer
 {
-    [self.pixelBufferAdaptor appendPixelBuffer:pixelBuffer
-                          withPresentationTime:CMTimeMake(self.frameNumber++, 30)];
+    if (self.assetWriterInput.isReadyForMoreMediaData) {
+        [self.pixelBufferAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:CMTimeMake(self.frameNumber++, 30)];
+    }
 }
 
 @end

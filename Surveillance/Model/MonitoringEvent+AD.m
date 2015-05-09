@@ -39,4 +39,15 @@
     }
 }
 
+- (NSURL *)recordingURL
+{
+    return [[NSURL alloc] initFileURLWithPath:[NSString pathWithComponents:@[[self documentsPath], self.filename]]];
+}
+
+- (NSString *)documentsPath
+{
+    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    return [searchPaths objectAtIndex:0];
+}
+
 @end

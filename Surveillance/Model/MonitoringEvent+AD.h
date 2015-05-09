@@ -13,4 +13,9 @@
 + (MonitoringEvent *)newEventWithDate:(NSDate *)date andFilename:(NSString *)filename inContext:(NSManagedObjectContext *)context;
 + (NSArray *)eventsInContext:(NSManagedObjectContext *)context orderedByDateAscd:(BOOL)ascd;
 
+/*
+ * Get the URL that the video should be saved to.
+ */
+- (NSURL *)recordingURL;
+
 @end

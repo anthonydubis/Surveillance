@@ -1,5 +1,5 @@
 //
-//  AFObservationViewController.m
+//  MonitoringViewController.m
 //  Surveillance
 //
 //  Created by Anthony Dubis on 5/2/15.
@@ -12,32 +12,24 @@
 #import <AssertMacros.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "ADFaceDetector.h"
+#import "ADVideoRecorder.h"
 
 // Core Data Related
 #import "AppDelegate.h"
 #import "MonitoringEvent+AD.h"
-
-static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; };
 
 @interface MonitoringViewController ()
 {
     BOOL isMonitoring;          // is the camera focused and monitoring the area
     BOOL isPreparingToRecord;   // is the assetWriter being prepared to record
     BOOL isRecording;           // is the assetWriter recording
-    int frameNumber;            // the frame number we are on in the recorded video
 }
 
 @property (nonatomic, strong) AVAudioPlayer *beep;
-@property (nonatomic, strong) ADMotionDetector *motionDetector;
-@property (nonatomic, strong) NSURL *recordingURL;
-@property (nonatomic, strong) AVAssetWriter *assetWriter;
-@property (nonatomic, strong) AVAssetWriterInput *assetWriterInput;
-@property (nonatomic, strong) AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor;
 @property (nonatomic, strong) MonitoringEvent *event;
-
-// Face detection
+@property (nonatomic, strong) ADVideoRecorder *videoRecorder;
+@property (nonatomic, strong) ADMotionDetector *motionDetector;
 @property (nonatomic, strong) CIDetector *faceDetector;
-@property (nonatomic, strong) UIImage *borderImage;
 
 @end
 
@@ -51,7 +43,6 @@ static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; 
     [super viewDidLoad];
     
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-    frameNumber = 0;
 }
 
 // This is called when the view is on screen (or at least, about to be) and the views have been resized to fill the screen
@@ -59,7 +50,7 @@ static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; 
 {
     [super viewDidLayoutSubviews];
     
-    [self setupAssetWriterComponents];
+    self.videoRecorder = [[ADVideoRecorder alloc] initWithRecordingURL:[self.event recordingURL]];
     [self performSelector:@selector(beginMonitoring) withObject:nil afterDelay:3.0];
 }
 
@@ -75,48 +66,14 @@ static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; 
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-#warning You need to teardown the asset writer as well
+#warning You need to teardown the video recorder
     self.faceDetector = nil;
-    self.borderImage = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // We support only Portrait.
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
-/*
- * Creates the asset writer components to record frames on demand.
- * Must be done together and before the assetWriter begins writing
- */
-- (void)setupAssetWriterComponents
-{
-    NSError *error = nil;
-    // Moved this into lazily instantiated getters
-    NSDictionary *outputSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-    [NSNumber numberWithInt:640], AVVideoWidthKey,
-    [NSNumber numberWithInt:480], AVVideoHeightKey,
-    AVVideoCodecH264, AVVideoCodecKey, nil];
-
-    self.assetWriterInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:outputSettings];
-
-    /* I'm going to push pixel buffers to it, so will need a
-    AVAssetWriterPixelBufferAdaptor, to expect the same 32BGRA input as I've
-    asked the AVCaptureVideDataOutput to supply */
-    self.pixelBufferAdaptor = [[AVAssetWriterInputPixelBufferAdaptor alloc]
-    initWithAssetWriterInput:self.assetWriterInput
-    sourcePixelBufferAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-    [NSNumber numberWithInt:kCVPixelFormatType_32BGRA],kCVPixelBufferPixelFormatTypeKey, nil]];
-
-    self.assetWriter = [[AVAssetWriter alloc] initWithURL:self.recordingURL
-                                              fileType:AVFileTypeMPEG4
-                                                 error:&error];
-    [self.assetWriter addInput:self.assetWriterInput];
-
-    /* we need to warn the input to expect real time data incoming, so that it tries
-    to avoid being unavailable at inopportune moments */
-    self.assetWriterInput.expectsMediaDataInRealTime = YES;
 }
 
 // This method processes the frames and handles the recording process when motion is detected
@@ -128,19 +85,19 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     NSLog(@"Working on frame");
     
+    /*
     NSArray *detectedFaces = [self detectFacesFromSampleBuffer:sampleBuffer andPixelBufferRef:pixelBuffer];
     if (detectedFaces.count > 0) {
         [self.beep play];
         NSLog(@"Found faces.");
     }
+     */
     
-    /*
-    if (isRecording && self.assetWriterInput.isReadyForMoreMediaData) { // Handle recording
-        if (frameNumber > 100)
+    if (isRecording) { // Handle recording
+        if (self.videoRecorder.frameNumber > 100)
             [self stopRecording];
         else
-            [self.pixelBufferAdaptor appendPixelBuffer:pixelBuffer
-                                  withPresentationTime:CMTimeMake(frameNumber++, 30)];
+            [self.videoRecorder appendFrameFromPixelBuffer:pixelBuffer];
     } else if (isMonitoring) { // Handle motion detection
         if (![self.motionDetector isBackgroundSet]) {
             [self.motionDetector setBackgroundWithPixelBuffer:pixelBuffer];
@@ -151,15 +108,13 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             }
         }
     }
-     */
 }
 
 - (void)startRecording
 {
     NSLog(@"Starting the recording");
     [self.beep play];
-    [self.assetWriter startWriting];
-    [self.assetWriter startSessionAtSourceTime:kCMTimeZero];
+    [self.videoRecorder startRecording];
     isRecording = YES;
     isMonitoring = NO;
     isPreparingToRecord = NO;
@@ -171,7 +126,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     [self.beep play];
     isRecording = NO;
     [self.appDelegate saveContext];
-    [self.assetWriter finishWritingWithCompletionHandler:^{
+    [self.videoRecorder stopRecordingWithCompletionHandler:^{
         [self prepareForNewRecording];
     }];
 }
@@ -179,10 +134,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 - (void)prepareForNewRecording
 {
     self.event = nil;
-    [self listFileAtPath:[self documentsPath]];
     [self.motionDetector setBackgroundWithPixelBuffer:nil];
-    [self setupAssetWriterComponents];
-    frameNumber = 0;
+    [self.videoRecorder prepareToRecordWithNewURL:[self.event recordingURL]];
     isMonitoring = YES;
 }
 
@@ -212,168 +165,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
                                                    options:imageOptions];
     return features;
 }
-
-// utility routine to display error aleart if takePicture fails
-- (void)displayErrorOnMainQueue:(NSError *)error withMessage:(NSString *)message
-{
-    dispatch_async(dispatch_get_main_queue(), ^(void) {
-        UIAlertView *alertView = [[UIAlertView alloc]
-                                  initWithTitle:[NSString stringWithFormat:@"%@ (%d)", message, (int)[error code]]
-                                  message:[error localizedDescription]
-                                  delegate:nil
-                                  cancelButtonTitle:@"Dismiss"
-                                  otherButtonTitles:nil];
-        [alertView show];
-    });
-}
-
-// find where the video box is positioned within the preview layer based on the video size and gravity
-+ (CGRect)videoPreviewBoxForGravity:(NSString *)gravity
-                          frameSize:(CGSize)frameSize
-                       apertureSize:(CGSize)apertureSize
-{
-    CGFloat apertureRatio = apertureSize.height / apertureSize.width;
-    CGFloat viewRatio = frameSize.width / frameSize.height;
-    
-    CGSize size = CGSizeZero;
-    if ([gravity isEqualToString:AVLayerVideoGravityResizeAspectFill]) {
-        if (viewRatio > apertureRatio) {
-            size.width = frameSize.width;
-            size.height = apertureSize.width * (frameSize.width / apertureSize.height);
-        } else {
-            size.width = apertureSize.height * (frameSize.height / apertureSize.width);
-            size.height = frameSize.height;
-        }
-    } else if ([gravity isEqualToString:AVLayerVideoGravityResizeAspect]) {
-        if (viewRatio > apertureRatio) {
-            size.width = apertureSize.height * (frameSize.height / apertureSize.width);
-            size.height = frameSize.height;
-        } else {
-            size.width = frameSize.width;
-            size.height = apertureSize.width * (frameSize.width / apertureSize.height);
-        }
-    } else if ([gravity isEqualToString:AVLayerVideoGravityResize]) {
-        size.width = frameSize.width;
-        size.height = frameSize.height;
-    }
-    
-    CGRect videoBox;
-    videoBox.size = size;
-    if (size.width < frameSize.width)
-        videoBox.origin.x = (frameSize.width - size.width) / 2;
-    else
-        videoBox.origin.x = (size.width - frameSize.width) / 2;
-    
-    if ( size.height < frameSize.height )
-        videoBox.origin.y = (frameSize.height - size.height) / 2;
-    else
-        videoBox.origin.y = (size.height - frameSize.height) / 2;
-    
-    return videoBox;
-}
-
-// called asynchronously as the capture output is capturing sample buffers, this method asks the face detector
-// to detect features and for each draw the green border in a layer and set appropriate orientation
-- (void)drawFaces:(NSArray *)features
-      forVideoBox:(CGRect)clearAperture
-      orientation:(UIDeviceOrientation)orientation
-{
-    NSArray *sublayers = [NSArray arrayWithArray:[self.previewLayer sublayers]];
-    NSInteger sublayersCount = [sublayers count], currentSublayer = 0;
-    NSInteger featuresCount = [features count], currentFeature = 0;
-    
-    [CATransaction begin];
-    [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
-    
-    // hide all the face layers
-    for ( CALayer *layer in sublayers ) {
-        if ( [[layer name] isEqualToString:@"FaceLayer"] )
-            [layer setHidden:YES];
-    }
-    
-    if ( featuresCount == 0 ) {
-        [CATransaction commit];
-        return; // early bail.
-    }
-    
-    CGSize parentFrameSize = [self.previewView frame].size;
-    NSString *gravity = [self.previewLayer videoGravity];
-    BOOL isMirrored = [self.previewLayer isMirrored];
-    CGRect previewBox = [MonitoringViewController videoPreviewBoxForGravity:gravity
-                                                                     frameSize:parentFrameSize
-                                                                  apertureSize:clearAperture.size];
-    
-    for ( CIFaceFeature *ff in features ) {
-        // find the correct position for the square layer within the previewLayer
-        // the feature box originates in the bottom left of the video frame.
-        // (Bottom right if mirroring is turned on)
-        CGRect faceRect = [ff bounds];
-        
-        // flip preview width and height
-        CGFloat temp = faceRect.size.width;
-        faceRect.size.width = faceRect.size.height;
-        faceRect.size.height = temp;
-        temp = faceRect.origin.x;
-        faceRect.origin.x = faceRect.origin.y;
-        faceRect.origin.y = temp;
-        // scale coordinates so they fit in the preview box, which may be scaled
-        CGFloat widthScaleBy = previewBox.size.width / clearAperture.size.height;
-        CGFloat heightScaleBy = previewBox.size.height / clearAperture.size.width;
-        faceRect.size.width *= widthScaleBy;
-        faceRect.size.height *= heightScaleBy;
-        faceRect.origin.x *= widthScaleBy;
-        faceRect.origin.y *= heightScaleBy;
-        
-        if ( isMirrored )
-            faceRect = CGRectOffset(faceRect, previewBox.origin.x + previewBox.size.width - faceRect.size.width - (faceRect.origin.x * 2), previewBox.origin.y);
-        else
-            faceRect = CGRectOffset(faceRect, previewBox.origin.x, previewBox.origin.y);
-        
-        CALayer *featureLayer = nil;
-        
-        // re-use an existing layer if possible
-        while (!featureLayer && (currentSublayer < sublayersCount) ) {
-            CALayer *currentLayer = [sublayers objectAtIndex:currentSublayer++];
-            if ( [[currentLayer name] isEqualToString:@"FaceLayer"] ) {
-                featureLayer = currentLayer;
-                [currentLayer setHidden:NO];
-            }
-        }
-        
-        // create a new one if necessary
-        if ( !featureLayer ) {
-            featureLayer = [[CALayer alloc]init];
-            featureLayer.contents = (id)self.borderImage.CGImage;
-            [featureLayer setName:@"FaceLayer"];
-            [self.previewLayer addSublayer:featureLayer];
-            featureLayer = nil;
-        }
-        [featureLayer setFrame:faceRect];
-        
-        switch (orientation) {
-            case UIDeviceOrientationPortrait:
-                [featureLayer setAffineTransform:CGAffineTransformMakeRotation(DegreesToRadians(0.))];
-                break;
-            case UIDeviceOrientationPortraitUpsideDown:
-                [featureLayer setAffineTransform:CGAffineTransformMakeRotation(DegreesToRadians(180.))];
-                break;
-            case UIDeviceOrientationLandscapeLeft:
-                [featureLayer setAffineTransform:CGAffineTransformMakeRotation(DegreesToRadians(90.))];
-                break;
-            case UIDeviceOrientationLandscapeRight:
-                [featureLayer setAffineTransform:CGAffineTransformMakeRotation(DegreesToRadians(-90.))];
-                break;
-            case UIDeviceOrientationFaceUp:
-            case UIDeviceOrientationFaceDown:
-            default:
-                break; // leave the layer in its last known orientation
-        }
-        currentFeature++;
-    }
-    
-    [CATransaction commit];
-}
-
 
 - (NSNumber *) exifOrientation: (UIDeviceOrientation) orientation
 {
@@ -435,17 +226,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 }
 
 #pragma mark - Getters/Setters
-
-- (NSURL *)recordingURL
-{
-    return [[NSURL alloc] initFileURLWithPath:[NSString pathWithComponents:@[[self documentsPath], self.event.filename]]];
-}
-
-- (NSString *)documentsPath
-{
-    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    return [searchPaths objectAtIndex:0];
-}
 
 - (ADMotionDetector *)motionDetector
 {
