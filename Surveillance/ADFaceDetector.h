@@ -7,9 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
 
 @interface ADFaceDetector : NSObject
 
-- (NSArray *)detectFacesInPixelBufferRef:(CVPixelBufferRef)pixelBuffer;
+- (NSArray *)detectFacesFromSampleBuffer:(CMSampleBufferRef)sampleBuffer
+                          andPixelBuffer:(CVPixelBufferRef)pixelBuffer
+                  usingFrontFacingCamera:(BOOL)isUsingFrontFacingCamera;
+
 
 @end

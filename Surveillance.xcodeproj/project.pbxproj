@@ -154,12 +154,12 @@
 		974E160C1AFCCACB00514C57 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				972473521AFD91F200D74BF8 /* ADVideoRecorder.h */,
+				972473531AFD91F200D74BF8 /* ADVideoRecorder.m */,
 				97E02BE51AFB74D900E34B31 /* ADMotionDetector.h */,
 				97E02BE61AFB74D900E34B31 /* ADMotionDetector.mm */,
 				9712DB841AFD1B9C00533A1C /* ADFaceDetector.h */,
 				9712DB851AFD1B9C00533A1C /* ADFaceDetector.m */,
-				972473521AFD91F200D74BF8 /* ADVideoRecorder.h */,
-				972473531AFD91F200D74BF8 /* ADVideoRecorder.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
