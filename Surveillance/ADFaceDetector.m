@@ -39,7 +39,22 @@
     
     NSArray *features = [self.detector featuresInImage:ciImage
                                                options:imageOptions];
-    return features;
+    
+    NSMutableArray *croppedFaces = [[NSMutableArray alloc] init];
+    
+    for (CIFeature *feature in features) {
+        // crop detected face
+        CIVector *cropRect = [CIVector vectorWithCGRect:feature.bounds];
+        CIFilter *cropFilter = [CIFilter filterWithName:@"CICrop"];
+        [cropFilter setValue:ciImage forKey:@"inputImage"];
+        [cropFilter setValue:cropRect forKey:@"inputRectangle"];
+        CIImage *croppedImage = [cropFilter valueForKey:@"outputImage"];
+        UIImage *stillImage = [UIImage imageWithCIImage:croppedImage];
+        [croppedFaces addObject:stillImage];
+    }
+    
+    // return features;
+    return croppedFaces;
 }
 
 - (NSNumber *)exifOrientation:(UIDeviceOrientation)orientation usingFrontFacingCamera:(BOOL)isUsingFrontFacingCamera
@@ -85,6 +100,8 @@
             exifOrientation = PHOTOS_EXIF_0ROW_RIGHT_0COL_TOP;
             break;
     }
+    NSLog(@"Returning orientation: %i", exifOrientation);
+    
     return [NSNumber numberWithInt:exifOrientation];
 }
 

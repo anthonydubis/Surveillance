@@ -18,11 +18,14 @@
 #import "AppDelegate.h"
 #import "MonitoringEvent+AD.h"
 
+#import "ThumbnailViewController.h"
+
 @interface MonitoringViewController ()
 {
     BOOL isMonitoring;          // is the camera focused and monitoring the area
     BOOL isPreparingToRecord;   // is the assetWriter being prepared to record
     BOOL isRecording;           // is the assetWriter recording
+    BOOL faceWasFound;
 }
 
 @property (nonatomic, strong) AVAudioPlayer *beep;
@@ -84,13 +87,25 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     // Get the image
     CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     
+    if (faceWasFound) return;
+    
     NSArray *detectedFaces = [self.faceDetector detectFacesFromSampleBuffer:sampleBuffer
                                                              andPixelBuffer:pixelBuffer
                                                      usingFrontFacingCamera:self.isUsingFrontFacingCamera];
     
     if (detectedFaces.count > 0) {
         [self.beep play];
-        NSLog(@"Found faces.");
+        faceWasFound = YES;
+        
+        for (UIImage *image in detectedFaces) {
+//            CGRect bounds = self.previewView.bounds;
+//            CGRect rect = feature.bounds;
+//            NSLog(@"Face found at %f %f %f %f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+//            NSLog(@"In bounds %f %f %f %f", bounds.origin.x, bounds.origin.y, bounds.size.width, bounds.size.height);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self performSegueWithIdentifier:@"ThumbnailSegue" sender:image];
+            });
+        }
     }
     
     /*
@@ -146,6 +161,14 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 - (IBAction)dismissSelf:(id)sender
 {
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqual:@"ThumbnailSegue"]) {
+        ThumbnailViewController *tvc = segue.destinationViewController;
+        tvc.thumbnailImage = (UIImage *)sender;
+    }
 }
 
 #pragma mark - Getters/Setters
