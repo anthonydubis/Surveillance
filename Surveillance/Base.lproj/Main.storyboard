@@ -157,7 +157,7 @@
         <!--Monitoring-->
         <scene sceneID="shb-S2-jlT">
             <objects>
-                <viewController id="8vq-su-lud" customClass="AVObservationViewController" sceneMemberID="viewController">
+                <viewController id="8vq-su-lud" customClass="MonitoringViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="dch-jg-TZV"/>
                         <viewControllerLayoutGuide type="bottom" id="joB-XO-pxC"/>
@@ -187,7 +187,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="previewView" destination="lkQ-fN-fpL" id="Efb-Z0-D6W"/>
+                        <outlet property="previewView" destination="lkQ-fN-fpL" id="l3L-QO-2qY"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xFL-D5-Vmh" userLabel="First Responder" sceneMemberID="firstResponder"/>

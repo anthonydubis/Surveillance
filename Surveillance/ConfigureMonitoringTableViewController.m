@@ -9,7 +9,7 @@
 #import "ConfigureMonitoringTableViewController.h"
 #import "ObservationViewController.h"
 #import "SegmentedControlCell.h"
-#import "AVObservationViewController.h"
+#import "MonitoringViewController.h"
 #import "ADMotionDetector.h"
 
 @interface ConfigureMonitoringTableViewController ()
@@ -67,7 +67,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"AVStartMonitoring"]) {
         UINavigationController *navCon = (UINavigationController *)segue.destinationViewController;
-        AVObservationViewController *avovc = (AVObservationViewController *)navCon.topViewController;
+        MonitoringViewController *avovc = (MonitoringViewController *)navCon.topViewController;
         avovc.motionSensitivity = self.motionSensitivity;
     }
 }

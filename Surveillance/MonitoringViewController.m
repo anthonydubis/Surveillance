@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Anthony Dubis. All rights reserved.
 //
 
-#import "AVObservationViewController.h"
+#import "MonitoringViewController.h"
 #import <CoreImage/CoreImage.h>
 #import <ImageIO/ImageIO.h>
 #import <AssertMacros.h>
@@ -19,7 +19,7 @@
 
 static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; };
 
-@interface AVObservationViewController ()
+@interface MonitoringViewController ()
 {
     BOOL isMonitoring;          // is the camera focused and monitoring the area
     BOOL isPreparingToRecord;   // is the assetWriter being prepared to record
@@ -29,10 +29,6 @@ static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; 
 
 @property (nonatomic, strong) AVAudioPlayer *beep;
 @property (nonatomic, strong) ADMotionDetector *motionDetector;
-@property (nonatomic) BOOL isUsingFrontFacingCamera;
-@property (nonatomic, strong) AVCaptureVideoDataOutput *videoDataOutput;
-@property (nonatomic) dispatch_queue_t videoDataOutputQueue;
-@property (nonatomic, strong) AVCaptureVideoPreviewLayer *previewLayer;
 @property (nonatomic, strong) NSURL *recordingURL;
 @property (nonatomic, strong) AVAssetWriter *assetWriter;
 @property (nonatomic, strong) AVAssetWriterInput *assetWriterInput;
@@ -45,7 +41,7 @@ static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; 
 
 @end
 
-@implementation AVObservationViewController
+@implementation MonitoringViewController
 
 #pragma mark - View lifecycle
 
@@ -62,7 +58,9 @@ static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; 
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
-    [self setupAVCapture];
+    
+    [self setupAssetWriterComponents];
+    [self performSelector:@selector(beginMonitoring) withObject:nil afterDelay:3.0];
 }
 
 // Sets the isMonitoring flag that causes work to be done when processing frames
@@ -77,19 +75,9 @@ static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; 
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-    [self teardownAVCapture];
+#warning You need to teardown the asset writer as well
     self.faceDetector = nil;
     self.borderImage = nil;
-}
-
-// Clean up capture setup
-- (void)teardownAVCapture
-{
-#warning You need to teardown the asset writer as well
-    self.videoDataOutput = nil;
-    self.videoDataOutputQueue = nil;
-    [self.previewLayer removeFromSuperlayer];
-    self.previewLayer = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -98,110 +86,11 @@ static CGFloat DegreesToRadians(CGFloat degrees) { return degrees * M_PI / 180; 
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-// Sets up the session, it's inputs/outputs, and the assetWriter for recording video
-- (void)setupAVCapture
-{
-    NSError *error = nil;
-    
-    // Create the session (manages data flow from input to output
-    AVCaptureSession *session = [[AVCaptureSession alloc] init];
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone){
-        [session setSessionPreset:AVCaptureSessionPreset640x480];
-    } else {
-        // Was using AVCaptureSessionPresetPhoto
-        [session setSessionPreset:AVCaptureSessionPresetPhoto];
-    }
-    
-    // Specify an input (one of the cameras)
-    AVCaptureDevice *device;
-    AVCaptureDevicePosition desiredPosition = AVCaptureDevicePositionFront;
-    
-    // Find the front facing camera
-    for (AVCaptureDevice *d in [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo]) {
-        if ([d position] == desiredPosition) {
-            device = d;
-            self.isUsingFrontFacingCamera = YES;
-            break;
-        }
-    }
-    
-    // Fall back to the default camera.
-    if (!device) {
-        self.isUsingFrontFacingCamera = NO;
-        device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    }
-    
-    [device lockForConfiguration:nil];
-    [device setActiveVideoMinFrameDuration:CMTimeMake(1, 30)];
-    [device setActiveVideoMaxFrameDuration:CMTimeMake(1, 30)];
-    [device unlockForConfiguration];
-    
-    // Create the input device
-    AVCaptureDeviceInput *deviceInput = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
-    
-    if(!error) {
-        // Add the input to the session
-        if ([session canAddInput:deviceInput]) {
-            [session addInput:deviceInput];
-        }
-        
-        // Make a video data output
-        self.videoDataOutput = [[AVCaptureVideoDataOutput alloc] init];
-        
-        // BGRA work well with CoreGraphics and OpenGL
-        NSDictionary *rgbOutputSettings = [NSDictionary dictionaryWithObject:
-                                           [NSNumber numberWithInt:kCMPixelFormat_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
-        [self.videoDataOutput setVideoSettings:rgbOutputSettings];
-        [self.videoDataOutput setAlwaysDiscardsLateVideoFrames:YES]; // discard if the data output queue is blocked
-        
-        // create a serial dispatch queue used for the sample buffer delegate
-        // a serial dispatch queue must be used to guarantee that video frames will be delivered in order
-        // see the header doc for setSampleBufferDelegate:queue: for more information
-        self.videoDataOutputQueue = dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL);
-        [self.videoDataOutput setSampleBufferDelegate:self queue:self.videoDataOutputQueue];
-        
-        if ([session canAddOutput:self.videoDataOutput]) {
-            [session addOutput:self.videoDataOutput];
-        }
-        
-        // get the output for doing face detection.
-        [[self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:YES];
-        
-        self.previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:session];
-        self.previewLayer.backgroundColor = [[UIColor blackColor] CGColor];
-        self.previewLayer.videoGravity = AVLayerVideoGravityResizeAspect;
-        
-        CALayer *rootLayer = [self.previewView layer];
-        [rootLayer setMasksToBounds:YES];
-        [self.previewLayer setFrame:[rootLayer bounds]];
-        [rootLayer addSublayer:self.previewLayer];
-        [session startRunning];
-        
-        // Setup the AssetWriter
-        [self setAssetWriterComponents];
-        
-        // Begin monitoring after a few seconds so the camera can focus.
-        [self performSelector:@selector(beginMonitoring) withObject:nil afterDelay:3.0];
-    }
-    
-    session = nil;
-    if (error) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:
-                                  [NSString stringWithFormat:@"Failed with error %d", (int)[error code]]
-                                                            message:[error localizedDescription]
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"Dismiss" 
-                                                  otherButtonTitles:nil];
-        [alertView show];
-        [self teardownAVCapture];
-    }
-}
-
 /*
  * Creates the asset writer components to record frames on demand.
  * Must be done together and before the assetWriter begins writing
  */
-- (void)setAssetWriterComponents
+- (void)setupAssetWriterComponents
 {
     NSError *error = nil;
     // Moved this into lazily instantiated getters
@@ -293,7 +182,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     self.event = nil;
     [self listFileAtPath:[self documentsPath]];
     [self.motionDetector setBackgroundWithPixelBuffer:nil];
-    [self setAssetWriterComponents];
+    [self setupAssetWriterComponents];
     frameNumber = 0;
     isMonitoring = YES;
 }
@@ -411,7 +300,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     CGSize parentFrameSize = [self.previewView frame].size;
     NSString *gravity = [self.previewLayer videoGravity];
     BOOL isMirrored = [self.previewLayer isMirrored];
-    CGRect previewBox = [AVObservationViewController videoPreviewBoxForGravity:gravity
+    CGRect previewBox = [MonitoringViewController videoPreviewBoxForGravity:gravity
                                                                      frameSize:parentFrameSize
                                                                   apertureSize:clearAperture.size];
     

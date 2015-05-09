@@ -32,7 +32,7 @@
 		976AFB5E1AF40B5800F91585 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976AFB5D1AF40B5800F91585 /* CoreMedia.framework */; };
 		976AFB601AF40B5F00F91585 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976AFB5F1AF40B5F00F91585 /* CoreVideo.framework */; };
 		976AFB621AF40B6600F91585 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976AFB611AF40B6600F91585 /* QuartzCore.framework */; };
-		97CA02351AF5513C00B86C4D /* AVObservationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97CA02341AF5513C00B86C4D /* AVObservationViewController.m */; };
+		97CA02351AF5513C00B86C4D /* MonitoringViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97CA02341AF5513C00B86C4D /* MonitoringViewController.m */; };
 		97E02BE71AFB74D900E34B31 /* ADMotionDetector.mm in Sources */ = {isa = PBXBuildFile; fileRef = 97E02BE61AFB74D900E34B31 /* ADMotionDetector.mm */; };
 		97E2F89D1AFC0EC900E472F2 /* MonitoringEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 97E2F89C1AFC0EC900E472F2 /* MonitoringEvent.m */; };
 		97E2F8A11AFC0F6200E472F2 /* MonitoringEvent+AD.m in Sources */ = {isa = PBXBuildFile; fileRef = 97E2F8A01AFC0F6200E472F2 /* MonitoringEvent+AD.m */; };
@@ -87,8 +87,8 @@
 		976AFB5D1AF40B5800F91585 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		976AFB5F1AF40B5F00F91585 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		976AFB611AF40B6600F91585 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		97CA02331AF5513C00B86C4D /* AVObservationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVObservationViewController.h; sourceTree = "<group>"; };
-		97CA02341AF5513C00B86C4D /* AVObservationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVObservationViewController.m; sourceTree = "<group>"; };
+		97CA02331AF5513C00B86C4D /* MonitoringViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitoringViewController.h; sourceTree = "<group>"; };
+		97CA02341AF5513C00B86C4D /* MonitoringViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringViewController.m; sourceTree = "<group>"; };
 		97E02BE51AFB74D900E34B31 /* ADMotionDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADMotionDetector.h; sourceTree = "<group>"; };
 		97E02BE61AFB74D900E34B31 /* ADMotionDetector.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ADMotionDetector.mm; sourceTree = "<group>"; };
 		97E2F89B1AFC0EC900E472F2 /* MonitoringEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MonitoringEvent.h; path = Model/MonitoringEvent.h; sourceTree = "<group>"; };
@@ -185,8 +185,8 @@
 				9749EB251AF6B2CB004D9785 /* EventsTableViewController.m */,
 				9724734F1AFD869F00D74BF8 /* CameraStreamViewController.h */,
 				972473501AFD869F00D74BF8 /* CameraStreamViewController.m */,
-				97CA02331AF5513C00B86C4D /* AVObservationViewController.h */,
-				97CA02341AF5513C00B86C4D /* AVObservationViewController.m */,
+				97CA02331AF5513C00B86C4D /* MonitoringViewController.h */,
+				97CA02341AF5513C00B86C4D /* MonitoringViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -398,7 +398,7 @@
 				97E62DBD1AF6E58200CECBCB /* SegmentedControlCell.m in Sources */,
 				9769797D1AFAB5BA0029D82D /* UIAlertView+Blocks.m in Sources */,
 				976AFADE1AF3CAC300F91585 /* main.m in Sources */,
-				97CA02351AF5513C00B86C4D /* AVObservationViewController.m in Sources */,
+				97CA02351AF5513C00B86C4D /* MonitoringViewController.m in Sources */,
 				97E02BE71AFB74D900E34B31 /* ADMotionDetector.mm in Sources */,
 				976AFAE41AF3CAC300F91585 /* Surveillance.xcdatamodeld in Sources */,
 				9749EB231AF6B284004D9785 /* ConfigureMonitoringTableViewController.m in Sources */,

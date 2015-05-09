@@ -7,12 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <AVFoundation/AVFoundation.h>
+#import "CameraStreamViewController.h"
 #import "ADMotionDetector.h"
 
-@interface AVObservationViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate>
+@interface MonitoringViewController : CameraStreamViewController
 
-@property (weak, nonatomic) IBOutlet UIView *previewView;
 @property (nonatomic, assign) MotionDetectorSensitivity motionSensitivity;
 
 @end
