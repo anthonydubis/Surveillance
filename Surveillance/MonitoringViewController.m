@@ -33,6 +33,7 @@
 @property (nonatomic, strong) ADVideoRecorder *videoRecorder;
 @property (nonatomic, strong) ADMotionDetector *motionDetector;
 @property (nonatomic, strong) ADFaceDetector *faceDetector;
+@property (nonatomic, strong) AppDelegate *appDelegate;
 
 @end
 
@@ -55,6 +56,14 @@
     
     self.videoRecorder = [[ADVideoRecorder alloc] initWithRecordingURL:[self.event recordingURL]];
     [self performSelector:@selector(beginMonitoring) withObject:nil afterDelay:3.0];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    // Rollback the context to remove events that were not committed
+    [self.appDelegate.managedObjectContext rollback];
 }
 
 // Sets the isMonitoring flag that causes work to be done when processing frames
@@ -96,12 +105,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     if (detectedFaces.count > 0) {
         [self.beep play];
         faceWasFound = YES;
-        
         for (UIImage *image in detectedFaces) {
-//            CGRect bounds = self.previewView.bounds;
-//            CGRect rect = feature.bounds;
-//            NSLog(@"Face found at %f %f %f %f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
-//            NSLog(@"In bounds %f %f %f %f", bounds.origin.x, bounds.origin.y, bounds.size.width, bounds.size.height);
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self performSegueWithIdentifier:@"ThumbnailSegue" sender:image];
             });
@@ -109,7 +113,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
     
     /*
-    
     if (isRecording) { // Handle recording
         if (self.videoRecorder.frameNumber > 100)
             [self stopRecording];
@@ -125,7 +128,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             }
         }
     }
-     
      */
 }
 

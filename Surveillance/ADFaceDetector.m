@@ -49,6 +49,8 @@
         [cropFilter setValue:ciImage forKey:@"inputImage"];
         [cropFilter setValue:cropRect forKey:@"inputRectangle"];
         CIImage *croppedImage = [cropFilter valueForKey:@"outputImage"];
+        croppedImage = [croppedImage imageByApplyingOrientation:[self exifOrientation:[UIDevice currentDevice].orientation
+                                                               usingFrontFacingCamera:isUsingFrontFacingCamera].intValue];
         UIImage *stillImage = [UIImage imageWithCIImage:croppedImage];
         [croppedFaces addObject:stillImage];
     }

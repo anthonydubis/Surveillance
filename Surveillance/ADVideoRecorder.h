@@ -12,7 +12,6 @@
 
 @property (nonatomic, readonly) int frameNumber;
 
-#warning This should be implemented now - try it out WITHOUT face detection
 #warning Right now, this assumes 30 frames per second - this should be customizable
 
 /*

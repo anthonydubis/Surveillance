@@ -104,7 +104,7 @@
             [session addOutput:self.videoDataOutput];
         }
         
-        // get the output for doing face detection.
+        // Get the output for doing face detection.
         [[self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:YES];
         
         self.previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:session];

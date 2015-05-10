@@ -12,7 +12,7 @@
 
 @interface MonitoringEvent : NSManagedObject
 
-@property (nonatomic, retain) NSDate * date;
-@property (nonatomic, retain) NSString * filename;
+@property (nonatomic, retain) NSDate *date;
+@property (nonatomic, retain) NSString *filename;
 
 @end

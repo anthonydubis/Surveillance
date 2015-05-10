@@ -50,6 +50,11 @@
     
     self.assetWriterInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:outputSettings];
     
+#warning This can't be a permanent solution
+    // Default video orietnation, at least for front facing camera, is landscapeLeft.
+    // Specify that the video should be rotated when played
+    self.assetWriterInput.transform = CGAffineTransformMakeRotation(M_PI / 2);
+    
     /* We're going to push pixel buffers to it, so will need a
      AVAssetWriterPixelBufferAdaptor, to expect the same 32BGRA input as I've
      asked the AVCaptureVideDataOutput to supply */
