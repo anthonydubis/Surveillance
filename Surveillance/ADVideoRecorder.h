@@ -11,6 +11,7 @@
 @interface ADVideoRecorder : NSObject
 
 @property (nonatomic, readonly) int frameNumber;
+@property (nonatomic, strong) NSDate *dateTimeRecordingBegan;
 
 #warning Right now, this assumes 30 frames per second - this should be customizable
 

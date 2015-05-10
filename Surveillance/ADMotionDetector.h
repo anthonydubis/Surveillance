@@ -20,7 +20,10 @@ typedef NS_ENUM(NSInteger, MotionDetectorSensitivity )
 @property (nonatomic, assign) MotionDetectorSensitivity sensitivity;
 
 - (BOOL)isBackgroundSet;
+- (BOOL)shouldSetBackground;
 - (void)setBackgroundWithPixelBuffer:(CVPixelBufferRef)pixelBuffer;
 - (BOOL)didMotionOccurInPixelBufferRef:(CVPixelBufferRef)pixelBuffer;
+- (NSTimeInterval)intervalSinceLastMotionCheck;
+- (BOOL)hasMotionEnded;
 
 @end

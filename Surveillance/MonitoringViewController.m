@@ -20,6 +20,9 @@
 
 #import "ThumbnailViewController.h"
 
+// How often should we check to see if motion still exists, in seconds
+const int MotionDetectionFrequencyWhenRecording = 1;
+
 @interface MonitoringViewController ()
 {
     BOOL isMonitoring;          // is the camera focused and monitoring the area
@@ -55,9 +58,10 @@
     [super viewDidLayoutSubviews];
     
     self.videoRecorder = [[ADVideoRecorder alloc] initWithRecordingURL:[self.event recordingURL]];
-    [self performSelector:@selector(beginMonitoring) withObject:nil afterDelay:3.0];
+    [self performSelector:@selector(beginMonitoring) withObject:nil afterDelay:6.0];
 }
 
+// Cal when the view leaves the screen
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
@@ -79,6 +83,7 @@
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 #warning You need to teardown the video recorder
+    self.videoRecorder = nil;
     self.faceDetector = nil;
 }
 
@@ -96,6 +101,31 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     // Get the image
     CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     
+    // Set the background if needed
+    if (isMonitoring && [self.motionDetector shouldSetBackground]) {
+        [self.motionDetector setBackgroundWithPixelBuffer:pixelBuffer];
+    }
+    
+    if (isMonitoring) { // Monitoring the area
+        if (!isPreparingToRecord && [self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer]) {
+            isPreparingToRecord = YES;
+            [self startRecording];
+        }
+    }
+    
+    if (isRecording) { // Handle recording
+        // Check for motion if we haven't do so in the # of seconds specificed by MotionDetectionFrequencyWhenRecording
+        if ([self.motionDetector intervalSinceLastMotionCheck] < -1 * MotionDetectionFrequencyWhenRecording) {
+            [self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer];
+            if ([self.motionDetector hasMotionEnded]) {
+                [self stopRecording];
+                return;
+            }
+        }
+        [self.videoRecorder appendFrameFromPixelBuffer:pixelBuffer];
+    }
+    
+    /*
     if (faceWasFound) return;
     
     NSArray *detectedFaces = [self.faceDetector detectFacesFromSampleBuffer:sampleBuffer
@@ -109,23 +139,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self performSegueWithIdentifier:@"ThumbnailSegue" sender:image];
             });
-        }
-    }
-    
-    /*
-    if (isRecording) { // Handle recording
-        if (self.videoRecorder.frameNumber > 100)
-            [self stopRecording];
-        else
-            [self.videoRecorder appendFrameFromPixelBuffer:pixelBuffer];
-    } else if (isMonitoring) { // Handle motion detection
-        if (![self.motionDetector isBackgroundSet]) {
-            [self.motionDetector setBackgroundWithPixelBuffer:pixelBuffer];
-        } else {
-            if ([self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer] && !isPreparingToRecord) {
-                isPreparingToRecord = YES;
-                [self startRecording];
-            }
         }
     }
      */

@@ -77,6 +77,7 @@
 {
     [self.assetWriter startWriting];
     [self.assetWriter startSessionAtSourceTime:kCMTimeZero];
+    self.dateTimeRecordingBegan = [NSDate date];
 }
 
 - (void)stopRecordingWithCompletionHandler:(void (^)(void))handler
