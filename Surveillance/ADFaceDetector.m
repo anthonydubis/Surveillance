@@ -28,6 +28,9 @@
         CFRelease(attachments);
     }
     
+    // Release resources
+    CFRelease(sampleBuffer);
+    
     // make sure your device orientation is not locked.
     UIDeviceOrientation curDeviceOrientation = [[UIDevice currentDevice] orientation];
     
@@ -54,6 +57,8 @@
         UIImage *stillImage = [UIImage imageWithCIImage:croppedImage];
         [croppedFaces addObject:stillImage];
     }
+    
+    NSLog(@"About to return cropped faces");
     
     // return features;
     return croppedFaces;
@@ -102,7 +107,6 @@
             exifOrientation = PHOTOS_EXIF_0ROW_RIGHT_0COL_TOP;
             break;
     }
-    NSLog(@"Returning orientation: %i", exifOrientation);
     
     return [NSNumber numberWithInt:exifOrientation];
 }
@@ -110,7 +114,7 @@
 - (CIDetector *)detector
 {
     if (!_detector) {
-        NSDictionary *opts = @{ CIDetectorAccuracy : CIDetectorAccuracyLow };
+        NSDictionary *opts = @{ CIDetectorAccuracy : CIDetectorAccuracyHigh };
         _detector = [CIDetector detectorOfType:CIDetectorTypeFace
                                        context:nil
                                        options:opts];

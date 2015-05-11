@@ -28,7 +28,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     BOOL isMonitoring;          // is the camera focused and monitoring the area
     BOOL isPreparingToRecord;   // is the assetWriter being prepared to record
     BOOL isRecording;           // is the assetWriter recording
-    BOOL faceWasFound;
+    BOOL isLookingForFace;
 }
 
 @property (nonatomic, strong) AVAudioPlayer *beep;
@@ -105,9 +105,10 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     
     // Set the background if needed
-    if (isMonitoring && [self.motionDetector shouldSetBackground]) {
+    if ((isMonitoring || isRecording) && [self.motionDetector shouldSetBackground]) {
         [self.motionDetector setBackgroundWithPixelBuffer:pixelBuffer];
     }
+    
     
     if (isMonitoring) { // Monitoring the area
         if (!isPreparingToRecord && [self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer]) {
@@ -128,23 +129,29 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         [self.videoRecorder appendFrameFromPixelBuffer:pixelBuffer];
     }
     
-    /*
-    if (faceWasFound) return;
-    
-    NSArray *detectedFaces = [self.faceDetector detectFacesFromSampleBuffer:sampleBuffer
-                                                             andPixelBuffer:pixelBuffer
-                                                     usingFrontFacingCamera:self.isUsingFrontFacingCamera];
-    
-    if (detectedFaces.count > 0) {
-        [self.beep play];
-        faceWasFound = YES;
-        for (UIImage *image in detectedFaces) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self performSegueWithIdentifier:@"ThumbnailSegue" sender:image];
-            });
-        }
+    if (!isLookingForFace) {
+        isLookingForFace = YES;
+        CFRetain(sampleBuffer);
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSLog(@"Looking for a face.");
+            NSArray *detectedFaces = [self.faceDetector detectFacesFromSampleBuffer:sampleBuffer
+                                                                     andPixelBuffer:pixelBuffer
+                                                             usingFrontFacingCamera:self.isUsingFrontFacingCamera];
+            
+            if (detectedFaces.count > 0) {
+                // [self.beep play];
+                NSLog(@"Found face");
+                /*
+                for (UIImage *image in detectedFaces) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self performSegueWithIdentifier:@"ThumbnailSegue" sender:image];
+                    });
+                }
+                 */
+            }
+            isLookingForFace = NO;
+        });
     }
-     */
 }
 
 - (void)startRecording
