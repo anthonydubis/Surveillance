@@ -66,8 +66,13 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 {
     [super viewWillDisappear:animated];
     
-    // Rollback the context to remove events that were not committed
-    [self.appDelegate.managedObjectContext rollback];
+    // If recording, finish up. Then rollback the context to remove uncommited events
+    if (isRecording) {
+        [self.appDelegate saveContext];
+        [self.videoRecorder stopRecordingWithCompletionHandler:^{
+            [self.appDelegate.managedObjectContext rollback];
+        }];
+    }
 }
 
 // Sets the isMonitoring flag that causes work to be done when processing frames
@@ -82,9 +87,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-#warning You need to teardown the video recorder
-    self.videoRecorder = nil;
-    self.faceDetector = nil;
+#warning You may need additional clearnup here
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
