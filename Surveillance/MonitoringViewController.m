@@ -62,7 +62,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     [super viewDidLayoutSubviews];
     
     self.videoRecorder = [[ADVideoRecorder alloc] initWithRecordingURL:[self.event recordingURL]];
-    [self performSelector:@selector(beginMonitoring) withObject:nil afterDelay:6.0];
+    [self performSelector:@selector(beginMonitoring) withObject:nil afterDelay:5.0];
 }
 
 // Cal when the view leaves the screen

@@ -13,8 +13,8 @@ const int BackgroundRefreshRateInSeconds = 5;
 const int SignificantDifferenceThreshold = 50;
 const int ConsecutiveNoMotionOutcomesForAllClear = 5;
 const float HighMotionSensitivityPct     = 0.0001;
-const float MediumMotionSensitivityPct   = 0.001;
-const float LowMotionSensitivityPct      = 0.02;
+const float MediumMotionSensitivityPct   = 0.003;
+const float LowMotionSensitivityPct      = 0.006;
 
 @interface ADMotionDetector()
 
@@ -78,7 +78,7 @@ const float LowMotionSensitivityPct      = 0.02;
     // Determine if motion occured
     long unsigned diffVal = sum(diff)[0];
     long unsigned numPixels = diff.cols * diff.rows;
-    // NSLog(@"%lu / %lu = %f against threshold %f", diffVal, numPixels, (float)diffVal / numPixels, [self motionSensitivityThreshold]);
+    NSLog(@"%lu / %lu = %f against threshold %f", diffVal, numPixels, (float)diffVal / numPixels, [self motionSensitivityThreshold]);
     BOOL didMotionOccur = (float)diffVal / numPixels > [self motionSensitivityThreshold];
     
     // Update consecutive number of frames with motion

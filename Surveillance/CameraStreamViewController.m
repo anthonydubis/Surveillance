@@ -45,12 +45,9 @@
     
     // Create the session (manages data flow from input to output
     AVCaptureSession *session = [[AVCaptureSession alloc] init];
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone){
-        [session setSessionPreset:AVCaptureSessionPreset640x480];
-    } else {
-        // Was using AVCaptureSessionPresetPhoto
-        [session setSessionPreset:AVCaptureSessionPresetPhoto];
-    }
+    
+    // Capture at 640x480
+    [session setSessionPreset:AVCaptureSessionPreset640x480];
     
     // Specify an input (one of the cameras)
     AVCaptureDevice *device;
