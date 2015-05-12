@@ -7,7 +7,7 @@
 //
 
 #import "EventsTableViewController.h"
-#import <MediaPlayer/MediaPlayer.h>
+#import "DetailEventViewController.h";
 
 // Core Data Related
 #import "AppDelegate.h"
@@ -16,7 +16,6 @@
 @interface EventsTableViewController ()
 
 @property (nonatomic, strong) NSMutableArray *events;
-@property (nonatomic, strong) MPMoviePlayerController *moviePlayerController;
 @property (nonatomic, strong) AppDelegate *appDelegate;
 
 @end
@@ -32,15 +31,6 @@
 {
     [super viewWillAppear:animated];
     [self reloadData];
-    // Movie Player Notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(movieEventFullscreenHandler:)
-                                                 name:MPMoviePlayerDidExitFullscreenNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(movieEventFullscreenHandler:)
-                                                 name:MPMoviePlayerPlaybackDidFinishNotification
-                                               object:nil];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -49,27 +39,11 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)movieEventFullscreenHandler:(NSNotification *)notif
-{
-    NSLog(@"Handler was called.");
-    [self.moviePlayerController.view removeFromSuperview];
-}
-
 // Refresh the events array and reload the tableView
 - (void)reloadData
 {
     self.events = nil;
     [self.tableView reloadData];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-    if (interfaceOrientation == UIInterfaceOrientationPortrait || interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) {
-        [self.moviePlayerController.view setFrame:CGRectMake(0, 70, 320, 270)];
-    } else if (interfaceOrientation == UIInterfaceOrientationLandscapeLeft || interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
-        [self.moviePlayerController.view setFrame:CGRectMake(0, 0, 480, 320)];
-    }
-    return YES;
 }
 
 #pragma mark - Table view data source
@@ -96,19 +70,17 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    MonitoringEvent *event = [self.events objectAtIndex:indexPath.row];
-    NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:[NSString pathWithComponents:@[documentsPath, event.filename]]];
-    [self showVideoAtURL:fileURL];
+    [self performSegueWithIdentifier:@"DetailEvent" sender:indexPath];
 }
 
-- (void)showVideoAtURL:(NSURL *)fileURL
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    self.moviePlayerController = [[MPMoviePlayerController alloc] initWithContentURL:fileURL];
-    [self.moviePlayerController.view setFrame:CGRectMake(0, 70, 320, 270)];
-    [self.view addSubview:self.moviePlayerController.view];
-    self.moviePlayerController.fullscreen = YES;
-    [self.moviePlayerController play];
+    if ([segue.identifier isEqualToString:@"DetailEvent"]) {
+        NSIndexPath *indexPath = (NSIndexPath *)sender;
+        MonitoringEvent *event = [self.events objectAtIndex:indexPath.row];
+        DetailEventViewController *devc = segue.destinationViewController;
+        devc.event = event;
+    }
 }
 
 // Allow deletations

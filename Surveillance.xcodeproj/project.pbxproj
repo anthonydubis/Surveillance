@@ -11,6 +11,12 @@
 		972473511AFD869F00D74BF8 /* CameraStreamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 972473501AFD869F00D74BF8 /* CameraStreamViewController.m */; };
 		972473541AFD91F200D74BF8 /* ADVideoRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 972473531AFD91F200D74BF8 /* ADVideoRecorder.m */; };
 		972473571AFE451900D74BF8 /* ThumbnailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 972473561AFE451900D74BF8 /* ThumbnailViewController.m */; };
+		973DB6441B0179EC00418444 /* MonitoringEventFace.m in Sources */ = {isa = PBXBuildFile; fileRef = 973DB6431B0179EC00418444 /* MonitoringEventFace.m */; };
+		973DB6471B017A1000418444 /* MonitoringEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 973DB6461B017A1000418444 /* MonitoringEvent.m */; };
+		973DB64D1B017A7600418444 /* MonitoringEventFace+AD.m in Sources */ = {isa = PBXBuildFile; fileRef = 973DB64C1B017A7600418444 /* MonitoringEventFace+AD.m */; };
+		973DB6501B018B3C00418444 /* DetailEventViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 973DB64F1B018B3C00418444 /* DetailEventViewController.m */; };
+		973DB6521B018FA600418444 /* empty.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 973DB6511B018FA600418444 /* empty.jpg */; };
+		973DB6551B019D3200418444 /* UIImage+DataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 973DB6541B019D3200418444 /* UIImage+DataHandler.m */; };
 		9749EB201AF663D8004D9785 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9749EB1F1AF663D8004D9785 /* AudioToolbox.framework */; };
 		9749EB231AF6B284004D9785 /* ConfigureMonitoringTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9749EB221AF6B284004D9785 /* ConfigureMonitoringTableViewController.m */; };
 		9749EB261AF6B2CB004D9785 /* EventsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9749EB251AF6B2CB004D9785 /* EventsTableViewController.m */; };
@@ -36,7 +42,6 @@
 		976AFB621AF40B6600F91585 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976AFB611AF40B6600F91585 /* QuartzCore.framework */; };
 		97CA02351AF5513C00B86C4D /* MonitoringViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97CA02341AF5513C00B86C4D /* MonitoringViewController.m */; };
 		97E02BE71AFB74D900E34B31 /* ADMotionDetector.mm in Sources */ = {isa = PBXBuildFile; fileRef = 97E02BE61AFB74D900E34B31 /* ADMotionDetector.mm */; };
-		97E2F89D1AFC0EC900E472F2 /* MonitoringEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 97E2F89C1AFC0EC900E472F2 /* MonitoringEvent.m */; };
 		97E2F8A11AFC0F6200E472F2 /* MonitoringEvent+AD.m in Sources */ = {isa = PBXBuildFile; fileRef = 97E2F8A01AFC0F6200E472F2 /* MonitoringEvent+AD.m */; };
 		97E62DBD1AF6E58200CECBCB /* SegmentedControlCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 97E62DBC1AF6E58200CECBCB /* SegmentedControlCell.m */; };
 /* End PBXBuildFile section */
@@ -60,6 +65,18 @@
 		972473531AFD91F200D74BF8 /* ADVideoRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADVideoRecorder.m; sourceTree = "<group>"; };
 		972473551AFE451900D74BF8 /* ThumbnailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbnailViewController.h; sourceTree = "<group>"; };
 		972473561AFE451900D74BF8 /* ThumbnailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThumbnailViewController.m; sourceTree = "<group>"; };
+		973DB6411B01790500418444 /* Surveillance 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Surveillance 2.xcdatamodel"; sourceTree = "<group>"; };
+		973DB6421B0179EC00418444 /* MonitoringEventFace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MonitoringEventFace.h; path = Model/MonitoringEventFace.h; sourceTree = "<group>"; };
+		973DB6431B0179EC00418444 /* MonitoringEventFace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MonitoringEventFace.m; path = Model/MonitoringEventFace.m; sourceTree = "<group>"; };
+		973DB6451B017A1000418444 /* MonitoringEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MonitoringEvent.h; path = Model/MonitoringEvent.h; sourceTree = "<group>"; };
+		973DB6461B017A1000418444 /* MonitoringEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MonitoringEvent.m; path = Model/MonitoringEvent.m; sourceTree = "<group>"; };
+		973DB64B1B017A7600418444 /* MonitoringEventFace+AD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "MonitoringEventFace+AD.h"; path = "Model/MonitoringEventFace+AD.h"; sourceTree = "<group>"; };
+		973DB64C1B017A7600418444 /* MonitoringEventFace+AD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "MonitoringEventFace+AD.m"; path = "Model/MonitoringEventFace+AD.m"; sourceTree = "<group>"; };
+		973DB64E1B018B3C00418444 /* DetailEventViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailEventViewController.h; sourceTree = "<group>"; };
+		973DB64F1B018B3C00418444 /* DetailEventViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailEventViewController.m; sourceTree = "<group>"; };
+		973DB6511B018FA600418444 /* empty.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = empty.jpg; sourceTree = "<group>"; };
+		973DB6531B019D3200418444 /* UIImage+DataHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+DataHandler.h"; path = "Surveillance/UIImage+DataHandler.h"; sourceTree = "<group>"; };
+		973DB6541B019D3200418444 /* UIImage+DataHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+DataHandler.m"; path = "Surveillance/UIImage+DataHandler.m"; sourceTree = "<group>"; };
 		9749EB1F1AF663D8004D9785 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		9749EB211AF6B284004D9785 /* ConfigureMonitoringTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigureMonitoringTableViewController.h; sourceTree = "<group>"; };
 		9749EB221AF6B284004D9785 /* ConfigureMonitoringTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigureMonitoringTableViewController.m; sourceTree = "<group>"; };
@@ -97,8 +114,6 @@
 		97CA02341AF5513C00B86C4D /* MonitoringViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringViewController.m; sourceTree = "<group>"; };
 		97E02BE51AFB74D900E34B31 /* ADMotionDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADMotionDetector.h; sourceTree = "<group>"; };
 		97E02BE61AFB74D900E34B31 /* ADMotionDetector.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ADMotionDetector.mm; sourceTree = "<group>"; };
-		97E2F89B1AFC0EC900E472F2 /* MonitoringEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MonitoringEvent.h; path = Model/MonitoringEvent.h; sourceTree = "<group>"; };
-		97E2F89C1AFC0EC900E472F2 /* MonitoringEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MonitoringEvent.m; path = Model/MonitoringEvent.m; sourceTree = "<group>"; };
 		97E2F89F1AFC0F6200E472F2 /* MonitoringEvent+AD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "MonitoringEvent+AD.h"; path = "Model/MonitoringEvent+AD.h"; sourceTree = "<group>"; };
 		97E2F8A01AFC0F6200E472F2 /* MonitoringEvent+AD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "MonitoringEvent+AD.m"; path = "Model/MonitoringEvent+AD.m"; sourceTree = "<group>"; };
 		97E62DBB1AF6E58200CECBCB /* SegmentedControlCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SegmentedControlCell.h; sourceTree = "<group>"; };
@@ -149,6 +164,8 @@
 			children = (
 				9769797B1AFAB5BA0029D82D /* UIAlertView+Blocks.h */,
 				9769797C1AFAB5BA0029D82D /* UIAlertView+Blocks.m */,
+				973DB6531B019D3200418444 /* UIImage+DataHandler.h */,
+				973DB6541B019D3200418444 /* UIImage+DataHandler.m */,
 			);
 			name = "Utility Classes";
 			path = ..;
@@ -197,6 +214,8 @@
 				97CA02341AF5513C00B86C4D /* MonitoringViewController.m */,
 				972473551AFE451900D74BF8 /* ThumbnailViewController.h */,
 				972473561AFE451900D74BF8 /* ThumbnailViewController.m */,
+				973DB64E1B018B3C00418444 /* DetailEventViewController.h */,
+				973DB64F1B018B3C00418444 /* DetailEventViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -226,6 +245,7 @@
 				976AFAE81AF3CAC300F91585 /* Main.storyboard */,
 				976AFAED1AF3CAC300F91585 /* LaunchScreen.xib */,
 				976AFAEB1AF3CAC300F91585 /* Images.xcassets */,
+				973DB6511B018FA600418444 /* empty.jpg */,
 				976AFADF1AF3CAC300F91585 /* AppDelegate.h */,
 				976AFAE01AF3CAC300F91585 /* AppDelegate.m */,
 				974E160C1AFCCACB00514C57 /* Classes */,
@@ -290,10 +310,14 @@
 			isa = PBXGroup;
 			children = (
 				976AFAE21AF3CAC300F91585 /* Surveillance.xcdatamodeld */,
-				97E2F89B1AFC0EC900E472F2 /* MonitoringEvent.h */,
-				97E2F89C1AFC0EC900E472F2 /* MonitoringEvent.m */,
+				973DB6451B017A1000418444 /* MonitoringEvent.h */,
+				973DB6461B017A1000418444 /* MonitoringEvent.m */,
+				973DB6421B0179EC00418444 /* MonitoringEventFace.h */,
+				973DB6431B0179EC00418444 /* MonitoringEventFace.m */,
 				97E2F89F1AFC0F6200E472F2 /* MonitoringEvent+AD.h */,
 				97E2F8A01AFC0F6200E472F2 /* MonitoringEvent+AD.m */,
+				973DB64B1B017A7600418444 /* MonitoringEventFace+AD.h */,
+				973DB64C1B017A7600418444 /* MonitoringEventFace+AD.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -380,6 +404,7 @@
 			files = (
 				976AFAEA1AF3CAC300F91585 /* Main.storyboard in Resources */,
 				976AFAEF1AF3CAC300F91585 /* LaunchScreen.xib in Resources */,
+				973DB6521B018FA600418444 /* empty.jpg in Resources */,
 				976AFAEC1AF3CAC300F91585 /* Images.xcassets in Resources */,
 				974E160B1AFC2E7D00514C57 /* beep-07.wav in Resources */,
 			);
@@ -399,17 +424,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				973DB64D1B017A7600418444 /* MonitoringEventFace+AD.m in Sources */,
 				9749EB261AF6B2CB004D9785 /* EventsTableViewController.m in Sources */,
 				972473541AFD91F200D74BF8 /* ADVideoRecorder.m in Sources */,
 				972473511AFD869F00D74BF8 /* CameraStreamViewController.m in Sources */,
 				976AFAE11AF3CAC300F91585 /* AppDelegate.m in Sources */,
 				9712DB861AFD1B9C00533A1C /* ADFaceDetector.m in Sources */,
-				97E2F89D1AFC0EC900E472F2 /* MonitoringEvent.m in Sources */,
+				973DB6441B0179EC00418444 /* MonitoringEventFace.m in Sources */,
 				97E2F8A11AFC0F6200E472F2 /* MonitoringEvent+AD.m in Sources */,
 				972473571AFE451900D74BF8 /* ThumbnailViewController.m in Sources */,
+				973DB6471B017A1000418444 /* MonitoringEvent.m in Sources */,
 				97E62DBD1AF6E58200CECBCB /* SegmentedControlCell.m in Sources */,
 				9769797D1AFAB5BA0029D82D /* UIAlertView+Blocks.m in Sources */,
+				973DB6551B019D3200418444 /* UIImage+DataHandler.m in Sources */,
 				976AFADE1AF3CAC300F91585 /* main.m in Sources */,
+				973DB6501B018B3C00418444 /* DetailEventViewController.m in Sources */,
 				97CA02351AF5513C00B86C4D /* MonitoringViewController.m in Sources */,
 				97E02BE71AFB74D900E34B31 /* ADMotionDetector.mm in Sources */,
 				976AFAE41AF3CAC300F91585 /* Surveillance.xcdatamodeld in Sources */,
@@ -644,9 +673,10 @@
 		976AFAE21AF3CAC300F91585 /* Surveillance.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				973DB6411B01790500418444 /* Surveillance 2.xcdatamodel */,
 				976AFAE31AF3CAC300F91585 /* Surveillance.xcdatamodel */,
 			);
-			currentVersion = 976AFAE31AF3CAC300F91585 /* Surveillance.xcdatamodel */;
+			currentVersion = 973DB6411B01790500418444 /* Surveillance 2.xcdatamodel */;
 			path = Surveillance.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

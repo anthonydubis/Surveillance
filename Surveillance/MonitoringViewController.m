@@ -13,10 +13,12 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "ADFaceDetector.h"
 #import "ADVideoRecorder.h"
+#import "UIImage+DataHandler.h"
 
 // Core Data Related
 #import "AppDelegate.h"
 #import "MonitoringEvent+AD.h"
+#import "MonitoringEventFace+AD.h"
 
 #import "ThumbnailViewController.h"
 
@@ -25,10 +27,11 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 
 @interface MonitoringViewController ()
 {
-    BOOL isMonitoring;          // is the camera focused and monitoring the area
-    BOOL isPreparingToRecord;   // is the assetWriter being prepared to record
-    BOOL isRecording;           // is the assetWriter recording
-    BOOL isLookingForFace;
+    BOOL isMonitoring;           // is the camera focused and monitoring the area
+    BOOL isPreparingToRecord;    // is the assetWriter being prepared to record
+    BOOL isRecording;            // is the assetWriter recording
+    BOOL isLookingForFace;       // is the faceDetector currently processing a face
+    int maxNumSimultaneousFaces; // the max number of faces found in a single frame so far
 }
 
 @property (nonatomic, strong) AVAudioPlayer *beep;
@@ -37,6 +40,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 @property (nonatomic, strong) ADMotionDetector *motionDetector;
 @property (nonatomic, strong) ADFaceDetector *faceDetector;
 @property (nonatomic, strong) AppDelegate *appDelegate;
+@property (nonatomic, strong) UIImage *imageWithFaces;
 
 @end
 
@@ -68,6 +72,12 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     
     // If recording, finish up. Then rollback the context to remove uncommited events
     if (isRecording) {
+        if (self.imageWithFaces) {
+            NSLog(@"We have an image with faces");
+            [MonitoringEventFace newFaceWithData:UIImageJPEGRepresentation(self.imageWithFaces, 1)
+                                        forEvent:self.event
+                                       inContext:self.appDelegate.managedObjectContext];
+        }
         [self.appDelegate saveContext];
         [self.videoRecorder stopRecordingWithCompletionHandler:^{
             [self.appDelegate.managedObjectContext rollback];
@@ -78,6 +88,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 // Sets the isMonitoring flag that causes work to be done when processing frames
 - (void)beginMonitoring
 {
+    [self.beep play];
     isMonitoring = YES;
 }
 
@@ -109,15 +120,16 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         [self.motionDetector setBackgroundWithPixelBuffer:pixelBuffer];
     }
     
-    
-    if (isMonitoring) { // Monitoring the area
+    // Monitoring phase
+    if (isMonitoring) {
         if (!isPreparingToRecord && [self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer]) {
             isPreparingToRecord = YES;
             [self startRecording];
         }
     }
     
-    if (isRecording) { // Handle recording
+    // Recording phase
+    if (isRecording) {
         // Check for motion if we haven't do so in the # of seconds specificed by MotionDetectionFrequencyWhenRecording
         if ([self.motionDetector intervalSinceLastMotionCheck] < -1 * MotionDetectionFrequencyWhenRecording) {
             [self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer];
@@ -127,31 +139,47 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             }
         }
         [self.videoRecorder appendFrameFromPixelBuffer:pixelBuffer];
+        
+        if (!isLookingForFace) {
+            isLookingForFace = YES;
+            CFRetain(sampleBuffer);
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSLog(@"Looking for a face.");
+                NSDictionary *detectionResults = [self.faceDetector detectFacesFromSampleBuffer:sampleBuffer
+                                                                                 andPixelBuffer:pixelBuffer
+                                                                         usingFrontFacingCamera:self.isUsingFrontFacingCamera];
+                CFRelease(sampleBuffer);
+                [self handleDetectedFaces:detectionResults];
+                isLookingForFace = NO;
+            });
+        }
+    }
+}
+
+- (void)handleDetectedFaces:(NSDictionary *)detectionResults
+{
+    NSNumber *numFaces = (NSNumber *)detectionResults[ADFaceDetectorNumberOfFacesDetected];
+    if (numFaces) {
+        [self.beep play];
+        if (numFaces.intValue > maxNumSimultaneousFaces) {
+            UIImage *image = (UIImage *)detectionResults[ADFaceDetectorImageWithFaces];
+            self.imageWithFaces = [UIImage copyUIImage:image];
+            maxNumSimultaneousFaces = numFaces.intValue;
+        }
     }
     
-    if (!isLookingForFace) {
-        isLookingForFace = YES;
-        CFRetain(sampleBuffer);
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSLog(@"Looking for a face.");
-            NSArray *detectedFaces = [self.faceDetector detectFacesFromSampleBuffer:sampleBuffer
-                                                                     andPixelBuffer:pixelBuffer
-                                                             usingFrontFacingCamera:self.isUsingFrontFacingCamera];
-            
-            if (detectedFaces.count > 0) {
-                // [self.beep play];
-                NSLog(@"Found face");
-                /*
-                for (UIImage *image in detectedFaces) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self performSegueWithIdentifier:@"ThumbnailSegue" sender:image];
-                    });
-                }
-                 */
-            }
-            isLookingForFace = NO;
-        });
+    /*
+     // From when we were experimenting with thumbnails
+    if (detectedFaces.count > 0) {
+        [self.beep play];
+        NSLog(@"Found face");
+        for (UIImage *image in detectedFaces) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self performSegueWithIdentifier:@"ThumbnailSegue" sender:image];
+            });
+        }
     }
+     */
 }
 
 - (void)startRecording
@@ -169,6 +197,12 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     NSLog(@"Stopping the recording");
     [self.beep play];
     isRecording = NO;
+    if (self.imageWithFaces) {
+        NSLog(@"We have an image with faces");
+        [MonitoringEventFace newFaceWithData:UIImageJPEGRepresentation(self.imageWithFaces, 1)
+                                    forEvent:self.event
+                                   inContext:self.appDelegate.managedObjectContext];
+    }
     [self.appDelegate saveContext];
     [self.videoRecorder stopRecordingWithCompletionHandler:^{
         [self prepareForNewRecording];
@@ -178,6 +212,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 - (void)prepareForNewRecording
 {
     self.event = nil;
+    self.imageWithFaces = nil;
     [self.motionDetector setBackgroundWithPixelBuffer:nil];
     [self.videoRecorder prepareToRecordWithNewURL:[self.event recordingURL]];
     isMonitoring = YES;

@@ -17,9 +17,9 @@
 
 @implementation ADFaceDetector
 
-- (NSArray *)detectFacesFromSampleBuffer:(CMSampleBufferRef)sampleBuffer
-                          andPixelBuffer:(CVPixelBufferRef)pixelBuffer
-                  usingFrontFacingCamera:(BOOL)isUsingFrontFacingCamera
+- (NSDictionary *)detectFacesFromSampleBuffer:(CMSampleBufferRef)sampleBuffer
+                               andPixelBuffer:(CVPixelBufferRef)pixelBuffer
+                       usingFrontFacingCamera:(BOOL)isUsingFrontFacingCamera
 {
     CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, sampleBuffer, kCMAttachmentMode_ShouldPropagate);
     CIImage *ciImage = [[CIImage alloc] initWithCVPixelBuffer:pixelBuffer
@@ -27,9 +27,6 @@
     if (attachments) {
         CFRelease(attachments);
     }
-    
-    // Release resources
-    CFRelease(sampleBuffer);
     
     // make sure your device orientation is not locked.
     UIDeviceOrientation curDeviceOrientation = [[UIDevice currentDevice] orientation];
@@ -43,6 +40,17 @@
     NSArray *features = [self.detector featuresInImage:ciImage
                                                options:imageOptions];
     
+    if ([features count]) {
+        ciImage = [ciImage imageByApplyingOrientation:[self exifOrientation:[UIDevice currentDevice].orientation
+                                                     usingFrontFacingCamera:isUsingFrontFacingCamera].intValue];
+        return @{ ADFaceDetectorNumberOfFacesDetected : [NSNumber numberWithInteger:features.count],
+                  ADFaceDetectorImageWithFaces : [UIImage imageWithCIImage:ciImage] };
+    }
+    
+    return [NSDictionary dictionary];
+    
+    /*
+     // For when we wanted to return thumbnails of faces
     NSMutableArray *croppedFaces = [[NSMutableArray alloc] init];
     
     for (CIFeature *feature in features) {
@@ -62,6 +70,7 @@
     
     // return features;
     return croppedFaces;
+     */
 }
 
 - (NSNumber *)exifOrientation:(UIDeviceOrientation)orientation usingFrontFacingCamera:(BOOL)isUsingFrontFacingCamera

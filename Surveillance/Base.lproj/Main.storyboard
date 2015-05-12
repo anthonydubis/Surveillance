@@ -41,7 +41,7 @@
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="wuq-eG-Hep">
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
@@ -54,10 +54,57 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Captured Events" id="WoL-8I-ZgH"/>
+                    <connections>
+                        <segue destination="QHO-Ad-HCq" kind="show" identifier="DetailEvent" id="x7b-5g-4wT"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GOA-H8-7z4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-65" y="1175"/>
+        </scene>
+        <!--Detail Event View Controller-->
+        <scene sceneID="idK-pJ-oEn">
+            <objects>
+                <viewController id="QHO-Ad-HCq" customClass="DetailEventViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Q3M-Ld-ZB2"/>
+                        <viewControllerLayoutGuide type="bottom" id="U8D-cQ-JS4"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="LxF-0c-6Yh">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="empty" translatesAutoresizingMaskIntoConstraints="NO" id="w95-OW-rfI">
+                                <rect key="frame" x="16" y="72" width="568" height="433"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gEJ-w5-Xce">
+                                <rect key="frame" x="262" y="513" width="76" height="30"/>
+                                <state key="normal" title="View Video">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="viewVideoButtonPressed:" destination="QHO-Ad-HCq" eventType="touchUpInside" id="Yv4-jk-rjL"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="U8D-cQ-JS4" firstAttribute="top" secondItem="gEJ-w5-Xce" secondAttribute="bottom" constant="8" id="5EJ-JC-bzi"/>
+                            <constraint firstAttribute="centerX" secondItem="gEJ-w5-Xce" secondAttribute="centerX" id="Cye-8B-6ek"/>
+                            <constraint firstItem="w95-OW-rfI" firstAttribute="leading" secondItem="LxF-0c-6Yh" secondAttribute="leadingMargin" id="Fnr-up-gvv"/>
+                            <constraint firstItem="w95-OW-rfI" firstAttribute="top" secondItem="Q3M-Ld-ZB2" secondAttribute="bottom" constant="8" id="Hv4-yq-CDP"/>
+                            <constraint firstItem="gEJ-w5-Xce" firstAttribute="top" secondItem="w95-OW-rfI" secondAttribute="bottom" constant="8" id="RhL-cw-kNH"/>
+                            <constraint firstItem="w95-OW-rfI" firstAttribute="trailing" secondItem="LxF-0c-6Yh" secondAttribute="trailingMargin" id="s3X-cJ-ygm"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="imageView" destination="w95-OW-rfI" id="2rg-jr-OvK"/>
+                        <outlet property="viewVideoButton" destination="gEJ-w5-Xce" id="4NO-bP-WRP"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lbj-VR-yw9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="771" y="1175"/>
         </scene>
         <!--Monitoring Settings-->
         <scene sceneID="LCf-ce-THF">
@@ -252,5 +299,6 @@
     <resources>
         <image name="279-videocamera" width="34" height="20"/>
         <image name="45-movie-1" width="19" height="25"/>
+        <image name="empty" width="708" height="779"/>
     </resources>
 </document>

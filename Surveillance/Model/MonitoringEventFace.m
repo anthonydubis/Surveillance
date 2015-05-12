@@ -1,19 +1,18 @@
 //
-//  MonitoringEvent.m
+//  MonitoringEventFace.m
 //  Surveillance
 //
 //  Created by Anthony Dubis on 5/11/15.
 //  Copyright (c) 2015 Anthony Dubis. All rights reserved.
 //
 
-#import "MonitoringEvent.h"
 #import "MonitoringEventFace.h"
+#import "MonitoringEvent.h"
 
 
-@implementation MonitoringEvent
+@implementation MonitoringEventFace
 
-@dynamic date;
-@dynamic filename;
-@dynamic faces;
+@dynamic imageData;
+@dynamic monitoringEvent;
 
 @end
