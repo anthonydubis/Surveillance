@@ -7,17 +7,158 @@
 //
 
 #import "AppDelegate.h"
+#import <Parse/Parse.h>
+#import <ParseUI/ParseUI.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 
-@interface AppDelegate ()
+@interface AppDelegate () <PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate>
+
 
 @end
 
 @implementation AppDelegate
 
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    // [Optional] Power your app with Local Datastore. For more info, go to
+    // https://parse.com/docs/ios_guide#localdatastore/iOS
+    [Parse enableLocalDatastore];
+    
+    // Initialize Parse and Facebook
+    [Parse setApplicationId:@"RsfKbEwIOCNz8cCYmESlj5hXIV89HFuZtuZ6Jj2f"
+                  clientKey:@"WvyRze50fd8hyuZ0NPxNAs5R9b1OPw5FvIyyBKX4"];
+    [PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];
+    
+    // Set default ACL so all objects created can only be read/written to by the current user
+    [PFACL setDefaultACL:[PFACL ACL] withAccessForCurrentUser:YES];
+    
+    // [Optional] Track statistics around application opens.
+    [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+    
+    // Ask the user to login if he's not already
+    PFUser *currentUser = [PFUser currentUser];
+    if (!currentUser) {
+        [self showLoginScreen];
+    }
+    
     return YES;
+}
+
+- (void)showTabBarAsRootViewController
+{
+    UIViewController *tabBarVC = [[UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]] instantiateInitialViewController];
+    if (!self.window.rootViewController) {
+        self.window.rootViewController = tabBarVC;
+        return;
+    }
+    
+    UIView *snapShot = [self.window snapshotViewAfterScreenUpdates:YES];
+    
+    [tabBarVC.view addSubview:snapShot];
+    
+    self.window.rootViewController = tabBarVC;
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        snapShot.layer.opacity = 0;
+        snapShot.layer.transform = CATransform3DMakeScale(1.5, 1.5, 1.5);
+    } completion:^(BOOL finished) {
+        [snapShot removeFromSuperview];
+    }];
+}
+
+#pragma mark - Handling user login
+
+- (void)showLoginScreen
+{
+    PFLogInViewController *logInViewController = [[PFLogInViewController alloc] init];
+    logInViewController.fields = PFLogInFieldsUsernameAndPassword | PFLogInFieldsLogInButton | PFLogInFieldsSignUpButton | PFLogInFieldsPasswordForgotten | PFLogInFieldsFacebook;
+    logInViewController.emailAsUsername = YES;
+    // Set the logo
+    // [logInViewController.logInView setLogo:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo.png"]]];
+    logInViewController.delegate = self;
+    
+    PFSignUpViewController *signUpViewController = [[PFSignUpViewController alloc] init];
+    signUpViewController.fields = PFSignUpFieldsUsernameAndPassword | PFSignUpFieldsSignUpButton;
+    signUpViewController.emailAsUsername = YES;
+    signUpViewController.delegate = self;
+    [logInViewController setSignUpController:signUpViewController];
+    
+    self.window.rootViewController = logInViewController;
+}
+
+// Sent to the delegate to determine whether the log in request should be submitted to the server.
+- (BOOL)logInViewController:(PFLogInViewController *)logInController shouldBeginLogInWithUsername:(NSString *)username password:(NSString *)password {
+    NSLog(@"Should being login with user name");
+    // Check if both fields are completed
+    if (username && password && username.length != 0 && password.length != 0) {
+        return YES; // Begin login process
+    }
+    
+    [[[UIAlertView alloc] initWithTitle:@"Missing Information"
+                                message:@"Make sure you fill out all of the information!"
+                               delegate:nil
+                      cancelButtonTitle:@"ok"
+                      otherButtonTitles:nil] show];
+    return NO; // Interrupt login process
+}
+
+// Sent to the delegate when a PFUser is logged in.
+- (void)logInViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user {
+    [self showTabBarAsRootViewController];
+}
+
+// Sent to the delegate when the log in attempt fails.
+- (void)logInViewController:(PFLogInViewController *)logInController didFailToLogInWithError:(NSError *)error {
+    NSLog(@"Failed to log in...");
+}
+
+// Sent to the delegate when the log in screen is dismissed.
+- (void)logInViewControllerDidCancelLogIn:(PFLogInViewController *)logInController {
+    [self showTabBarAsRootViewController];
+}
+
+#pragma mark - Handling Signup
+
+// Sent to the delegate to determine whether the sign up request should be submitted to the server.
+- (BOOL)signUpViewController:(PFSignUpViewController *)signUpController shouldBeginSignUp:(NSDictionary *)info {
+    NSLog(@"Should begin sign up");
+    BOOL informationComplete = YES;
+    
+    // loop through all of the submitted data
+    for (id key in info) {
+        NSString *field = [info objectForKey:key];
+        if (!field || field.length == 0) { // check completion
+            informationComplete = NO;
+            break;
+        }
+    }
+    
+    // Display an alert if a field wasn't completed
+    if (!informationComplete) {
+        [[[UIAlertView alloc] initWithTitle:@"Missing Information"
+                                    message:@"Make sure you fill out all of the information!"
+                                   delegate:nil
+                          cancelButtonTitle:@"ok"
+                          otherButtonTitles:nil] show];
+    }
+    
+    return informationComplete;
+}
+
+// Sent to the delegate when a PFUser is signed up.
+- (void)signUpViewController:(PFSignUpViewController *)signUpController didSignUpUser:(PFUser *)user {
+    [self showTabBarAsRootViewController];
+}
+
+// Sent to the delegate when the sign up attempt fails.
+- (void)signUpViewController:(PFSignUpViewController *)signUpController didFailToSignUpWithError:(NSError *)error {
+    NSLog(@"Failed to sign up...");
+}
+
+// Sent to the delegate when the sign up screen is dismissed.
+- (void)signUpViewControllerDidCancelSignUp:(PFSignUpViewController *)signUpController {
+    [self showTabBarAsRootViewController];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -34,8 +175,18 @@
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
+    return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                          openURL:url
+                                                sourceApplication:sourceApplication
+                                                       annotation:annotation];
+}
+
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [FBSDKAppEvents activateApp];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

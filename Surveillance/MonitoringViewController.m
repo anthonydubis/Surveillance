@@ -54,6 +54,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     [super viewDidLoad];
     
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    self.title = @"Setting Up";
 }
 
 // This is called when the view is on screen (or at least, about to be) and the views have been resized to fill the screen
@@ -90,6 +91,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 {
     [self.beep play];
     isMonitoring = YES;
+    self.title = @"Monitoring";
 }
 
 // This is when the view is unloaded - in this simple app, it's likely called when the app terminates
@@ -190,6 +192,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     isRecording = YES;
     isMonitoring = NO;
     isPreparingToRecord = NO;
+    self.title = @"Recording";
 }
 
 - (void)stopRecording
@@ -207,6 +210,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     [self.videoRecorder stopRecordingWithCompletionHandler:^{
         [self prepareForNewRecording];
     }];
+    self.title = @"Done Recording";
 }
 
 - (void)prepareForNewRecording
@@ -216,6 +220,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     [self.motionDetector setBackgroundWithPixelBuffer:nil];
     [self.videoRecorder prepareToRecordWithNewURL:[self.event recordingURL]];
     isMonitoring = YES;
+    self.title = @"Monitoring";
 }
 
 - (IBAction)dismissSelf:(id)sender

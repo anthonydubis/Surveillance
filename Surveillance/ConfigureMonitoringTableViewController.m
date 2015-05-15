@@ -31,6 +31,9 @@
     [self listFileAtPath:[self documentsPath]];
 }
 
+#pragma mark - Handle user login
+
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -80,9 +83,14 @@
     int count;
     
     NSArray *directoryContent = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL];
+    
     for (count = 0; count < (int)[directoryContent count]; count++)
     {
-        NSLog(@"File %d: %@", (count + 1), [directoryContent objectAtIndex:count]);
+        NSString *filename = [directoryContent objectAtIndex:count];
+        NSDictionary *fileDictionary = [[NSFileManager defaultManager] attributesOfItemAtPath:[path stringByAppendingPathComponent:filename]
+                                                                                        error:nil];
+        unsigned long long size = [fileDictionary fileSize];
+        NSLog(@"File %d: %@, file size: %llu", (count + 1), [directoryContent objectAtIndex:count], size);
     }
     return directoryContent;
 }

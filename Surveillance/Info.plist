@@ -38,5 +38,22 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>FontAwesome.ttf</string>
+	</array>
+	<key>FacebookAppID</key>
+	<string>978771962157741</string>
+	<key>FacebookDisplayName</key>
+	<string>Surveillance</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb978771962157741</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

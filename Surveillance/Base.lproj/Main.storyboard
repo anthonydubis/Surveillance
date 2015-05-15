@@ -5,10 +5,10 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--Tab Bar Controller-->
+        <!--Tab Bar View Controller-->
         <scene sceneID="N3K-OQ-dAx">
             <objects>
-                <tabBarController id="Rr6-7d-puA" sceneMemberID="viewController">
+                <tabBarController id="Rr6-7d-puA" customClass="ADTabBarViewController" sceneMemberID="viewController">
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="VVy-K8-E6M">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
@@ -74,10 +74,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="empty" translatesAutoresizingMaskIntoConstraints="NO" id="w95-OW-rfI">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="empty" translatesAutoresizingMaskIntoConstraints="NO" id="w95-OW-rfI">
                                 <rect key="frame" x="16" y="72" width="568" height="433"/>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gEJ-w5-Xce">
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gEJ-w5-Xce">
                                 <rect key="frame" x="262" y="513" width="76" height="30"/>
                                 <state key="normal" title="View Video">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -257,6 +257,121 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MRX-NK-qyf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-877" y="1175"/>
+        </scene>
+        <!--Login View Controller-->
+        <scene sceneID="BVd-IJ-MaI">
+            <objects>
+                <viewController storyboardIdentifier="LoginViewController" id="Pii-2c-z1B" customClass="ADLoginViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="6lb-Bd-I4Z"/>
+                        <viewControllerLayoutGuide type="bottom" id="vBw-bR-VZZ"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="RYN-Md-MGy">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zHq-rr-WzI">
+                                <rect key="frame" x="180" y="99" width="240" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="240" id="Hma-iP-cF3"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3y1-ma-NL5">
+                                <rect key="frame" x="180" y="146" width="240" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="240" id="j88-Ig-iX7"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Surveillance" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lec-kp-NxL">
+                                <rect key="frame" x="234" y="55" width="132" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Waj-TM-aXL" customClass="BButton">
+                                <rect key="frame" x="180" y="184" width="240" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="240" id="eaE-tA-01P"/>
+                                </constraints>
+                                <state key="normal" title="Login">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="loginButtonPressed:" destination="Pii-2c-z1B" eventType="touchUpInside" id="wUw-FS-zyW"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="- or -" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nju-Fd-SzN">
+                                <rect key="frame" x="286" y="225" width="29" height="15"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fWU-JG-mvu" customClass="BButton">
+                                <rect key="frame" x="180" y="251" width="240" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="240" id="N50-p4-C9r"/>
+                                </constraints>
+                                <state key="normal" title="Login using Facebook">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="loginWithFacebookButtonPressed:" destination="Pii-2c-z1B" eventType="touchUpInside" id="QWO-Cf-kCn"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Don't have an account yet?" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UDU-JJ-ipN">
+                                <rect key="frame" x="223" y="292" width="154" height="15"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8g6-hF-lrr" customClass="BButton">
+                                <rect key="frame" x="180" y="311" width="240" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="240" id="glx-fm-pUw"/>
+                                </constraints>
+                                <state key="normal" title="Sign Up">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="signUpButtonPressed:" destination="Pii-2c-z1B" eventType="touchUpInside" id="px3-CU-rao"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="8g6-hF-lrr" firstAttribute="top" secondItem="UDU-JJ-ipN" secondAttribute="bottom" constant="4" id="7AQ-Um-kUu"/>
+                            <constraint firstAttribute="centerX" secondItem="zHq-rr-WzI" secondAttribute="centerX" id="AqR-rJ-Rpn"/>
+                            <constraint firstItem="UDU-JJ-ipN" firstAttribute="top" secondItem="nju-Fd-SzN" secondAttribute="bottom" constant="52" id="BJy-9O-FaD"/>
+                            <constraint firstItem="lec-kp-NxL" firstAttribute="top" secondItem="6lb-Bd-I4Z" secondAttribute="bottom" constant="35" id="LPs-g0-xG2"/>
+                            <constraint firstItem="nju-Fd-SzN" firstAttribute="top" secondItem="3y1-ma-NL5" secondAttribute="bottom" constant="49" id="ODG-Tw-l4I"/>
+                            <constraint firstAttribute="centerX" secondItem="lec-kp-NxL" secondAttribute="centerX" id="PaW-4T-R8k"/>
+                            <constraint firstAttribute="centerX" secondItem="nju-Fd-SzN" secondAttribute="centerX" constant="-0.5" id="YFj-gQ-v9L"/>
+                            <constraint firstAttribute="centerX" secondItem="UDU-JJ-ipN" secondAttribute="centerX" id="Yfm-PT-gLh"/>
+                            <constraint firstItem="3y1-ma-NL5" firstAttribute="top" secondItem="zHq-rr-WzI" secondAttribute="bottom" constant="17" id="ZI0-AC-XM5"/>
+                            <constraint firstAttribute="centerX" secondItem="Waj-TM-aXL" secondAttribute="centerX" id="Zxz-VJ-gDf"/>
+                            <constraint firstAttribute="centerX" secondItem="fWU-JG-mvu" secondAttribute="centerX" id="hRw-in-e7k"/>
+                            <constraint firstAttribute="centerX" secondItem="3y1-ma-NL5" secondAttribute="centerX" id="hr8-PA-QNi"/>
+                            <constraint firstItem="zHq-rr-WzI" firstAttribute="top" secondItem="lec-kp-NxL" secondAttribute="bottom" constant="14" id="n7q-h7-Twy"/>
+                            <constraint firstItem="Waj-TM-aXL" firstAttribute="top" secondItem="3y1-ma-NL5" secondAttribute="bottom" constant="8" id="req-Fz-6hj"/>
+                            <constraint firstAttribute="centerX" secondItem="8g6-hF-lrr" secondAttribute="centerX" constant="-0.5" id="uAX-jm-AVJ"/>
+                            <constraint firstItem="fWU-JG-mvu" firstAttribute="top" secondItem="nju-Fd-SzN" secondAttribute="bottom" constant="11" id="uDY-tX-OH9"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="facebookButton" destination="fWU-JG-mvu" id="CGv-lD-NDS"/>
+                        <outlet property="loginButton" destination="Waj-TM-aXL" id="7Ex-wU-gj1"/>
+                        <outlet property="passwordTextField" destination="3y1-ma-NL5" id="TWh-7o-maa"/>
+                        <outlet property="signUpButton" destination="8g6-hF-lrr" id="S6L-hC-bRa"/>
+                        <outlet property="usernameTextField" destination="zHq-rr-WzI" id="nha-Xe-Jke"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hBS-MZ-JAq" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-877" y="-449"/>
         </scene>
         <!--Monitoring-->
         <scene sceneID="QO7-oU-8dc">

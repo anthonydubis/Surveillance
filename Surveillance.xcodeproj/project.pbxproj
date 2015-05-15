@@ -40,7 +40,29 @@
 		976AFB5E1AF40B5800F91585 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976AFB5D1AF40B5800F91585 /* CoreMedia.framework */; };
 		976AFB601AF40B5F00F91585 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976AFB5F1AF40B5F00F91585 /* CoreVideo.framework */; };
 		976AFB621AF40B6600F91585 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976AFB611AF40B6600F91585 /* QuartzCore.framework */; };
+		9799C81E1B051F660098C0A7 /* ADLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C81D1B051F660098C0A7 /* ADLoginViewController.m */; };
+		9799C8251B0528CD0098C0A7 /* BButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8201B0528CD0098C0A7 /* BButton.m */; };
+		9799C8261B0528CD0098C0A7 /* NSString+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8221B0528CD0098C0A7 /* NSString+FontAwesome.m */; };
+		9799C8271B0528CD0098C0A7 /* UIColor+BButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8241B0528CD0098C0A7 /* UIColor+BButton.m */; };
+		9799C82A1B0541AE0098C0A7 /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9799C8291B0541AE0098C0A7 /* ParseUI.framework */; };
+		9799C82C1B05428C0098C0A7 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9799C82B1B05428C0098C0A7 /* Accounts.framework */; };
+		9799C82E1B0542BE0098C0A7 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9799C82D1B0542BE0098C0A7 /* Social.framework */; };
+		9799C8311B0555000098C0A7 /* ADTabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8301B0555000098C0A7 /* ADTabBarViewController.m */; };
+		9799C8331B0559B10098C0A7 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 9799C8321B0559B10098C0A7 /* logo.png */; };
+		9799C8351B05655B0098C0A7 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9799C8341B05655B0098C0A7 /* FBSDKCoreKit.framework */; };
+		9799C8371B0566540098C0A7 /* ParseFacebookUtilsV4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9799C8361B0566540098C0A7 /* ParseFacebookUtilsV4.framework */; };
+		9799C8391B056DA90098C0A7 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9799C8381B056DA90098C0A7 /* FBSDKLoginKit.framework */; };
 		97CA02351AF5513C00B86C4D /* MonitoringViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97CA02341AF5513C00B86C4D /* MonitoringViewController.m */; };
+		97D489DD1B041E94000569FD /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489DB1B041E94000569FD /* Bolts.framework */; };
+		97D489DE1B041E94000569FD /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489DC1B041E94000569FD /* Parse.framework */; };
+		97D489E01B041ED7000569FD /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489DF1B041ED7000569FD /* CFNetwork.framework */; };
+		97D489E21B041EE7000569FD /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489E11B041EE7000569FD /* CoreLocation.framework */; };
+		97D489E41B041EF3000569FD /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489E31B041EF3000569FD /* MobileCoreServices.framework */; };
+		97D489E61B041F0F000569FD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489E51B041F0F000569FD /* Security.framework */; };
+		97D489E81B041F19000569FD /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489E71B041F19000569FD /* StoreKit.framework */; };
+		97D489EA1B041F29000569FD /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489E91B041F29000569FD /* SystemConfiguration.framework */; };
+		97D489EC1B041F37000569FD /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489EB1B041F37000569FD /* libz.dylib */; };
+		97D489EE1B041F44000569FD /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489ED1B041F44000569FD /* libsqlite3.dylib */; };
 		97E02BE71AFB74D900E34B31 /* ADMotionDetector.mm in Sources */ = {isa = PBXBuildFile; fileRef = 97E02BE61AFB74D900E34B31 /* ADMotionDetector.mm */; };
 		97E2F8A11AFC0F6200E472F2 /* MonitoringEvent+AD.m in Sources */ = {isa = PBXBuildFile; fileRef = 97E2F8A01AFC0F6200E472F2 /* MonitoringEvent+AD.m */; };
 		97E62DBD1AF6E58200CECBCB /* SegmentedControlCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 97E62DBC1AF6E58200CECBCB /* SegmentedControlCell.m */; };
@@ -110,8 +132,35 @@
 		976AFB5D1AF40B5800F91585 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		976AFB5F1AF40B5F00F91585 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		976AFB611AF40B6600F91585 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		9799C81C1B051F660098C0A7 /* ADLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADLoginViewController.h; sourceTree = "<group>"; };
+		9799C81D1B051F660098C0A7 /* ADLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADLoginViewController.m; sourceTree = "<group>"; };
+		9799C81F1B0528CD0098C0A7 /* BButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BButton.h; sourceTree = "<group>"; };
+		9799C8201B0528CD0098C0A7 /* BButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BButton.m; sourceTree = "<group>"; };
+		9799C8211B0528CD0098C0A7 /* NSString+FontAwesome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+FontAwesome.h"; sourceTree = "<group>"; };
+		9799C8221B0528CD0098C0A7 /* NSString+FontAwesome.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+FontAwesome.m"; sourceTree = "<group>"; };
+		9799C8231B0528CD0098C0A7 /* UIColor+BButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+BButton.h"; sourceTree = "<group>"; };
+		9799C8241B0528CD0098C0A7 /* UIColor+BButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+BButton.m"; sourceTree = "<group>"; };
+		9799C8291B0541AE0098C0A7 /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseUI.framework; sourceTree = "<group>"; };
+		9799C82B1B05428C0098C0A7 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		9799C82D1B0542BE0098C0A7 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		9799C82F1B0555000098C0A7 /* ADTabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADTabBarViewController.h; sourceTree = "<group>"; };
+		9799C8301B0555000098C0A7 /* ADTabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADTabBarViewController.m; sourceTree = "<group>"; };
+		9799C8321B0559B10098C0A7 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
+		9799C8341B05655B0098C0A7 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		9799C8361B0566540098C0A7 /* ParseFacebookUtilsV4.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtilsV4.framework; sourceTree = "<group>"; };
+		9799C8381B056DA90098C0A7 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		97CA02331AF5513C00B86C4D /* MonitoringViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitoringViewController.h; sourceTree = "<group>"; };
 		97CA02341AF5513C00B86C4D /* MonitoringViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringViewController.m; sourceTree = "<group>"; };
+		97D489DB1B041E94000569FD /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
+		97D489DC1B041E94000569FD /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
+		97D489DF1B041ED7000569FD /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		97D489E11B041EE7000569FD /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		97D489E31B041EF3000569FD /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		97D489E51B041F0F000569FD /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		97D489E71B041F19000569FD /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		97D489E91B041F29000569FD /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		97D489EB1B041F37000569FD /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		97D489ED1B041F44000569FD /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		97E02BE51AFB74D900E34B31 /* ADMotionDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADMotionDetector.h; sourceTree = "<group>"; };
 		97E02BE61AFB74D900E34B31 /* ADMotionDetector.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ADMotionDetector.mm; sourceTree = "<group>"; };
 		97E2F89F1AFC0F6200E472F2 /* MonitoringEvent+AD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "MonitoringEvent+AD.h"; path = "Model/MonitoringEvent+AD.h"; sourceTree = "<group>"; };
@@ -125,11 +174,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9799C82E1B0542BE0098C0A7 /* Social.framework in Frameworks */,
+				9799C82C1B05428C0098C0A7 /* Accounts.framework in Frameworks */,
+				9799C82A1B0541AE0098C0A7 /* ParseUI.framework in Frameworks */,
+				97D489EE1B041F44000569FD /* libsqlite3.dylib in Frameworks */,
+				97D489EC1B041F37000569FD /* libz.dylib in Frameworks */,
+				97D489EA1B041F29000569FD /* SystemConfiguration.framework in Frameworks */,
+				97D489E81B041F19000569FD /* StoreKit.framework in Frameworks */,
+				97D489E61B041F0F000569FD /* Security.framework in Frameworks */,
+				97D489E41B041EF3000569FD /* MobileCoreServices.framework in Frameworks */,
+				97D489E21B041EE7000569FD /* CoreLocation.framework in Frameworks */,
+				97D489E01B041ED7000569FD /* CFNetwork.framework in Frameworks */,
+				9799C8391B056DA90098C0A7 /* FBSDKLoginKit.framework in Frameworks */,
 				976979791AFAB5690029D82D /* opencv2.framework in Frameworks */,
+				9799C8371B0566540098C0A7 /* ParseFacebookUtilsV4.framework in Frameworks */,
 				976979771AFAB1000029D82D /* MediaPlayer.framework in Frameworks */,
 				9749EB201AF663D8004D9785 /* AudioToolbox.framework in Frameworks */,
+				97D489DD1B041E94000569FD /* Bolts.framework in Frameworks */,
+				9799C8351B05655B0098C0A7 /* FBSDKCoreKit.framework in Frameworks */,
 				976AFB621AF40B6600F91585 /* QuartzCore.framework in Frameworks */,
 				976AFB601AF40B5F00F91585 /* CoreVideo.framework in Frameworks */,
+				97D489DE1B041E94000569FD /* Parse.framework in Frameworks */,
 				976AFB5E1AF40B5800F91585 /* CoreMedia.framework in Frameworks */,
 				976AFB5C1AF40B5100F91585 /* CoreImage.framework in Frameworks */,
 				976AFB5A1AF40B4B00F91585 /* CoreGraphics.framework in Frameworks */,
@@ -174,6 +239,7 @@
 		974E160C1AFCCACB00514C57 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				9799C8281B0528D20098C0A7 /* BButton */,
 				972473521AFD91F200D74BF8 /* ADVideoRecorder.h */,
 				972473531AFD91F200D74BF8 /* ADVideoRecorder.m */,
 				97E02BE51AFB74D900E34B31 /* ADMotionDetector.h */,
@@ -204,6 +270,8 @@
 		976979751AFAB0AE0029D82D /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				9799C82F1B0555000098C0A7 /* ADTabBarViewController.h */,
+				9799C8301B0555000098C0A7 /* ADTabBarViewController.m */,
 				9749EB211AF6B284004D9785 /* ConfigureMonitoringTableViewController.h */,
 				9749EB221AF6B284004D9785 /* ConfigureMonitoringTableViewController.m */,
 				9749EB241AF6B2CB004D9785 /* EventsTableViewController.h */,
@@ -216,6 +284,8 @@
 				972473561AFE451900D74BF8 /* ThumbnailViewController.m */,
 				973DB64E1B018B3C00418444 /* DetailEventViewController.h */,
 				973DB64F1B018B3C00418444 /* DetailEventViewController.m */,
+				9799C81C1B051F660098C0A7 /* ADLoginViewController.h */,
+				9799C81D1B051F660098C0A7 /* ADLoginViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -246,6 +316,7 @@
 				976AFAED1AF3CAC300F91585 /* LaunchScreen.xib */,
 				976AFAEB1AF3CAC300F91585 /* Images.xcassets */,
 				973DB6511B018FA600418444 /* empty.jpg */,
+				9799C8321B0559B10098C0A7 /* logo.png */,
 				976AFADF1AF3CAC300F91585 /* AppDelegate.h */,
 				976AFAE01AF3CAC300F91585 /* AppDelegate.m */,
 				974E160C1AFCCACB00514C57 /* Classes */,
@@ -287,9 +358,38 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		9799C8281B0528D20098C0A7 /* BButton */ = {
+			isa = PBXGroup;
+			children = (
+				9799C81F1B0528CD0098C0A7 /* BButton.h */,
+				9799C8201B0528CD0098C0A7 /* BButton.m */,
+				9799C8211B0528CD0098C0A7 /* NSString+FontAwesome.h */,
+				9799C8221B0528CD0098C0A7 /* NSString+FontAwesome.m */,
+				9799C8231B0528CD0098C0A7 /* UIColor+BButton.h */,
+				9799C8241B0528CD0098C0A7 /* UIColor+BButton.m */,
+			);
+			name = BButton;
+			sourceTree = "<group>";
+		};
 		97CA02321AF5511A00B86C4D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9799C8381B056DA90098C0A7 /* FBSDKLoginKit.framework */,
+				9799C8361B0566540098C0A7 /* ParseFacebookUtilsV4.framework */,
+				9799C8341B05655B0098C0A7 /* FBSDKCoreKit.framework */,
+				9799C82D1B0542BE0098C0A7 /* Social.framework */,
+				9799C82B1B05428C0098C0A7 /* Accounts.framework */,
+				9799C8291B0541AE0098C0A7 /* ParseUI.framework */,
+				97D489ED1B041F44000569FD /* libsqlite3.dylib */,
+				97D489EB1B041F37000569FD /* libz.dylib */,
+				97D489E91B041F29000569FD /* SystemConfiguration.framework */,
+				97D489E71B041F19000569FD /* StoreKit.framework */,
+				97D489E51B041F0F000569FD /* Security.framework */,
+				97D489E31B041EF3000569FD /* MobileCoreServices.framework */,
+				97D489E11B041EE7000569FD /* CoreLocation.framework */,
+				97D489DF1B041ED7000569FD /* CFNetwork.framework */,
+				97D489DB1B041E94000569FD /* Bolts.framework */,
+				97D489DC1B041E94000569FD /* Parse.framework */,
 				976979781AFAB5690029D82D /* opencv2.framework */,
 				976979761AFAB1000029D82D /* MediaPlayer.framework */,
 				9749EB1F1AF663D8004D9785 /* AudioToolbox.framework */,
@@ -404,6 +504,7 @@
 			files = (
 				976AFAEA1AF3CAC300F91585 /* Main.storyboard in Resources */,
 				976AFAEF1AF3CAC300F91585 /* LaunchScreen.xib in Resources */,
+				9799C8331B0559B10098C0A7 /* logo.png in Resources */,
 				973DB6521B018FA600418444 /* empty.jpg in Resources */,
 				976AFAEC1AF3CAC300F91585 /* Images.xcassets in Resources */,
 				974E160B1AFC2E7D00514C57 /* beep-07.wav in Resources */,
@@ -428,6 +529,7 @@
 				9749EB261AF6B2CB004D9785 /* EventsTableViewController.m in Sources */,
 				972473541AFD91F200D74BF8 /* ADVideoRecorder.m in Sources */,
 				972473511AFD869F00D74BF8 /* CameraStreamViewController.m in Sources */,
+				9799C81E1B051F660098C0A7 /* ADLoginViewController.m in Sources */,
 				976AFAE11AF3CAC300F91585 /* AppDelegate.m in Sources */,
 				9712DB861AFD1B9C00533A1C /* ADFaceDetector.m in Sources */,
 				973DB6441B0179EC00418444 /* MonitoringEventFace.m in Sources */,
@@ -439,7 +541,11 @@
 				973DB6551B019D3200418444 /* UIImage+DataHandler.m in Sources */,
 				976AFADE1AF3CAC300F91585 /* main.m in Sources */,
 				973DB6501B018B3C00418444 /* DetailEventViewController.m in Sources */,
+				9799C8261B0528CD0098C0A7 /* NSString+FontAwesome.m in Sources */,
+				9799C8251B0528CD0098C0A7 /* BButton.m in Sources */,
+				9799C8271B0528CD0098C0A7 /* UIColor+BButton.m in Sources */,
 				97CA02351AF5513C00B86C4D /* MonitoringViewController.m in Sources */,
+				9799C8311B0555000098C0A7 /* ADTabBarViewController.m in Sources */,
 				97E02BE71AFB74D900E34B31 /* ADMotionDetector.mm in Sources */,
 				976AFAE41AF3CAC300F91585 /* Surveillance.xcdatamodeld in Sources */,
 				9749EB231AF6B284004D9785 /* ConfigureMonitoringTableViewController.m in Sources */,
