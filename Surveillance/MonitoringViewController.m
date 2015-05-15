@@ -260,16 +260,14 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     if (!_event) {
         NSDate *date = [NSDate date];
         
-        NSString *filename = [NSString stringWithFormat:@"%@.mp4", [NSDateFormatter localizedStringFromDate:date
-                                                                                                  dateStyle:NSDateFormatterShortStyle
-                                                                                                  timeStyle:NSDateFormatterLongStyle]];
-        filename = [filename stringByReplacingOccurrencesOfString:@"," withString:@""];
-        filename = [filename stringByReplacingOccurrencesOfString:@"/" withString:@"-"];
-        filename = [filename stringByReplacingOccurrencesOfString:@":" withString:@"."];
-        filename = [filename stringByReplacingOccurrencesOfString:@" " withString:@"."];
+        NSDateFormatter *df = [[NSDateFormatter alloc] init];
+        df.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"America/Los_Angeles"];
+        [df setDateFormat:@"yyyy-MM-dd-HH-mm-ss"];
+        NSString *dateString = [df stringFromDate:date];
+        NSString *videoName = [NSString stringWithFormat:@"%@.mp4", dateString];
         
         
-        _event = [MonitoringEvent newEventWithDate:date andFilename:filename inContext:self.appDelegate.managedObjectContext];
+        _event = [MonitoringEvent newEventWithDate:date andFilename:videoName inContext:self.appDelegate.managedObjectContext];
     }
     return _event;
 }

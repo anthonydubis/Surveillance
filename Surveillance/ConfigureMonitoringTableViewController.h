@@ -10,4 +10,5 @@
 
 @interface ConfigureMonitoringTableViewController : UITableViewController
 
+- (IBAction)testUploadPressed:(id)sender;
 @end

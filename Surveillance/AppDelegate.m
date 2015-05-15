@@ -11,6 +11,9 @@
 #import <ParseUI/ParseUI.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
+#import <AWSCore/AWSCore.h>
+
+NSString *CognitoPoolID = @"us-east-1:5bb89c68-9ee9-48b0-aceb-a18d4297aa29";
 
 @interface AppDelegate () <PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate>
 
@@ -37,12 +40,18 @@
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
     // Ask the user to login if he's not already
-    PFUser *currentUser = [PFUser currentUser];
-    if (!currentUser) {
-        [self showLoginScreen];
-    } else {
-        NSLog(@"%@", currentUser);
-    }
+    if (![PFUser currentUser]) [self showLoginScreen];
+    
+    // Setup AWS
+    // [AWSLogger defaultLogger].logLevel = AWSLogLevelVerbose;
+    
+    AWSCognitoCredentialsProvider *credentialsProvider = [[AWSCognitoCredentialsProvider alloc] initWithRegionType:AWSRegionUSEast1
+                                                                                                    identityPoolId:CognitoPoolID];
+    
+    AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSEast1
+                                                                         credentialsProvider:credentialsProvider];
+    
+    AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
     
     return YES;
 }

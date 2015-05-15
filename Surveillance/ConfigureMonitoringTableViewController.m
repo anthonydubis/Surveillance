@@ -11,6 +11,7 @@
 #import "SegmentedControlCell.h"
 #import "MonitoringViewController.h"
 #import "ADMotionDetector.h"
+#import <AWSS3/AWSS3.h>
 
 @interface ConfigureMonitoringTableViewController ()
 
@@ -111,4 +112,45 @@
     }
 }
 
+- (IBAction)testUploadPressed:(id)sender {
+    // Create the URL
+    AWSS3TransferManagerUploadRequest *uploadRequest = [AWSS3TransferManagerUploadRequest new];
+    uploadRequest.bucket = @"surveillance-bucket";
+    uploadRequest.key = @"2015-05-15-15-31-23.mp4";
+    NSString *path = [[self documentsPath] stringByAppendingPathComponent:@"2015-05-15-15-31-23.mp4"];
+    NSURL *testURL = [NSURL fileURLWithPath:path];
+    NSLog(@"%@", testURL);
+    uploadRequest.body = testURL;
+    
+    
+    
+    AWSS3TransferManager *manager = [AWSS3TransferManager defaultS3TransferManager];
+    
+    [[manager upload:uploadRequest] continueWithExecutor:[BFExecutor mainThreadExecutor]
+                                               withBlock:^id(BFTask *task) {
+                                                            if (task.error) {
+                                                                if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
+                                                                    switch (task.error.code) {
+                                                                        case AWSS3TransferManagerErrorCancelled:
+                                                                        case AWSS3TransferManagerErrorPaused:
+                                                                            break;
+                                                                           
+                                                                        default:
+                                                                            NSLog(@"Error: %@", task.error);
+                                                                            break;
+                                                                    }
+                                                                } else {
+                                                                    // Unknown error.
+                                                                    NSLog(@"Error: %@", task.error);
+                                                                }
+                                                            }
+                                                           
+                                                            if (task.result) {
+                                                                AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
+                                                                // The file uploaded successfully.
+                                                                NSLog(@"File uploaded successfully");
+                                                            }
+                                                            return nil;
+                                                        }];
+}
 @end

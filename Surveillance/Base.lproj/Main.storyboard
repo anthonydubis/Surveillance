@@ -155,6 +155,11 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Monitoring Settings" id="83E-AZ-iKb">
+                        <barButtonItem key="leftBarButtonItem" title="Test Upload" id="aOx-qf-iWm">
+                            <connections>
+                                <action selector="testUploadPressed:" destination="LS8-FL-CfW" id="4rT-4j-Xte"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Start" style="done" id="zCm-zR-lgv">
                             <connections>
                                 <segue destination="SnD-NC-ZCP" kind="presentation" identifier="AVStartMonitoring" id="TKP-gK-SwD"/>

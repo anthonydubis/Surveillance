@@ -15,6 +15,7 @@
 @dynamic s3BucketName;
 @dynamic startedRecordingAt;
 @dynamic user;
+@dynamic isStillRecording;
 
 // This gets called before Parse's setApplicationId:clientKey:
 + (void)load {
