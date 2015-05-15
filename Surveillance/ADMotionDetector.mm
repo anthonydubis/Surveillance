@@ -78,7 +78,7 @@ const float LowMotionSensitivityPct      = 0.006;
     // Determine if motion occured
     long unsigned diffVal = sum(diff)[0];
     long unsigned numPixels = diff.cols * diff.rows;
-    NSLog(@"%lu / %lu = %f against threshold %f", diffVal, numPixels, (float)diffVal / numPixels, [self motionSensitivityThreshold]);
+    // NSLog(@"%lu / %lu = %f against threshold %f", diffVal, numPixels, (float)diffVal / numPixels, [self motionSensitivityThreshold]);
     BOOL didMotionOccur = (float)diffVal / numPixels > [self motionSensitivityThreshold];
     
     // Update consecutive number of frames with motion

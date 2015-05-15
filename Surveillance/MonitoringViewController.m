@@ -20,6 +20,9 @@
 #import "MonitoringEvent+AD.h"
 #import "MonitoringEventFace+AD.h"
 
+// Parse Related
+#import "ADEvent.h"
+
 #import "ThumbnailViewController.h"
 
 // How often should we check to see if motion still exists, in seconds
@@ -42,6 +45,9 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 @property (nonatomic, strong) AppDelegate *appDelegate;
 @property (nonatomic, strong) UIImage *imageWithFaces;
 
+// Integrating parse
+@property (nonatomic, strong) ADEvent *parseEvent;
+
 @end
 
 @implementation MonitoringViewController
@@ -54,7 +60,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     [super viewDidLoad];
     
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-    self.title = @"Setting Up";
+    self.navigationItem.title = @"Setting Up";
 }
 
 // This is called when the view is on screen (or at least, about to be) and the views have been resized to fill the screen
@@ -74,7 +80,6 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     // If recording, finish up. Then rollback the context to remove uncommited events
     if (isRecording) {
         if (self.imageWithFaces) {
-            NSLog(@"We have an image with faces");
             [MonitoringEventFace newFaceWithData:UIImageJPEGRepresentation(self.imageWithFaces, 1)
                                         forEvent:self.event
                                        inContext:self.appDelegate.managedObjectContext];
@@ -91,7 +96,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 {
     [self.beep play];
     isMonitoring = YES;
-    self.title = @"Monitoring";
+    self.navigationItem.title = @"Monitoring...";
 }
 
 // This is when the view is unloaded - in this simple app, it's likely called when the app terminates
@@ -146,7 +151,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             isLookingForFace = YES;
             CFRetain(sampleBuffer);
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                NSLog(@"Looking for a face.");
                 NSDictionary *detectionResults = [self.faceDetector detectFacesFromSampleBuffer:sampleBuffer
                                                                                  andPixelBuffer:pixelBuffer
                                                                          usingFrontFacingCamera:self.isUsingFrontFacingCamera];
@@ -174,7 +178,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
      // From when we were experimenting with thumbnails
     if (detectedFaces.count > 0) {
         [self.beep play];
-        NSLog(@"Found face");
         for (UIImage *image in detectedFaces) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self performSegueWithIdentifier:@"ThumbnailSegue" sender:image];
@@ -186,22 +189,27 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 - (void)startRecording
 {
-    NSLog(@"Starting the recording");
     [self.beep play];
+    
+    // Create the parse object
+    NSLog(@"Creating parse event");
+    self.parseEvent = [ADEvent objectForNewEvent];
+    NSLog(@"%@", self.parseEvent);
+    
     [self.videoRecorder startRecording];
     isRecording = YES;
     isMonitoring = NO;
     isPreparingToRecord = NO;
-    self.title = @"Recording";
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.title = @"Recording...";
+    });
 }
 
 - (void)stopRecording
 {
-    NSLog(@"Stopping the recording");
     [self.beep play];
     isRecording = NO;
     if (self.imageWithFaces) {
-        NSLog(@"We have an image with faces");
         [MonitoringEventFace newFaceWithData:UIImageJPEGRepresentation(self.imageWithFaces, 1)
                                     forEvent:self.event
                                    inContext:self.appDelegate.managedObjectContext];
@@ -210,7 +218,9 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     [self.videoRecorder stopRecordingWithCompletionHandler:^{
         [self prepareForNewRecording];
     }];
-    self.title = @"Done Recording";
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.title = @"Stopping recording...";
+    });
 }
 
 - (void)prepareForNewRecording
@@ -220,7 +230,9 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     [self.motionDetector setBackgroundWithPixelBuffer:nil];
     [self.videoRecorder prepareToRecordWithNewURL:[self.event recordingURL]];
     isMonitoring = YES;
-    self.title = @"Monitoring";
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.title = @"Monitoring...";
+    });
 }
 
 - (IBAction)dismissSelf:(id)sender
@@ -247,9 +259,16 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 {
     if (!_event) {
         NSDate *date = [NSDate date];
+        
         NSString *filename = [NSString stringWithFormat:@"%@.mp4", [NSDateFormatter localizedStringFromDate:date
-                                                                                                  dateStyle:NSDateFormatterMediumStyle
-                                                                                                  timeStyle:NSDateFormatterMediumStyle]];
+                                                                                                  dateStyle:NSDateFormatterShortStyle
+                                                                                                  timeStyle:NSDateFormatterLongStyle]];
+        filename = [filename stringByReplacingOccurrencesOfString:@"," withString:@""];
+        filename = [filename stringByReplacingOccurrencesOfString:@"/" withString:@"-"];
+        filename = [filename stringByReplacingOccurrencesOfString:@":" withString:@"."];
+        filename = [filename stringByReplacingOccurrencesOfString:@" " withString:@"."];
+        
+        
         _event = [MonitoringEvent newEventWithDate:date andFilename:filename inContext:self.appDelegate.managedObjectContext];
     }
     return _event;
