@@ -52,6 +52,7 @@
 		9799C8351B05655B0098C0A7 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9799C8341B05655B0098C0A7 /* FBSDKCoreKit.framework */; };
 		9799C8371B0566540098C0A7 /* ParseFacebookUtilsV4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9799C8361B0566540098C0A7 /* ParseFacebookUtilsV4.framework */; };
 		9799C8391B056DA90098C0A7 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9799C8381B056DA90098C0A7 /* FBSDKLoginKit.framework */; };
+		9799C83C1B0617120098C0A7 /* ADEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C83B1B0617120098C0A7 /* ADEvent.m */; };
 		97CA02351AF5513C00B86C4D /* MonitoringViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97CA02341AF5513C00B86C4D /* MonitoringViewController.m */; };
 		97D489DD1B041E94000569FD /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489DB1B041E94000569FD /* Bolts.framework */; };
 		97D489DE1B041E94000569FD /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489DC1B041E94000569FD /* Parse.framework */; };
@@ -149,6 +150,8 @@
 		9799C8341B05655B0098C0A7 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		9799C8361B0566540098C0A7 /* ParseFacebookUtilsV4.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtilsV4.framework; sourceTree = "<group>"; };
 		9799C8381B056DA90098C0A7 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		9799C83A1B0617120098C0A7 /* ADEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ADEvent.h; path = Model/ADEvent.h; sourceTree = "<group>"; };
+		9799C83B1B0617120098C0A7 /* ADEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ADEvent.m; path = Model/ADEvent.m; sourceTree = "<group>"; };
 		97CA02331AF5513C00B86C4D /* MonitoringViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitoringViewController.h; sourceTree = "<group>"; };
 		97CA02341AF5513C00B86C4D /* MonitoringViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringViewController.m; sourceTree = "<group>"; };
 		97D489DB1B041E94000569FD /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
@@ -418,6 +421,8 @@
 				97E2F8A01AFC0F6200E472F2 /* MonitoringEvent+AD.m */,
 				973DB64B1B017A7600418444 /* MonitoringEventFace+AD.h */,
 				973DB64C1B017A7600418444 /* MonitoringEventFace+AD.m */,
+				9799C83A1B0617120098C0A7 /* ADEvent.h */,
+				9799C83B1B0617120098C0A7 /* ADEvent.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -541,6 +546,7 @@
 				973DB6551B019D3200418444 /* UIImage+DataHandler.m in Sources */,
 				976AFADE1AF3CAC300F91585 /* main.m in Sources */,
 				973DB6501B018B3C00418444 /* DetailEventViewController.m in Sources */,
+				9799C83C1B0617120098C0A7 /* ADEvent.m in Sources */,
 				9799C8261B0528CD0098C0A7 /* NSString+FontAwesome.m in Sources */,
 				9799C8251B0528CD0098C0A7 /* BButton.m in Sources */,
 				9799C8271B0528CD0098C0A7 /* UIColor+BButton.m in Sources */,

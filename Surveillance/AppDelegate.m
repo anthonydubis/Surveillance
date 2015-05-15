@@ -40,6 +40,8 @@
     PFUser *currentUser = [PFUser currentUser];
     if (!currentUser) {
         [self showLoginScreen];
+    } else {
+        NSLog(@"%@", currentUser);
     }
     
     return YES;
