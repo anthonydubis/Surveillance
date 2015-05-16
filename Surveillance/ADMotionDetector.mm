@@ -46,7 +46,6 @@ const float LowMotionSensitivityPct      = 0.006;
  */
 - (void)setBackgroundWithPixelBuffer:(CVPixelBufferRef)pixelBuffer
 {
-    NSLog(@"Setting background");
     self.dateOfBackground = [NSDate date];
     CVPixelBufferLockBaseAddress(pixelBuffer, 0);
     cv::Mat gray = [self grayMatFromPixelBuffer:pixelBuffer];

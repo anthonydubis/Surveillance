@@ -14,11 +14,8 @@
 #import "ADFaceDetector.h"
 #import "ADVideoRecorder.h"
 #import "UIImage+DataHandler.h"
-
-// Core Data Related
-#import "AppDelegate.h"
-#import "MonitoringEvent+AD.h"
-#import "MonitoringEventFace+AD.h"
+#import "ADFileHelper.h"
+#import "ADS3Helper.h"
 
 // Parse Related
 #import "ADEvent.h"
@@ -38,15 +35,14 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 }
 
 @property (nonatomic, strong) AVAudioPlayer *beep;
-@property (nonatomic, strong) MonitoringEvent *event;
 @property (nonatomic, strong) ADVideoRecorder *videoRecorder;
 @property (nonatomic, strong) ADMotionDetector *motionDetector;
 @property (nonatomic, strong) ADFaceDetector *faceDetector;
-@property (nonatomic, strong) AppDelegate *appDelegate;
 @property (nonatomic, strong) UIImage *imageWithFaces;
+@property (nonatomic, strong) NSURL *recordingURL;
 
 // Integrating parse
-@property (nonatomic, strong) ADEvent *parseEvent;
+@property (nonatomic, strong) ADEvent *event;
 
 @end
 
@@ -68,7 +64,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 {
     [super viewDidLayoutSubviews];
     
-    self.videoRecorder = [[ADVideoRecorder alloc] initWithRecordingURL:[self.event recordingURL]];
+    self.videoRecorder = [[ADVideoRecorder alloc] initWithRecordingURL:self.recordingURL];
     [self performSelector:@selector(beginMonitoring) withObject:nil afterDelay:5.0];
 }
 
@@ -80,21 +76,22 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     // If recording, finish up. Then rollback the context to remove uncommited events
     if (isRecording) {
         if (self.imageWithFaces) {
+            /*
             [MonitoringEventFace newFaceWithData:UIImageJPEGRepresentation(self.imageWithFaces, 1)
                                         forEvent:self.event
                                        inContext:self.appDelegate.managedObjectContext];
+             */
+#warning Do something with faces
         }
-        [self.appDelegate saveContext];
-        NSLog(@"Does video recorder exist?: %@", self.videoRecorder);
-        [self.videoRecorder stopRecordingWithCompletionHandler:^{
-            if ([[NSFileManager defaultManager] fileExistsAtPath:self.event.recordingURL.path]) {
-                NSLog(@"The video was written");
-            } else {
-                NSLog(@"The video was not written");
-            }
-        }];
-    } else {
-        [self.appDelegate.managedObjectContext rollback];
+        [self stopRecording];
+//        NSLog(@"Does video recorder exist?: %@", self.videoRecorder);
+//        [self.videoRecorder stopRecordingWithCompletionHandler:^{
+//            if ([[NSFileManager defaultManager] fileExistsAtPath:self.recordingURL.path]) {
+//                NSLog(@"The video was written");
+//            } else {
+//                NSLog(@"The video was not written");
+//            }
+//        }];
     }
 }
 
@@ -148,7 +145,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         if ([self.motionDetector intervalSinceLastMotionCheck] < -1 * MotionDetectionFrequencyWhenRecording) {
             [self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer];
             if ([self.motionDetector hasMotionEnded]) {
-                [self stopRecording];
+                [self stopRecordingAndPrepareForNewRecording];
                 return;
             }
         }
@@ -199,8 +196,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     [self.beep play];
     
     // Create the parse object and save it
-//    self.parseEvent = [ADEvent objectForNewEvent];
-//    [self.parseEvent saveInBackground];
+    self.event = [ADEvent objectForNewEvent];
+    [self.event saveInBackground];
     
     [self.videoRecorder startRecording];
     isRecording = YES;
@@ -216,14 +213,38 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     [self.beep play];
     isRecording = NO;
     if (self.imageWithFaces) {
-        [MonitoringEventFace newFaceWithData:UIImageJPEGRepresentation(self.imageWithFaces, 1)
-                                    forEvent:self.event
-                                   inContext:self.appDelegate.managedObjectContext];
+#warning Do something with faces
+//        [MonitoringEventFace newFaceWithData:UIImageJPEGRepresentation(self.imageWithFaces, 1)
+//                                    forEvent:self.event
+//                                   inContext:self.appDelegate.managedObjectContext];
     }
-    [self.appDelegate saveContext];
     [self.videoRecorder stopRecordingWithCompletionHandler:^{
+        self.event.isStillRecording = NO;
+        [self.event saveInBackground];
+        [ADS3Helper uploadVideoAtURL:self.recordingURL forEvent:self.event];
+    }];
+}
+
+- (void)stopRecordingAndPrepareForNewRecording
+{
+    [self.beep play];
+    isRecording = NO;
+    if (self.imageWithFaces) {
+#warning Do something with faces
+        //        [MonitoringEventFace newFaceWithData:UIImageJPEGRepresentation(self.imageWithFaces, 1)
+        //                                    forEvent:self.event
+        //                                   inContext:self.appDelegate.managedObjectContext];
+    }
+    
+    // Upload video and prepare for new recording
+    [self.videoRecorder stopRecordingWithCompletionHandler:^{
+        self.event.isStillRecording = NO;
+        [self.event saveInBackground];
+        [ADS3Helper uploadVideoAtURL:self.recordingURL forEvent:self.event];
         [self prepareForNewRecording];
     }];
+    
+    // Update the ViewController's title
     dispatch_async(dispatch_get_main_queue(), ^{
         self.title = @"Stopping recording...";
     });
@@ -232,9 +253,10 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 - (void)prepareForNewRecording
 {
     self.event = nil;
+    self.recordingURL = nil;
     self.imageWithFaces = nil;
     [self.motionDetector setBackgroundWithPixelBuffer:nil];
-    [self.videoRecorder prepareToRecordWithNewURL:[self.event recordingURL]];
+    [self.videoRecorder prepareToRecordWithNewURL:self.recordingURL];
     isMonitoring = YES;
     dispatch_async(dispatch_get_main_queue(), ^{
         self.title = @"Monitoring...";
@@ -256,28 +278,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 #pragma mark - Getters/Setters
 
-- (AppDelegate *)appDelegate
-{
-    return [[UIApplication sharedApplication] delegate];
-}
-
-- (MonitoringEvent *)event
-{
-    if (!_event) {
-        NSDate *date = [NSDate date];
-        
-        NSDateFormatter *df = [[NSDateFormatter alloc] init];
-        df.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"America/Los_Angeles"];
-        [df setDateFormat:@"yyyy-MM-dd-HH-mm-ss"];
-        NSString *dateString = [df stringFromDate:date];
-        NSString *videoName = [NSString stringWithFormat:@"%@.mp4", dateString];
-        
-        
-        _event = [MonitoringEvent newEventWithDate:date andFilename:videoName inContext:self.appDelegate.managedObjectContext];
-    }
-    return _event;
-}
-
 - (AVAudioPlayer *)beep
 {
     if (!_beep) {
@@ -287,6 +287,16 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         _beep = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
     }
     return _beep;
+}
+
+- (NSURL *)recordingURL
+{
+    if (!_recordingURL) {
+        NSString *toUploadDirectory = [ADFileHelper toUploadDirectoryPath];
+        NSString *path = [toUploadDirectory stringByAppendingPathComponent:[[NSDate date] description]];
+        _recordingURL = [NSURL fileURLWithPath:path];
+    }
+    return _recordingURL;
 }
 
 - (ADMotionDetector *)motionDetector
