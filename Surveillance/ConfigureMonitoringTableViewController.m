@@ -88,10 +88,12 @@
     for (count = 0; count < (int)[directoryContent count]; count++)
     {
         NSString *filename = [directoryContent objectAtIndex:count];
-        NSDictionary *fileDictionary = [[NSFileManager defaultManager] attributesOfItemAtPath:[path stringByAppendingPathComponent:filename]
-                                                                                        error:nil];
-        unsigned long long size = [fileDictionary fileSize];
-        NSLog(@"File %d: %@, file size: %llu", (count + 1), [directoryContent objectAtIndex:count], size);
+        if (![filename containsString:@"Surveillance"]) {
+            NSDictionary *fileDictionary = [[NSFileManager defaultManager] attributesOfItemAtPath:[path stringByAppendingPathComponent:filename]
+                                                                                            error:nil];
+            unsigned long long size = [fileDictionary fileSize];
+            NSLog(@"File %d: %@, file size: %llu", (count + 1), [directoryContent objectAtIndex:count], size);
+        }
     }
     return directoryContent;
 }
@@ -106,9 +108,11 @@
 {
     NSArray *directoryContent = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL];
     for (NSString *filename in directoryContent) {
-        NSString *fullPath = [path stringByAppendingPathComponent:filename];
-        NSLog(@"About to remove: %@", fullPath);
-        [[NSFileManager defaultManager] removeItemAtPath:fullPath error:nil];
+        if (![filename containsString:@"Surveillance"]) {
+            NSString *fullPath = [path stringByAppendingPathComponent:filename];
+            NSLog(@"About to remove: %@", fullPath);
+            [[NSFileManager defaultManager] removeItemAtPath:fullPath error:nil];
+        }
     }
 }
 

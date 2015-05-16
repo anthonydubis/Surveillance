@@ -82,6 +82,7 @@
 
 - (void)stopRecordingWithCompletionHandler:(void (^)(void))handler
 {
+    [self.assetWriterInput markAsFinished];
     [self.assetWriter finishWritingWithCompletionHandler:^{
         handler();
     }];

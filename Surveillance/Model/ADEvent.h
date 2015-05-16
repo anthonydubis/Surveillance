@@ -19,7 +19,10 @@
 // Must be overriden by PFObject subclasses
 + (NSString *)parseClassName;
 
-// Create a new ADEvent for an event that just started
+/*
+ * A new Event for an event that just started
+ * At this point, no video has been uploaded as we are still recording.
+ */
 + (ADEvent *)objectForNewEvent;
 
 @end

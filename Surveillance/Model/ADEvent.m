@@ -23,7 +23,7 @@
 }
 
 + (NSString *)parseClassName {
-    return @"ADEvent";
+    return @"Event";
 }
 
 + (ADEvent *)objectForNewEvent
@@ -42,7 +42,7 @@
 + (NSString *)videoNameForEvent:(ADEvent *)event
 {
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
-    df.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"America/Los_Angeles"];
+    df.timeZone = [NSTimeZone timeZoneWithName:@"America/Los_Angeles"];
     [df setDateFormat:@"yyyy-MM-dd-HH-mm-ss"];
     NSString *dateString = [df stringFromDate:event.startedRecordingAt];
     NSString *videoName = [NSString stringWithFormat:@"%@.mp4", dateString];

@@ -26,10 +26,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     MonitoringEventFace *faces = [self.event.faces anyObject];
-    if (faces.imageData) NSLog(@"Found some faces");
     UIImage *image = [UIImage imageWithData:faces.imageData];
-    if (image)
-        NSLog(@"Have a nonempty Image");
     if (image)
         self.imageView.image = image;
     
@@ -57,7 +54,6 @@
 
 - (void)movieEventFullscreenHandler:(NSNotification *)notif
 {
-    NSLog(@"Handler was called.");
     [self.moviePlayerController.view removeFromSuperview];
 }
 

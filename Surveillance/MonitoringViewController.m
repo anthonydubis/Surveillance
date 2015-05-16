@@ -85,9 +85,16 @@ const int MotionDetectionFrequencyWhenRecording = 1;
                                        inContext:self.appDelegate.managedObjectContext];
         }
         [self.appDelegate saveContext];
+        NSLog(@"Does video recorder exist?: %@", self.videoRecorder);
         [self.videoRecorder stopRecordingWithCompletionHandler:^{
-            [self.appDelegate.managedObjectContext rollback];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:self.event.recordingURL.path]) {
+                NSLog(@"The video was written");
+            } else {
+                NSLog(@"The video was not written");
+            }
         }];
+    } else {
+        [self.appDelegate.managedObjectContext rollback];
     }
 }
 
@@ -191,10 +198,9 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 {
     [self.beep play];
     
-    // Create the parse object
-    NSLog(@"Creating parse event");
-    self.parseEvent = [ADEvent objectForNewEvent];
-    NSLog(@"%@", self.parseEvent);
+    // Create the parse object and save it
+//    self.parseEvent = [ADEvent objectForNewEvent];
+//    [self.parseEvent saveInBackground];
     
     [self.videoRecorder startRecording];
     isRecording = YES;
