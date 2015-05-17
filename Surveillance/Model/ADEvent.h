@@ -27,4 +27,9 @@
  */
 + (ADEvent *)objectForNewEvent;
 
+/*
+ * Gives a user-presentable description of the videos metadata (size/duration)
+ */
+- (NSString *)descriptionOfMetadata;
+
 @end

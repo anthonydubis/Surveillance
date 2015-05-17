@@ -82,6 +82,7 @@
     cell.textLabel.text = [NSDateFormatter localizedStringFromDate:event.startedRecordingAt
                                                          dateStyle:NSDateFormatterShortStyle
                                                          timeStyle:NSDateFormatterLongStyle];
+    cell.detailTextLabel.text = [event descriptionOfMetadata];
     
     // Set the accessory view
     if ([ADFileHelper haveDownloadedVideoForEvent:event])

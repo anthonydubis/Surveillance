@@ -52,4 +52,47 @@
     return videoName;
 }
 
+- (NSString *)descriptionOfMetadata
+{
+    if (self.isStillRecording)
+        return @"Still recording...";
+    
+    return [NSString stringWithFormat:@"%@ - %@", [self durationString], [self sizeString]];
+}
+
+- (NSString *)durationString
+{
+    int time = self.videoDuration.intValue;
+    
+    if (time == 0) return @"00:00";
+    
+    int hours = time / 3600;
+    time = time % 3600;
+    
+    int minutes = time / 60;
+    time = time % 60;
+    
+    int seconds = time;
+    
+    if (hours > 0) {
+        return [NSString stringWithFormat:@"%02i:%02i:%02i", hours, minutes, seconds];
+    } else {
+        return [NSString stringWithFormat:@"%02i:%02i", minutes, seconds];
+    }
+}
+
+- (NSString *)sizeString
+{
+    long long bytes = self.videoSize.longLongValue;
+    
+    if (bytes < 1000)
+        return [NSString stringWithFormat:@"%lli bytes", bytes];
+    else if (bytes < 1000000)
+        return [NSString stringWithFormat:@"%.1f KB", (float)bytes / 1000];
+    else if (bytes < 1000000000)
+        return [NSString stringWithFormat:@"%.1f MB", (float)bytes / 1000000];
+    else
+        return [NSString stringWithFormat:@"%.1f GB", (float)bytes / 1000000000];
+}
+
 @end
