@@ -87,4 +87,10 @@
                                    stringByAppendingPathComponent:event.videoName]];
 }
 
++ (BOOL)removeLocalCopyOfVideoForEvent:(ADEvent *)event
+{
+    NSURL *url = [self urlToDownloadedVideoForEvent:event];
+    return [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
+}
+
 @end

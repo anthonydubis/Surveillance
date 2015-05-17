@@ -33,9 +33,11 @@
     return self;
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [self.tableView reloadData];
 }
 
 - (void)objectsDidLoad:(nullable NSError *)error
@@ -179,6 +181,7 @@
 #warning What if this object was deleted while we were off doing the downloading?
     NSUInteger row = [[self objects] indexOfObject:event];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+    [self.progress removeObjectForKey:event.videoName];
     [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
 }
 

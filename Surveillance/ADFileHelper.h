@@ -30,6 +30,9 @@
  */
 + (void)listAllFilesAtToUploadDirectory;
 
+/*
+ * List all files in the documents directory
+ */
 + (void)listAllFilesInDocumentsDirectory;
 
 /*
@@ -42,5 +45,11 @@
  * Assumes the caller has already checked that the video exists
  */
 + (NSURL *)urlToDownloadedVideoForEvent:(ADEvent *)event;
+
+/*
+ * Remove the video associated with an event.
+ * Assumes the caller has already checked that the video exists
+ */
++ (BOOL)removeLocalCopyOfVideoForEvent:(ADEvent *)event;
 
 @end
