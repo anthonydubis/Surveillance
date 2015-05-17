@@ -18,8 +18,13 @@
 + (void)setupAWSS3Service;
 
 /*
- * Upload the video for an ADEvent
+ * Upload the video for an Event
  */
 + (void)uploadVideoAtURL:(NSURL *)url forEvent:(ADEvent *)event;
+
+/*
+ * Download the video for an Event
+ */
++ (void)downloadVideoForEvent:(ADEvent *)event toURL:(NSURL *)url withCompletionBlock:(void(^)(void))completionBlock;
 
 @end

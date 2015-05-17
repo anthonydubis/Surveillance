@@ -11,6 +11,7 @@
 #import "ADEvent.h"
 #import "ADFileHelper.h"
 
+#warning Test what happens when the ID is wrong just so you know we have some level of security
 NSString *CognitoPoolID = @"us-east-1:5bb89c68-9ee9-48b0-aceb-a18d4297aa29";
 NSString *BucketName = @"surveillance-bucket";
 
@@ -37,7 +38,7 @@ NSString *BucketName = @"surveillance-bucket";
     uploadRequest.bucket = BucketName;
     
     // Specify the key format as "objectID/videoName" to ensure uniqueness
-    uploadRequest.key = [NSString stringWithFormat:@"%@/%@", event.user.objectId, event.videoName];
+    uploadRequest.key = [self keyForEvent:event];
     
     // Perform the upload with a transfer manager
     AWSS3TransferManager *manager = [AWSS3TransferManager defaultS3TransferManager];
@@ -79,6 +80,54 @@ NSString *BucketName = @"surveillance-bucket";
     // Start he upload
     [[manager upload:uploadRequest] continueWithExecutor:[BFExecutor mainThreadExecutor]
                                                withBlock:completionBlock];
+}
+
++ (void)downloadVideoForEvent:(ADEvent *)event toURL:(NSURL *)toURL withCompletionBlock:(void(^)(void))completionBlock;
+{
+    // Construct the download request.
+    AWSS3TransferManagerDownloadRequest *downloadRequest = [AWSS3TransferManagerDownloadRequest new];
+    downloadRequest.bucket = BucketName;
+    downloadRequest.key = [self keyForEvent:event];
+    NSLog(@"Requesting key: %@", downloadRequest.key);
+    downloadRequest.downloadingFileURL = toURL;
+    
+    // Construct the completion block
+    id (^handler)(BFTask *task) = ^id(BFTask *task) {
+        if (task.error){
+            if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
+                switch (task.error.code) {
+                    case AWSS3TransferManagerErrorCancelled:
+                    case AWSS3TransferManagerErrorPaused:
+                        break;
+                    default:
+                        NSLog(@"Error: %@", task.error);
+                        break;
+                }
+            } else {
+                // Unknown error.
+                NSLog(@"Error: %@", task.error);
+            }
+        }
+        
+        if (task.result) {
+            //File downloaded successfully.
+            NSLog(@"File downloaded successfully");
+            if (completionBlock != nil) {
+                completionBlock();
+            }
+        }
+        return nil;
+    };
+    
+    // Start the process with the transfer manager
+    AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
+    [[transferManager download:downloadRequest] continueWithExecutor:[BFExecutor mainThreadExecutor]
+                                                           withBlock:handler];
+}
+
++ (NSString *)keyForEvent:(ADEvent *)event
+{
+    return [NSString stringWithFormat:@"%@/%@", event.user.objectId, event.videoName];
 }
 
 @end

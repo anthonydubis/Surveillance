@@ -7,7 +7,7 @@
 //
 
 #import "EventsTableViewController.h"
-#import "DetailEventViewController.h";
+#import "DetailEventViewController.h"
 
 // Core Data Related
 #import "AppDelegate.h"

@@ -92,6 +92,17 @@
 		9799C88B1B066BDF0098C0A7 /* AWSSQS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9799C87F1B066BDF0098C0A7 /* AWSSQS.framework */; };
 		9799C88E1B0760E70098C0A7 /* ADFileHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C88D1B0760E70098C0A7 /* ADFileHelper.m */; };
 		9799C8911B076B760098C0A7 /* ADS3Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8901B076B760098C0A7 /* ADS3Helper.m */; };
+		9799C8941B07BC860098C0A7 /* ADEventsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8931B07BC860098C0A7 /* ADEventsTableViewController.m */; };
+		9799C89D1B07E6ED0098C0A7 /* cloudDownload.png in Resources */ = {isa = PBXBuildFile; fileRef = 9799C89B1B07E6ED0098C0A7 /* cloudDownload.png */; };
+		9799C89E1B07E6ED0098C0A7 /* cloudDownload@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9799C89C1B07E6ED0098C0A7 /* cloudDownload@2x.png */; };
+		9799C8B11B0800200098C0A7 /* ACPDownloadConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8A21B0800200098C0A7 /* ACPDownloadConstants.m */; };
+		9799C8B21B0800200098C0A7 /* ACPDownloadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8A41B0800200098C0A7 /* ACPDownloadView.m */; };
+		9799C8B31B0800200098C0A7 /* ACPIndeterminateGoogleLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8A61B0800200098C0A7 /* ACPIndeterminateGoogleLayer.m */; };
+		9799C8B41B0800200098C0A7 /* ACPIndeterminateLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8A81B0800200098C0A7 /* ACPIndeterminateLayer.m */; };
+		9799C8B51B0800200098C0A7 /* ACPProgressLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8AB1B0800200098C0A7 /* ACPProgressLayer.m */; };
+		9799C8B61B0800200098C0A7 /* ACPStaticImages.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8AD1B0800200098C0A7 /* ACPStaticImages.m */; };
+		9799C8B71B0800200098C0A7 /* ACPStaticImagesAlternative.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8AF1B0800200098C0A7 /* ACPStaticImagesAlternative.m */; };
+		9799C8BE1B081F900098C0A7 /* ADDetailEventViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8BD1B081F900098C0A7 /* ADDetailEventViewController.m */; };
 		97CA02351AF5513C00B86C4D /* MonitoringViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97CA02341AF5513C00B86C4D /* MonitoringViewController.m */; };
 		97D489DD1B041E94000569FD /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489DB1B041E94000569FD /* Bolts.framework */; };
 		97D489DE1B041E94000569FD /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489DC1B041E94000569FD /* Parse.framework */; };
@@ -230,6 +241,28 @@
 		9799C88D1B0760E70098C0A7 /* ADFileHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADFileHelper.m; sourceTree = "<group>"; };
 		9799C88F1B076B760098C0A7 /* ADS3Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADS3Helper.h; sourceTree = "<group>"; };
 		9799C8901B076B760098C0A7 /* ADS3Helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADS3Helper.m; sourceTree = "<group>"; };
+		9799C8921B07BC860098C0A7 /* ADEventsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADEventsTableViewController.h; sourceTree = "<group>"; };
+		9799C8931B07BC860098C0A7 /* ADEventsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADEventsTableViewController.m; sourceTree = "<group>"; };
+		9799C89B1B07E6ED0098C0A7 /* cloudDownload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cloudDownload.png; sourceTree = "<group>"; };
+		9799C89C1B07E6ED0098C0A7 /* cloudDownload@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cloudDownload@2x.png"; sourceTree = "<group>"; };
+		9799C8A11B0800200098C0A7 /* ACPDownloadConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACPDownloadConstants.h; sourceTree = "<group>"; };
+		9799C8A21B0800200098C0A7 /* ACPDownloadConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACPDownloadConstants.m; sourceTree = "<group>"; };
+		9799C8A31B0800200098C0A7 /* ACPDownloadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACPDownloadView.h; sourceTree = "<group>"; };
+		9799C8A41B0800200098C0A7 /* ACPDownloadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACPDownloadView.m; sourceTree = "<group>"; };
+		9799C8A51B0800200098C0A7 /* ACPIndeterminateGoogleLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACPIndeterminateGoogleLayer.h; sourceTree = "<group>"; };
+		9799C8A61B0800200098C0A7 /* ACPIndeterminateGoogleLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACPIndeterminateGoogleLayer.m; sourceTree = "<group>"; };
+		9799C8A71B0800200098C0A7 /* ACPIndeterminateLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACPIndeterminateLayer.h; sourceTree = "<group>"; };
+		9799C8A81B0800200098C0A7 /* ACPIndeterminateLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACPIndeterminateLayer.m; sourceTree = "<group>"; };
+		9799C8A91B0800200098C0A7 /* ACPLayerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACPLayerProtocol.h; sourceTree = "<group>"; };
+		9799C8AA1B0800200098C0A7 /* ACPProgressLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACPProgressLayer.h; sourceTree = "<group>"; };
+		9799C8AB1B0800200098C0A7 /* ACPProgressLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACPProgressLayer.m; sourceTree = "<group>"; };
+		9799C8AC1B0800200098C0A7 /* ACPStaticImages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACPStaticImages.h; sourceTree = "<group>"; };
+		9799C8AD1B0800200098C0A7 /* ACPStaticImages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACPStaticImages.m; sourceTree = "<group>"; };
+		9799C8AE1B0800200098C0A7 /* ACPStaticImagesAlternative.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACPStaticImagesAlternative.h; sourceTree = "<group>"; };
+		9799C8AF1B0800200098C0A7 /* ACPStaticImagesAlternative.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACPStaticImagesAlternative.m; sourceTree = "<group>"; };
+		9799C8B01B0800200098C0A7 /* ACPStaticImagesProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACPStaticImagesProtocol.h; sourceTree = "<group>"; };
+		9799C8BC1B081F900098C0A7 /* ADDetailEventViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADDetailEventViewController.h; sourceTree = "<group>"; };
+		9799C8BD1B081F900098C0A7 /* ADDetailEventViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADDetailEventViewController.m; sourceTree = "<group>"; };
 		97CA02331AF5513C00B86C4D /* MonitoringViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitoringViewController.h; sourceTree = "<group>"; };
 		97CA02341AF5513C00B86C4D /* MonitoringViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringViewController.m; sourceTree = "<group>"; };
 		97D489DB1B041E94000569FD /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
@@ -342,6 +375,7 @@
 		974E160C1AFCCACB00514C57 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				9799C8B81B0800260098C0A7 /* ACPDownload */,
 				9799C8281B0528D20098C0A7 /* BButton */,
 				972473521AFD91F200D74BF8 /* ADVideoRecorder.h */,
 				972473531AFD91F200D74BF8 /* ADVideoRecorder.m */,
@@ -379,8 +413,10 @@
 			children = (
 				9749EB211AF6B284004D9785 /* ConfigureMonitoringTableViewController.h */,
 				9749EB221AF6B284004D9785 /* ConfigureMonitoringTableViewController.m */,
-				9749EB241AF6B2CB004D9785 /* EventsTableViewController.h */,
-				9749EB251AF6B2CB004D9785 /* EventsTableViewController.m */,
+				9799C8921B07BC860098C0A7 /* ADEventsTableViewController.h */,
+				9799C8931B07BC860098C0A7 /* ADEventsTableViewController.m */,
+				9799C8BC1B081F900098C0A7 /* ADDetailEventViewController.h */,
+				9799C8BD1B081F900098C0A7 /* ADDetailEventViewController.m */,
 				9724734F1AFD869F00D74BF8 /* CameraStreamViewController.h */,
 				972473501AFD869F00D74BF8 /* CameraStreamViewController.m */,
 				97CA02331AF5513C00B86C4D /* MonitoringViewController.h */,
@@ -389,6 +425,8 @@
 				972473561AFE451900D74BF8 /* ThumbnailViewController.m */,
 				973DB64E1B018B3C00418444 /* DetailEventViewController.h */,
 				973DB64F1B018B3C00418444 /* DetailEventViewController.m */,
+				9749EB241AF6B2CB004D9785 /* EventsTableViewController.h */,
+				9749EB251AF6B2CB004D9785 /* EventsTableViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -420,6 +458,8 @@
 				976AFAEB1AF3CAC300F91585 /* Images.xcassets */,
 				973DB6511B018FA600418444 /* empty.jpg */,
 				9799C8321B0559B10098C0A7 /* logo.png */,
+				9799C89B1B07E6ED0098C0A7 /* cloudDownload.png */,
+				9799C89C1B07E6ED0098C0A7 /* cloudDownload@2x.png */,
 				976AFADF1AF3CAC300F91585 /* AppDelegate.h */,
 				976AFAE01AF3CAC300F91585 /* AppDelegate.m */,
 				974E160C1AFCCACB00514C57 /* Classes */,
@@ -497,6 +537,53 @@
 				9799C85D1B066A640098C0A7 /* sts-2011-06-15.json */,
 			);
 			name = "AWS JSON";
+			sourceTree = "<group>";
+		};
+		9799C8B81B0800260098C0A7 /* ACPDownload */ = {
+			isa = PBXGroup;
+			children = (
+				9799C8B91B0800330098C0A7 /* Images */,
+				9799C8BA1B0800580098C0A7 /* Animations */,
+				9799C8BB1B0800720098C0A7 /* Protocols */,
+				9799C8A11B0800200098C0A7 /* ACPDownloadConstants.h */,
+				9799C8A21B0800200098C0A7 /* ACPDownloadConstants.m */,
+				9799C8A31B0800200098C0A7 /* ACPDownloadView.h */,
+				9799C8A41B0800200098C0A7 /* ACPDownloadView.m */,
+			);
+			name = ACPDownload;
+			sourceTree = "<group>";
+		};
+		9799C8B91B0800330098C0A7 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				9799C8AC1B0800200098C0A7 /* ACPStaticImages.h */,
+				9799C8AD1B0800200098C0A7 /* ACPStaticImages.m */,
+				9799C8AE1B0800200098C0A7 /* ACPStaticImagesAlternative.h */,
+				9799C8AF1B0800200098C0A7 /* ACPStaticImagesAlternative.m */,
+			);
+			name = Images;
+			sourceTree = "<group>";
+		};
+		9799C8BA1B0800580098C0A7 /* Animations */ = {
+			isa = PBXGroup;
+			children = (
+				9799C8A51B0800200098C0A7 /* ACPIndeterminateGoogleLayer.h */,
+				9799C8A61B0800200098C0A7 /* ACPIndeterminateGoogleLayer.m */,
+				9799C8A71B0800200098C0A7 /* ACPIndeterminateLayer.h */,
+				9799C8A81B0800200098C0A7 /* ACPIndeterminateLayer.m */,
+				9799C8AA1B0800200098C0A7 /* ACPProgressLayer.h */,
+				9799C8AB1B0800200098C0A7 /* ACPProgressLayer.m */,
+			);
+			name = Animations;
+			sourceTree = "<group>";
+		};
+		9799C8BB1B0800720098C0A7 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				9799C8A91B0800200098C0A7 /* ACPLayerProtocol.h */,
+				9799C8B01B0800200098C0A7 /* ACPStaticImagesProtocol.h */,
+			);
+			name = Protocols;
 			sourceTree = "<group>";
 		};
 		97CA02321AF5511A00B86C4D /* Frameworks */ = {
@@ -665,6 +752,7 @@
 				9799C86D1B066A640098C0A7 /* sqs-2012-11-05.json in Resources */,
 				9799C8661B066A640098C0A7 /* lambda-2015-03-31.json in Resources */,
 				9799C85E1B066A640098C0A7 /* autoscaling-2011-01-01.json in Resources */,
+				9799C89D1B07E6ED0098C0A7 /* cloudDownload.png in Resources */,
 				9799C8651B066A640098C0A7 /* kinesis-2013-12-02.json in Resources */,
 				9799C85F1B066A640098C0A7 /* cognito-identity-2014-06-30.json in Resources */,
 				9799C8691B066A640098C0A7 /* monitoring-2010-08-01.json in Resources */,
@@ -673,6 +761,7 @@
 				9799C8331B0559B10098C0A7 /* logo.png in Resources */,
 				9799C8631B066A640098C0A7 /* elasticloadbalancing-2012-06-01.json in Resources */,
 				9799C8681B066A640098C0A7 /* mobileanalytics-2014-06-30.json in Resources */,
+				9799C89E1B07E6ED0098C0A7 /* cloudDownload@2x.png in Resources */,
 				973DB6521B018FA600418444 /* empty.jpg in Resources */,
 				976AFAEC1AF3CAC300F91585 /* Images.xcassets in Resources */,
 				974E160B1AFC2E7D00514C57 /* beep-07.wav in Resources */,
@@ -699,27 +788,36 @@
 				972473541AFD91F200D74BF8 /* ADVideoRecorder.m in Sources */,
 				972473511AFD869F00D74BF8 /* CameraStreamViewController.m in Sources */,
 				976AFAE11AF3CAC300F91585 /* AppDelegate.m in Sources */,
+				9799C8941B07BC860098C0A7 /* ADEventsTableViewController.m in Sources */,
 				9712DB861AFD1B9C00533A1C /* ADFaceDetector.m in Sources */,
+				9799C8B31B0800200098C0A7 /* ACPIndeterminateGoogleLayer.m in Sources */,
 				973DB6441B0179EC00418444 /* MonitoringEventFace.m in Sources */,
+				9799C8B21B0800200098C0A7 /* ACPDownloadView.m in Sources */,
 				97E2F8A11AFC0F6200E472F2 /* MonitoringEvent+AD.m in Sources */,
 				972473571AFE451900D74BF8 /* ThumbnailViewController.m in Sources */,
 				973DB6471B017A1000418444 /* MonitoringEvent.m in Sources */,
 				97E62DBD1AF6E58200CECBCB /* SegmentedControlCell.m in Sources */,
+				9799C8B71B0800200098C0A7 /* ACPStaticImagesAlternative.m in Sources */,
+				9799C8B61B0800200098C0A7 /* ACPStaticImages.m in Sources */,
 				9769797D1AFAB5BA0029D82D /* UIAlertView+Blocks.m in Sources */,
 				9799C8911B076B760098C0A7 /* ADS3Helper.m in Sources */,
 				973DB6551B019D3200418444 /* UIImage+DataHandler.m in Sources */,
 				976AFADE1AF3CAC300F91585 /* main.m in Sources */,
 				973DB6501B018B3C00418444 /* DetailEventViewController.m in Sources */,
+				9799C8B51B0800200098C0A7 /* ACPProgressLayer.m in Sources */,
 				9799C83C1B0617120098C0A7 /* ADEvent.m in Sources */,
+				9799C8BE1B081F900098C0A7 /* ADDetailEventViewController.m in Sources */,
 				9799C8261B0528CD0098C0A7 /* NSString+FontAwesome.m in Sources */,
 				9799C8251B0528CD0098C0A7 /* BButton.m in Sources */,
 				9799C8271B0528CD0098C0A7 /* UIColor+BButton.m in Sources */,
 				97CA02351AF5513C00B86C4D /* MonitoringViewController.m in Sources */,
+				9799C8B11B0800200098C0A7 /* ACPDownloadConstants.m in Sources */,
 				97E02BE71AFB74D900E34B31 /* ADMotionDetector.mm in Sources */,
 				976AFAE41AF3CAC300F91585 /* Surveillance.xcdatamodeld in Sources */,
 				9749EB231AF6B284004D9785 /* ConfigureMonitoringTableViewController.m in Sources */,
 				976AFB4F1AF4077000F91585 /* ObservationViewController.mm in Sources */,
 				9799C88E1B0760E70098C0A7 /* ADFileHelper.m in Sources */,
+				9799C8B41B0800200098C0A7 /* ACPIndeterminateLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -23,13 +23,13 @@
     // Override point for customization after application launch.
     // [Optional] Power your app with Local Datastore. For more info, go to
     // https://parse.com/docs/ios_guide#localdatastore/iOS
-    [Parse enableLocalDatastore];
+    // [Parse enableLocalDatastore];
     
     // Initialize Parse and Facebook
     [Parse setApplicationId:@"RsfKbEwIOCNz8cCYmESlj5hXIV89HFuZtuZ6Jj2f"
                   clientKey:@"WvyRze50fd8hyuZ0NPxNAs5R9b1OPw5FvIyyBKX4"];
     [PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];
-    
+        
     // Set default ACL so all objects created can only be read/written to by the current user
     [PFACL setDefaultACL:[PFACL ACL] withAccessForCurrentUser:YES];
     

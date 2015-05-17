@@ -12,6 +12,7 @@
 #import "MonitoringViewController.h"
 #import "ADMotionDetector.h"
 #import <AWSS3/AWSS3.h>
+#import "ADFileHelper.h"
 
 @interface ConfigureMonitoringTableViewController ()
 
@@ -24,6 +25,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.motionSensitivity = MotionDetectorSensitivityHigh;
+    [ADFileHelper listAllFilesInDocumentsDirectory];
 }
 
 - (void)viewWillAppear:(BOOL)animated
