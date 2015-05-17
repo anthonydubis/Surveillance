@@ -32,4 +32,9 @@
  */
 + (void)deleteVideoForEvent:(ADEvent *)event withCompletionBlock:(void(^)(void))completionBlock;
 
+/*
+ * Get the size of the video file without having to download it
+ */
++ (int)getSizeOfVideoForEvent:(ADEvent *)event;
+
 @end

@@ -25,7 +25,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.motionSensitivity = MotionDetectorSensitivityHigh;
-    [ADFileHelper listAllFilesInDocumentsDirectory];
+    [ADFileHelper listAllFilesInDownloadsDirectory];
 }
 
 - (void)viewWillAppear:(BOOL)animated

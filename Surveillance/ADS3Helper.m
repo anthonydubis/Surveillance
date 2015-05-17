@@ -153,4 +153,14 @@ NSString *BucketName = @"surveillance-bucket";
     return [NSString stringWithFormat:@"%@/%@", event.user.objectId, event.videoName];
 }
 
+//
++ (int)getSizeOfVideoForEvent:(ADEvent *)event
+{
+//    S3GetObjectMetadataRequest *request =
+//    [[S3GetObjectMetadataRequest alloc] initWithKey:FILE_NAME withBucket:BUCKET_NAME];
+//    S3GetObjectMetadataResponse *response = [s3 getObjectMetadata:request];
+//    int64_t fileSize = response.contentLength;
+    return 0;
+}
+
 @end

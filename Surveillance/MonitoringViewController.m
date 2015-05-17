@@ -219,8 +219,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 //                                   inContext:self.appDelegate.managedObjectContext];
     }
     [self.videoRecorder stopRecordingWithCompletionHandler:^{
-        self.event.isStillRecording = NO;
-        [self.event saveInBackground];
+        [self updateEventForEndOfRecording];
         [ADS3Helper uploadVideoAtURL:self.recordingURL forEvent:self.event];
     }];
 }
@@ -238,8 +237,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     
     // Upload video and prepare for new recording
     [self.videoRecorder stopRecordingWithCompletionHandler:^{
-        self.event.isStillRecording = NO;
-        [self.event saveInBackground];
+        [self updateEventForEndOfRecording];
         [ADS3Helper uploadVideoAtURL:self.recordingURL forEvent:self.event];
         [self prepareForNewRecording];
     }];
@@ -248,6 +246,16 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     dispatch_async(dispatch_get_main_queue(), ^{
         self.title = @"Stopping recording...";
     });
+}
+
+// Update the event with metadata and knowledge that the recording has ended
+- (void)updateEventForEndOfRecording
+{
+    self.event.isStillRecording = NO;
+    self.event.videoSize = [ADFileHelper sizeOfFileAtURL:self.recordingURL];
+    NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:self.event.startedRecordingAt];
+    self.event.videoDuration = [NSNumber numberWithInt:duration];
+    [self.event saveInBackground];
 }
 
 - (void)prepareForNewRecording

@@ -58,7 +58,6 @@
         unsigned long long size = [fileDictionary fileSize];
         NSLog(@"File %d: %@, file size: %llu", count, [directoryContent objectAtIndex:count], size);
     }
-
 }
 
 + (void)listAllFilesInDocumentsDirectory
@@ -73,6 +72,13 @@
     NSLog(@"Listing files at ToUpload directory.");
     NSString *toUploadPath = [self toUploadDirectoryPath];
     [self listAllFilesAtDirectoryPath:toUploadPath];
+}
+
++ (void)listAllFilesInDownloadsDirectory
+{
+    NSLog(@"Listing files at Downloads directory.");
+    NSString *downloadsPath = [self downloadsDirectoryPath];
+    [self listAllFilesAtDirectoryPath:downloadsPath];
 }
 
 + (BOOL)haveDownloadedVideoForEvent:(ADEvent *)event
@@ -91,6 +97,12 @@
 {
     NSURL *url = [self urlToDownloadedVideoForEvent:event];
     return [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
+}
+
++ (NSNumber *)sizeOfFileAtURL:(NSURL *)fileURL
+{
+    NSDictionary *fileDictionary = [[NSFileManager defaultManager] attributesOfItemAtPath:[fileURL path] error:nil];
+    return [NSNumber numberWithLongLong:[fileDictionary fileSize]];
 }
 
 @end

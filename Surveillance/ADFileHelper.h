@@ -36,6 +36,11 @@
 + (void)listAllFilesInDocumentsDirectory;
 
 /*
+ * List all files and sizes in the documents directory
+ */
++ (void)listAllFilesInDownloadsDirectory;
+
+/*
  * Returns true if we have a local copy of the event video
  */
 + (BOOL)haveDownloadedVideoForEvent:(ADEvent *)event;
@@ -51,5 +56,10 @@
  * Assumes the caller has already checked that the video exists
  */
 + (BOOL)removeLocalCopyOfVideoForEvent:(ADEvent *)event;
+
+/*
+ * Return the file size of the file at the given URL in bytes
+ */
++ (NSNumber *)sizeOfFileAtURL:(NSURL *)fileURL;
 
 @end

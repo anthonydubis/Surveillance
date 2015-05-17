@@ -15,6 +15,8 @@
 @property (nonatomic, strong) NSDate *startedRecordingAt;
 @property (nonatomic, strong) PFUser *user;
 @property (nonatomic, assign) BOOL isStillRecording;
+@property (nonatomic, strong) NSNumber *videoSize;
+@property (nonatomic, strong) NSNumber *videoDuration;
 
 // Must be overriden by PFObject subclasses
 + (NSString *)parseClassName;

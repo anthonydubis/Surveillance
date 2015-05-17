@@ -41,4 +41,5 @@
  */
 - (void)appendFrameFromPixelBuffer:(CVPixelBufferRef)pixelBuffer;
 
+
 @end

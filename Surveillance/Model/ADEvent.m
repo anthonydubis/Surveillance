@@ -16,6 +16,8 @@
 @dynamic startedRecordingAt;
 @dynamic user;
 @dynamic isStillRecording;
+@dynamic videoSize;
+@dynamic videoDuration;
 
 // This gets called before Parse's setApplicationId:clientKey:
 + (void)load {
