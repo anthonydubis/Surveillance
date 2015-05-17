@@ -27,4 +27,9 @@
  */
 + (void)downloadVideoForEvent:(ADEvent *)event toURL:(NSURL *)url withCompletionBlock:(void(^)(void))completionBlock;
 
+/*
+ * Delete the video for an Event from the S3 Bucket
+ */
++ (void)deleteVideoForEvent:(ADEvent *)event withCompletionBlock:(void(^)(void))completionBlock;
+
 @end

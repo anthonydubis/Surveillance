@@ -13,7 +13,7 @@
 #import "ADS3Helper.h"
 #import "ADDetailEventViewController.h"
 
-@interface ADEventsTableViewController ()
+@interface ADEventsTableViewController () <EventAndVideoDeletionDeletionDelegate>
 
 // A dictionary containing the current download progress of remote videos
 @property (nonatomic, strong) NSMutableDictionary *progress;
@@ -87,14 +87,13 @@
     if ([ADFileHelper haveDownloadedVideoForEvent:event])
     {
         // We already have the video
-        NSLog(@"The file exists");
         cell.accessoryView = nil;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     else if (self.progress[event.videoName])
     {
         // We are downloading the video
-        NSLog(@"The download is in progress");
+        NSLog(@"Downloading in progress");
         UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         cell.accessoryView = activityIndicator;
         [activityIndicator startAnimating];
@@ -103,7 +102,6 @@
     else
     {
         // The video has not been downloaded yet
-        NSLog(@"The file doesn't exist");
         cell.accessoryView = [self cloudDownloadAccessoryButtonForIndexPath:indexPath];
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
@@ -179,10 +177,15 @@
 - (void)videoWasDownloadedForEvent:(ADEvent *)event
 {
 #warning What if this object was deleted while we were off doing the downloading?
-    NSUInteger row = [[self objects] indexOfObject:event];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+    NSIndexPath *indexPath = [self indexPathForEvent:event];
     [self.progress removeObjectForKey:event.videoName];
     [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+}
+
+- (NSIndexPath *)indexPathForEvent:(ADEvent *)event
+{
+    NSUInteger row = [[self objects] indexOfObject:event];
+    return [NSIndexPath indexPathForRow:row inSection:0];
 }
 
 #pragma mark - Navigation
@@ -193,7 +196,22 @@
         NSIndexPath *indexPath = (NSIndexPath *)sender;
         ADDetailEventViewController *detailEventVC = segue.destinationViewController;
         detailEventVC.event = (ADEvent *)[self objectAtIndexPath:indexPath];
+        detailEventVC.delegate = self;
     }
+}
+
+#pragma mark - EventAndVideoDeletionDelegate methods
+
+- (void)didDeleteLocalVideoForEvent:(ADEvent *)event
+{
+    NSLog(@"Local vid was deleted for event: %@", event);
+    [self.tableView reloadData];
+}
+
+- (void)didPermanentlyDeleteEvent:(ADEvent *)event
+{
+    NSLog(@"Event was permanently deleted: %@", event);
+    [self loadObjects];
 }
 
 #pragma mark - Getters and Setters

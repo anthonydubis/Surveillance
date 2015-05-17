@@ -36,8 +36,6 @@ NSString *BucketName = @"surveillance-bucket";
     AWSS3TransferManagerUploadRequest *uploadRequest = [AWSS3TransferManagerUploadRequest new];
     uploadRequest.body = url;
     uploadRequest.bucket = BucketName;
-    
-    // Specify the key format as "objectID/videoName" to ensure uniqueness
     uploadRequest.key = [self keyForEvent:event];
     
     // Perform the upload with a transfer manager
@@ -125,6 +123,31 @@ NSString *BucketName = @"surveillance-bucket";
                                                            withBlock:handler];
 }
 
++ (void)deleteVideoForEvent:(ADEvent *)event withCompletionBlock:(void(^)(void))completionBlock
+{
+    AWSS3 *s3 = [AWSS3 defaultS3];
+    
+    //Delete Object
+    AWSS3DeleteObjectRequest *deleteObjectRequest = [AWSS3DeleteObjectRequest new];
+    deleteObjectRequest.bucket = BucketName;
+    deleteObjectRequest.key = [self keyForEvent:event];
+    
+    [[s3 deleteObject:deleteObjectRequest] continueWithExecutor:[BFExecutor mainThreadExecutor]
+                                                      withBlock:^id(BFTask *task) {
+        if(task.error != nil){
+            if(task.error.code != AWSS3TransferManagerErrorCancelled && task.error.code != AWSS3TransferManagerErrorPaused){
+                NSLog(@"%s Error: [%@]",__PRETTY_FUNCTION__, task.error);
+            }
+        } else{
+            NSLog(@"Finished the deletion");
+            if (completionBlock != nil)
+                completionBlock();
+        }
+        return nil;
+    }];
+}
+
+// Specify the key format as "objectID/videoName" to ensure uniqueness
 + (NSString *)keyForEvent:(ADEvent *)event
 {
     return [NSString stringWithFormat:@"%@/%@", event.user.objectId, event.videoName];
