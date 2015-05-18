@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class ADEvent;
+@class AWSS3TransferManagerDownloadRequest;
 
 @interface ADS3Helper : NSObject
 
@@ -26,6 +27,12 @@
  * Download the video for an Event
  */
 + (void)downloadVideoForEvent:(ADEvent *)event toURL:(NSURL *)url withCompletionBlock:(void(^)(void))completionBlock;
+
+/*
+ * Get the download request for an event and download URL
+ * Used when it makes more sense for the download blocks to be handled elsewhere, such as a view controller
+ */
++ (AWSS3TransferManagerDownloadRequest *)downloadRequestForEvent:(ADEvent *)event andDownloadURL:(NSURL *)url;
 
 /*
  * Delete the video for an Event from the S3 Bucket

@@ -83,11 +83,7 @@ NSString *BucketName = @"surveillance-bucket";
 + (void)downloadVideoForEvent:(ADEvent *)event toURL:(NSURL *)toURL withCompletionBlock:(void(^)(void))completionBlock;
 {
     // Construct the download request.
-    AWSS3TransferManagerDownloadRequest *downloadRequest = [AWSS3TransferManagerDownloadRequest new];
-    downloadRequest.bucket = BucketName;
-    downloadRequest.key = [self keyForEvent:event];
-    NSLog(@"Requesting key: %@", downloadRequest.key);
-    downloadRequest.downloadingFileURL = toURL;
+    AWSS3TransferManagerDownloadRequest *downloadRequest = [self downloadRequestForEvent:event andDownloadURL:toURL];
     
     // Construct the completion block
     id (^handler)(BFTask *task) = ^id(BFTask *task) {
@@ -121,6 +117,16 @@ NSString *BucketName = @"surveillance-bucket";
     AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
     [[transferManager download:downloadRequest] continueWithExecutor:[BFExecutor mainThreadExecutor]
                                                            withBlock:handler];
+}
+
++ (AWSS3TransferManagerDownloadRequest *)downloadRequestForEvent:(ADEvent *)event andDownloadURL:(NSURL *)url
+{
+    // Construct the download request.
+    AWSS3TransferManagerDownloadRequest *downloadRequest = [AWSS3TransferManagerDownloadRequest new];
+    downloadRequest.bucket = BucketName;
+    downloadRequest.key = [self keyForEvent:event];
+    downloadRequest.downloadingFileURL = url;
+    return downloadRequest;
 }
 
 + (void)deleteVideoForEvent:(ADEvent *)event withCompletionBlock:(void(^)(void))completionBlock

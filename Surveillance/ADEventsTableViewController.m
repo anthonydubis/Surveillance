@@ -11,12 +11,14 @@
 #import "ADFileHelper.h"
 #import "ACPDownloadView.h"
 #import "ADS3Helper.h"
+#import <AWSS3/AWSS3.h>
 #import "ADDetailEventViewController.h"
+#import "ADDownloadProgress.h"
 
 @interface ADEventsTableViewController () <EventAndVideoDeletionDeletionDelegate>
 
 // A dictionary containing the current download progress of remote videos
-@property (nonatomic, strong) NSMutableDictionary *progress;
+@property (nonatomic, strong) NSMutableDictionary *downloading;
 
 @end
 
@@ -82,29 +84,34 @@
     cell.textLabel.text = [NSDateFormatter localizedStringFromDate:event.startedRecordingAt
                                                          dateStyle:NSDateFormatterShortStyle
                                                          timeStyle:NSDateFormatterLongStyle];
-    cell.detailTextLabel.text = [event descriptionOfMetadata];
     
     // Set the accessory view
-    if ([ADFileHelper haveDownloadedVideoForEvent:event])
+    if (self.downloading[event.videoName])
     {
-        // We already have the video
-        cell.accessoryView = nil;
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    }
-    else if (self.progress[event.videoName])
-    {
-        // We are downloading the video
+        // We are downloading the video - this check must come first because a partially downloaded file
+        // will cause the haveDownloadedVideoForEvent method to come true
         NSLog(@"Downloading in progress");
+        ADDownloadProgress *downloadProgress = self.downloading[event.videoName];
+        cell.detailTextLabel.text = [event percentDownloadedStringForBytesReceived:downloadProgress.bytesDownloaded];
         UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         cell.accessoryView = activityIndicator;
         [activityIndicator startAnimating];
         cell.accessoryType = UITableViewCellAccessoryNone;
+    }
+    else if ([ADFileHelper haveDownloadedVideoForEvent:event])
+    {
+        NSLog(@"The filename exists");
+        // We already have the video
+        cell.accessoryView = nil;
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        cell.detailTextLabel.text = [event descriptionOfMetadata];
     }
     else
     {
         // The video has not been downloaded yet
         cell.accessoryView = [self cloudDownloadAccessoryButtonForIndexPath:indexPath];
         cell.accessoryType = UITableViewCellAccessoryNone;
+        cell.detailTextLabel.text = [event descriptionOfMetadata];
     }
 }
 
@@ -160,17 +167,78 @@
 {
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:[[[event touchesForView:button] anyObject] locationInView:self.tableView]];
     if (indexPath) {
-        NSLog(@"%@", indexPath);
         // Download the video
         ADEvent *event = (ADEvent *)[self objectAtIndexPath:indexPath];
+        self.downloading[event.videoName] = [[ADDownloadProgress alloc] init];
         NSURL *url = [NSURL fileURLWithPath:[[ADFileHelper downloadsDirectoryPath] stringByAppendingPathComponent:event.videoName]];
+        
+        // Create the download request
+        AWSS3TransferManagerDownloadRequest *downloadRequest = [ADS3Helper downloadRequestForEvent:event andDownloadURL:url];
+        
+        // Construct the completion block
+        id (^handler)(BFTask *task) = ^id(BFTask *task) {
+            if (task.error){
+                if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
+                    switch (task.error.code) {
+                        case AWSS3TransferManagerErrorCancelled:
+                        case AWSS3TransferManagerErrorPaused:
+                            break;
+                        default:
+                            NSLog(@"Error: %@", task.error);
+                            break;
+                    }
+                } else {
+                    // Unknown error.
+                    NSLog(@"Error: %@", task.error);
+                }
+            }
+            
+            if (task.result) {
+                //File downloaded successfully.
+                NSLog(@"File downloaded successfully");
+                [self videoWasDownloadedForEvent:event];
+            }
+            return nil;
+        };
+        
+        // Set the progress blocks
+        __weak ADEventsTableViewController *weakSelf = self;
+        downloadRequest.downloadProgress = ^(int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite) {
+            ADDownloadProgress *progress = weakSelf.downloading[event.videoName];
+            if ([progress secondsSinceLastUpdate] >= 1) {
+                progress.bytesDownloaded = [NSNumber numberWithLong:totalBytesWritten];
+                progress.lastUpdate = [NSDate date];
+                self.downloading[event.videoName] = progress;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSIndexPath *indexPath = [weakSelf indexPathForEvent:event];
+                    if ([weakSelf isIndexPathVisible:indexPath]) {
+                        [weakSelf configureCell:[weakSelf.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+                    }
+                });
+            }
+        };
+        
+        // Start the process with the transfer manager
+        AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
+        [[transferManager download:downloadRequest] continueWithExecutor:[BFExecutor mainThreadExecutor]
+                                                               withBlock:handler];
+        
+        
+        
+        
+        /*
         __weak ADEventsTableViewController *weakSelf = self;
         [ADS3Helper downloadVideoForEvent:event toURL:(NSURL *)url withCompletionBlock:^{
             [weakSelf videoWasDownloadedForEvent:event];
         }];
-        self.progress[event.videoName] = [NSNumber numberWithFloat:0.0];
+         */
         [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
     }
+}
+
+- (BOOL)isIndexPathVisible:(NSIndexPath *)indexPath
+{
+    return [[self.tableView indexPathsForVisibleRows] containsObject:indexPath];
 }
 
 #warning There are going to be a lot of "what if" scenarios around these downloads (lossed network, user deletes video, etc.)
@@ -179,7 +247,7 @@
 {
 #warning What if this object was deleted while we were off doing the downloading?
     NSIndexPath *indexPath = [self indexPathForEvent:event];
-    [self.progress removeObjectForKey:event.videoName];
+    [self.downloading removeObjectForKey:event.videoName];
     [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
 }
 
@@ -217,12 +285,14 @@
 
 #pragma mark - Getters and Setters
 
-- (NSMutableDictionary *)progress
+// Holds an NSDate for the last time the download progress for an Event is updated
+// The keys are the videoName of ADEvents, which are unique for a user
+- (NSMutableDictionary *)downloading
 {
-    if (!_progress) {
-        _progress = [[NSMutableDictionary alloc] init];
+    if (!_downloading) {
+        _downloading = [[NSMutableDictionary alloc] init];
     }
-    return _progress;
+    return _downloading;
 }
 
 @end
