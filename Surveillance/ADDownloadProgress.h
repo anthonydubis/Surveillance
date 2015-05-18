@@ -15,10 +15,18 @@
 // The last time the UI was updated
 @property (nonatomic, strong) NSDate *lastUpdate;
 
-// Amount of file downloaded in bytes
+// Number of bytes you've downloaded so far
 @property (nonatomic, strong) NSNumber *bytesDownloaded;
+
+// Number of bytes you expect to download
+@property (nonatomic, strong) NSNumber *bytesToBeDownloaded;
+
+- (id)initWithBytesToBeDownloaded:(NSNumber *)bytes;
 
 // The amount of seconds that have passed since the UI was updated
 - (int)secondsSinceLastUpdate;
+
+// Returns the percentage downloaded so far
+- (float)percentageDownloaded;
 
 @end

@@ -90,13 +90,22 @@
     {
         // We are downloading the video - this check must come first because a partially downloaded file
         // will cause the haveDownloadedVideoForEvent method to come true
-        NSLog(@"Downloading in progress");
         ADDownloadProgress *downloadProgress = self.downloading[event.videoName];
         cell.detailTextLabel.text = [event percentDownloadedStringForBytesReceived:downloadProgress.bytesDownloaded];
+        if ([cell.accessoryView isKindOfClass:[ACPDownloadView class]]) {
+            [self configureDownloadView:(ACPDownloadView *)cell.accessoryView forDownloadingEvent:event];
+        } else {
+            NSLog(@"Downloading in progress");
+            cell.accessoryType = UITableViewCellAccessoryNone;
+            cell.accessoryView = [self accessoryViewForIndexPath:indexPath];
+        }
+        
+        /*
         UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         cell.accessoryView = activityIndicator;
         [activityIndicator startAnimating];
         cell.accessoryType = UITableViewCellAccessoryNone;
+         */
     }
     else if ([ADFileHelper haveDownloadedVideoForEvent:event])
     {
@@ -109,29 +118,50 @@
     else
     {
         // The video has not been downloaded yet
-        cell.accessoryView = [self cloudDownloadAccessoryButtonForIndexPath:indexPath];
+        cell.accessoryView = [self accessoryViewForIndexPath:indexPath];
+        // cell.accessoryView = [self cloudDownloadAccessoryButtonForIndexPath:indexPath];
         cell.accessoryType = UITableViewCellAccessoryNone;
         cell.detailTextLabel.text = [event descriptionOfMetadata];
     }
 }
 
-#define CLOUD_ICON_SIZE 30.0
-
-- (UIButton *)cloudDownloadAccessoryButtonForIndexPath:(NSIndexPath *)indexPath
+- (void)configureDownloadView:(ACPDownloadView *)downloadView forDownloadingEvent:(ADEvent *)event
 {
-    /*
+    ADDownloadProgress *progress = self.downloading[event.videoName];
+    [downloadView setProgress:[progress percentageDownloaded] animated:YES];
+}
+
+#define ACCESSORY_SIZE 30.0
+
+- (UIView *)accessoryViewForIndexPath:(NSIndexPath *)indexPath
+{
     ADEvent *event = (ADEvent *)[self objectAtIndexPath:indexPath];
-    ACPDownloadView *accessoryView = [[ACPDownloadView alloc] initWithFrame:CGRectMake(0, 0, CLOUD_ICON_SIZE, CLOUD_ICON_SIZE)];
-    accessoryView.backgroundColor = [UIColor clearColor];
-    [accessoryView setProgress:0.0 animated:NO];
     
+    // Create the accessory view
+    ACPDownloadView *accessoryView = [[ACPDownloadView alloc] initWithFrame:CGRectMake(0, 0, ACCESSORY_SIZE, ACCESSORY_SIZE)];
+    accessoryView.backgroundColor = [UIColor clearColor];
+    
+    // Set it's progress so far
+    ADDownloadProgress *progress = self.downloading[event.videoName];
+    if (progress) {
+        NSLog(@"Setting the progress to %f", [progress percentageDownloaded]);
+        [accessoryView setIndicatorStatus:ACPDownloadStatusRunning];
+        [accessoryView setProgress:[progress percentageDownloaded] animated:YES];
+    } else {
+        NSLog(@"Progress isn't available.");
+        [accessoryView setIndicatorStatus:ACPDownloadStatusNone];
+        [accessoryView setProgress:0.0 animated:NO];
+    }
+    
+    // Set it's action block to handle taps
     [accessoryView setActionForTap:^(ACPDownloadView *downloadView, ACPDownloadStatus status){
         switch (status) {
             case ACPDownloadStatusNone:
-                [downloadView setProgress:[self.progress[event.videoName] floatValue] animated:YES];
                 [downloadView setIndicatorStatus:ACPDownloadStatusRunning];
+                [self downloadVideoForEvent:event];
                 break;
             case ACPDownloadStatusRunning:
+                // Pause or cancel the download
                 [downloadView setIndicatorStatus:ACPDownloadStatusNone];
                 break;
             default:
@@ -139,13 +169,14 @@
         }
     }];
     return accessoryView;
-     */
-    
-    
+}
+
+- (UIButton *)cloudDownloadAccessoryButtonForIndexPath:(NSIndexPath *)indexPath
+{
     // Create the button
     UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [button setImage:[UIImage imageNamed:@"cloudDownload.png"] forState:UIControlStateNormal];
-    [button setFrame:CGRectMake(0, 0, CLOUD_ICON_SIZE, CLOUD_ICON_SIZE)];
+    [button setFrame:CGRectMake(0, 0, ACCESSORY_SIZE, ACCESSORY_SIZE)];
     
     // Set it's target
     [button addTarget:self action:@selector(cloudDownloadAccessoryButtonTapped:withEvent:) forControlEvents:UIControlEventTouchUpInside];
@@ -154,11 +185,22 @@
 
 #pragma mark - TableView delegate methods
 
+- (void)cloudDownloadAccessoryButtonTapped:(UIButton *)button withEvent:(UIEvent *)event
+{
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:[[[event touchesForView:button] anyObject] locationInView:self.tableView]];
+    if (indexPath) {
+        // Download the video
+        ADEvent *event = (ADEvent *)[self objectAtIndexPath:indexPath];
+        [self downloadVideoForEvent:event];
+    }
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     ADEvent *event = (ADEvent *)[self objectAtIndexPath:indexPath];
     if (self.downloading[event.videoName]) {
         // We're downloading the file
+#warning Let the user pause/cancel the download
         [UIAlertView showWithTitle:nil message:@"Let the user cancel the download" cancelButtonTitle:@"OK" otherButtonTitles:nil tapBlock:nil];
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     } else if ([ADFileHelper haveDownloadedVideoForEvent:event]) {
@@ -233,7 +275,7 @@
 
 - (void)downloadVideoForEvent:(ADEvent *)event
 {
-    self.downloading[event.videoName] = [[ADDownloadProgress alloc] init];
+    self.downloading[event.videoName] = [[ADDownloadProgress alloc] initWithBytesToBeDownloaded:event.videoSize];
     NSURL *url = [NSURL fileURLWithPath:[[ADFileHelper downloadsDirectoryPath] stringByAppendingPathComponent:event.videoName]];
     
     // Create the download request
@@ -287,26 +329,8 @@
     [[transferManager download:downloadRequest] continueWithExecutor:[BFExecutor mainThreadExecutor]
                                                            withBlock:handler];
     
-    
-    /*
-     __weak ADEventsTableViewController *weakSelf = self;
-     [ADS3Helper downloadVideoForEvent:event toURL:(NSURL *)url withCompletionBlock:^{
-     [weakSelf videoWasDownloadedForEvent:event];
-     }];
-     */
-    
     NSIndexPath *indexPath = [self indexPathForEvent:event];
     [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
-}
-
-- (void)cloudDownloadAccessoryButtonTapped:(UIButton *)button withEvent:(UIEvent *)event
-{
-    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:[[[event touchesForView:button] anyObject] locationInView:self.tableView]];
-    if (indexPath) {
-        // Download the video
-        ADEvent *event = (ADEvent *)[self objectAtIndexPath:indexPath];
-        [self downloadVideoForEvent:event];
-    }
 }
 
 - (BOOL)isIndexPathVisible:(NSIndexPath *)indexPath
