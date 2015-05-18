@@ -27,6 +27,12 @@
 - (int)secondsSinceLastUpdate;
 
 // Returns the percentage downloaded so far
-- (float)percentageDownloaded;
+- (double)percentageDownloaded;
+
+/*
+ * A user presentable string for the number of bytes downloaded, and the percentage
+ * xx MB of xx MB, xx%
+ */
+- (NSString *)downloadProgressString;
 
 @end

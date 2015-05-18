@@ -100,16 +100,4 @@
     return [self sizeStringForBytes:self.videoSize];
 }
 
-- (NSString *)percentDownloadedStringForBytesReceived:(NSNumber *)bytes
-{
-    if (self.videoSize.longLongValue == 0)
-        return @"Downloading...";
-    
-    NSString *desc = [NSString stringWithFormat:@"Downloaded %@ of %@",
-                      [self sizeStringForBytes:bytes],
-                      [self sizeStringForBytes:self.videoSize]];
-    NSString *pctStr = [NSString stringWithFormat:@", %.0f%%", (bytes.doubleValue / self.videoSize.doubleValue) * 100];
-    return [desc stringByAppendingString:pctStr];
-}
-
 @end

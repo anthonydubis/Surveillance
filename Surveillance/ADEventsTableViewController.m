@@ -56,15 +56,6 @@
 
 - (PFQuery *)queryForTable {
     PFQuery *query = [PFQuery queryWithClassName:self.parseClassName];
-
-    // With this commented out, the objects are loaded everything the view loads
-    // We should eventually fetch from the local store first, then try the remote one
-//    // If no objects are loaded in memory, we look to the cache
-//    // first to fill the table and then subsequently do a query
-//    // against the network.
-//    if ([self.objects count] == 0) {
-//        query.cachePolicy = kPFCachePolicyCacheThenNetwork;
-//    }
     
     [query orderByDescending:@"createdAt"];
     
@@ -90,26 +81,17 @@
     {
         // We are downloading the video - this check must come first because a partially downloaded file
         // will cause the haveDownloadedVideoForEvent method to come true
-        ADDownloadProgress *downloadProgress = self.downloading[event.videoName];
-        cell.detailTextLabel.text = [event percentDownloadedStringForBytesReceived:downloadProgress.bytesDownloaded];
+        ADDownloadProgress *progress = self.downloading[event.videoName];
+        cell.detailTextLabel.text = [progress downloadProgressString];
         if ([cell.accessoryView isKindOfClass:[ACPDownloadView class]]) {
             [self configureDownloadView:(ACPDownloadView *)cell.accessoryView forDownloadingEvent:event];
         } else {
-            NSLog(@"Downloading in progress");
             cell.accessoryType = UITableViewCellAccessoryNone;
             cell.accessoryView = [self accessoryViewForIndexPath:indexPath];
         }
-        
-        /*
-        UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        cell.accessoryView = activityIndicator;
-        [activityIndicator startAnimating];
-        cell.accessoryType = UITableViewCellAccessoryNone;
-         */
     }
     else if ([ADFileHelper haveDownloadedVideoForEvent:event])
     {
-        NSLog(@"The filename exists");
         // We already have the video
         cell.accessoryView = nil;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -119,7 +101,6 @@
     {
         // The video has not been downloaded yet
         cell.accessoryView = [self accessoryViewForIndexPath:indexPath];
-        // cell.accessoryView = [self cloudDownloadAccessoryButtonForIndexPath:indexPath];
         cell.accessoryType = UITableViewCellAccessoryNone;
         cell.detailTextLabel.text = [event descriptionOfMetadata];
     }
@@ -144,11 +125,9 @@
     // Set it's progress so far
     ADDownloadProgress *progress = self.downloading[event.videoName];
     if (progress) {
-        NSLog(@"Setting the progress to %f", [progress percentageDownloaded]);
         [accessoryView setIndicatorStatus:ACPDownloadStatusRunning];
         [accessoryView setProgress:[progress percentageDownloaded] animated:YES];
     } else {
-        NSLog(@"Progress isn't available.");
         [accessoryView setIndicatorStatus:ACPDownloadStatusNone];
         [accessoryView setProgress:0.0 animated:NO];
     }
@@ -171,42 +150,21 @@
     return accessoryView;
 }
 
-- (UIButton *)cloudDownloadAccessoryButtonForIndexPath:(NSIndexPath *)indexPath
-{
-    // Create the button
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [button setImage:[UIImage imageNamed:@"cloudDownload.png"] forState:UIControlStateNormal];
-    [button setFrame:CGRectMake(0, 0, ACCESSORY_SIZE, ACCESSORY_SIZE)];
-    
-    // Set it's target
-    [button addTarget:self action:@selector(cloudDownloadAccessoryButtonTapped:withEvent:) forControlEvents:UIControlEventTouchUpInside];
-    return button;
-}
-
 #pragma mark - TableView delegate methods
-
-- (void)cloudDownloadAccessoryButtonTapped:(UIButton *)button withEvent:(UIEvent *)event
-{
-    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:[[[event touchesForView:button] anyObject] locationInView:self.tableView]];
-    if (indexPath) {
-        // Download the video
-        ADEvent *event = (ADEvent *)[self objectAtIndexPath:indexPath];
-        [self downloadVideoForEvent:event];
-    }
-}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     ADEvent *event = (ADEvent *)[self objectAtIndexPath:indexPath];
     if (self.downloading[event.videoName]) {
-        // We're downloading the file
+        // The video is currently being downloaded
 #warning Let the user pause/cancel the download
         [UIAlertView showWithTitle:nil message:@"Let the user cancel the download" cancelButtonTitle:@"OK" otherButtonTitles:nil tapBlock:nil];
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     } else if ([ADFileHelper haveDownloadedVideoForEvent:event]) {
+        // Video is downloaded
         [self performSegueWithIdentifier:@"DetailEventSegue" sender:indexPath];
     } else {
-        NSLog(@"Video is not there.");
+        // Video hasn't been downloaded yet
         [UIActionSheet showFromTabBar:self.tabBarController.tabBar
                             withTitle:nil
                     cancelButtonTitle:@"Cancel"
@@ -233,7 +191,7 @@
              otherButtonTitles:@[@"Yes"]
                       tapBlock:^(UIAlertView *actionSheet, NSInteger buttonIndex) {
                           if (buttonIndex != actionSheet.cancelButtonIndex) {
-#warning Show that you're doing work
+#warning Show that you're doing work (like an activity indicator
                               [ADS3Helper deleteVideoForEvent:event withCompletionBlock:^{
                                   [self removeLocalCopyAndDeleteParseObject:event];
                               }];
@@ -329,8 +287,10 @@
     [[transferManager download:downloadRequest] continueWithExecutor:[BFExecutor mainThreadExecutor]
                                                            withBlock:handler];
     
+    /*
     NSIndexPath *indexPath = [self indexPathForEvent:event];
     [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+     */
 }
 
 - (BOOL)isIndexPathVisible:(NSIndexPath *)indexPath

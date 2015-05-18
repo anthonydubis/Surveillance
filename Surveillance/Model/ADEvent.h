@@ -33,11 +33,6 @@
 - (NSString *)descriptionOfMetadata;
 
 /*
- * Gives a string back that describes the bytes that have been received compared to the size of the video
- */
-- (NSString *)percentDownloadedStringForBytesReceived:(NSNumber *)bytes;
-
-/*
  * Give the video size in a user presentable string
  */
 - (NSString *)sizeString;
