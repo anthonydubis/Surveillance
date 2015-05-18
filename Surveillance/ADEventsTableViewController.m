@@ -138,9 +138,10 @@
                 break;
         }
     }];
-    
     return accessoryView;
      */
+    
+    
     // Create the button
     UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [button setImage:[UIImage imageNamed:@"cloudDownload.png"] forState:UIControlStateNormal];
@@ -156,11 +157,146 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     ADEvent *event = (ADEvent *)[self objectAtIndexPath:indexPath];
-    if ([ADFileHelper haveDownloadedVideoForEvent:event]) {
+    if (self.downloading[event.videoName]) {
+        // We're downloading the file
+        [UIAlertView showWithTitle:nil message:@"Let the user cancel the download" cancelButtonTitle:@"OK" otherButtonTitles:nil tapBlock:nil];
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    } else if ([ADFileHelper haveDownloadedVideoForEvent:event]) {
         [self performSegueWithIdentifier:@"DetailEventSegue" sender:indexPath];
     } else {
         NSLog(@"Video is not there.");
+        [UIActionSheet showFromTabBar:self.tabBarController.tabBar
+                            withTitle:nil
+                    cancelButtonTitle:@"Cancel"
+               destructiveButtonTitle:@"Permanently Delete Video"
+                    otherButtonTitles:@[@"Download Video"]
+                             tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
+                                 if (buttonIndex == actionSheet.cancelButtonIndex) {
+                                     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+                                 } else if (buttonIndex == actionSheet.destructiveButtonIndex) {
+                                     [self promptUserToConfirmPermanentDeletion:event];
+                                 } else {
+                                     [self promptUserToConfirmDownloadingVideo:event];
+                                 }
+                             }];
     }
+}
+
+#warning You need to clean up these deletion methods - possibly toss them in a helper class
+- (void)promptUserToConfirmPermanentDeletion:(ADEvent *)event
+{
+    [UIAlertView showWithTitle:@"Permanently Delete Video"
+                       message:@"Are you sure you want to permanently delete this event? This cannot be undone."
+             cancelButtonTitle:@"Cancel"
+             otherButtonTitles:@[@"Yes"]
+                      tapBlock:^(UIAlertView *actionSheet, NSInteger buttonIndex) {
+                          if (buttonIndex != actionSheet.cancelButtonIndex) {
+#warning Show that you're doing work
+                              [ADS3Helper deleteVideoForEvent:event withCompletionBlock:^{
+                                  [self removeLocalCopyAndDeleteParseObject:event];
+                              }];
+                          }
+                          [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
+                      }];
+}
+
+- (void)removeLocalCopyAndDeleteParseObject:(ADEvent *)event
+{
+    NSLog(@"Removing local copies");
+    [ADFileHelper removeLocalCopyOfVideoForEvent:event];
+#warning Do I need to block for this deletion to ensure that ADEventsTVC's query does not fetch it before it's removed from the parse server?
+    // If you just called deleteInBackground then loadObjects, there's no guarentee that the object will be deleted before the query
+    // Using the block helps ensure this but you need to handle what happens when it doesn't succeed
+    [event deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            [self loadObjects];
+        } else {
+            [UIAlertView showWithTitle:nil message:@"Deletion failed..." cancelButtonTitle:@"OK" otherButtonTitles:nil tapBlock:nil];
+        }
+    }];
+}
+
+- (void)promptUserToConfirmDownloadingVideo:(ADEvent *)event
+{
+    [UIAlertView showWithTitle:@"Download Video"
+                       message:[NSString stringWithFormat:@"Are you sure you would like to download this %@ video to your device?", [event sizeString]]
+             cancelButtonTitle:@"No"
+             otherButtonTitles:@[@"Yes"]
+                      tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                          if (buttonIndex != [alertView cancelButtonIndex]) {
+                              [self downloadVideoForEvent:event];
+                          }
+                          [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
+                      }
+     ];
+}
+
+- (void)downloadVideoForEvent:(ADEvent *)event
+{
+    self.downloading[event.videoName] = [[ADDownloadProgress alloc] init];
+    NSURL *url = [NSURL fileURLWithPath:[[ADFileHelper downloadsDirectoryPath] stringByAppendingPathComponent:event.videoName]];
+    
+    // Create the download request
+    AWSS3TransferManagerDownloadRequest *downloadRequest = [ADS3Helper downloadRequestForEvent:event andDownloadURL:url];
+    
+    // Construct the completion block
+    id (^handler)(BFTask *task) = ^id(BFTask *task) {
+        if (task.error){
+            if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
+                switch (task.error.code) {
+                    case AWSS3TransferManagerErrorCancelled:
+                    case AWSS3TransferManagerErrorPaused:
+                        break;
+                    default:
+                        NSLog(@"Error: %@", task.error);
+                        break;
+                }
+            } else {
+                // Unknown error.
+                NSLog(@"Error: %@", task.error);
+            }
+        }
+        
+        if (task.result) {
+            //File downloaded successfully.
+            NSLog(@"File downloaded successfully");
+            [self videoWasDownloadedForEvent:event];
+        }
+        return nil;
+    };
+    
+    // Set the progress blocks
+    __weak ADEventsTableViewController *weakSelf = self;
+    downloadRequest.downloadProgress = ^(int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite) {
+        ADDownloadProgress *progress = weakSelf.downloading[event.videoName];
+        if ([progress secondsSinceLastUpdate] >= 1) {
+            progress.bytesDownloaded = [NSNumber numberWithLong:totalBytesWritten];
+            progress.lastUpdate = [NSDate date];
+            self.downloading[event.videoName] = progress;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSIndexPath *indexPath = [weakSelf indexPathForEvent:event];
+                if ([weakSelf isIndexPathVisible:indexPath]) {
+                    [weakSelf configureCell:[weakSelf.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+                }
+            });
+        }
+    };
+    
+    // Start the process with the transfer manager
+    AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
+    [[transferManager download:downloadRequest] continueWithExecutor:[BFExecutor mainThreadExecutor]
+                                                           withBlock:handler];
+    
+    
+    /*
+     __weak ADEventsTableViewController *weakSelf = self;
+     [ADS3Helper downloadVideoForEvent:event toURL:(NSURL *)url withCompletionBlock:^{
+     [weakSelf videoWasDownloadedForEvent:event];
+     }];
+     */
+    
+    NSIndexPath *indexPath = [self indexPathForEvent:event];
+    [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
 }
 
 - (void)cloudDownloadAccessoryButtonTapped:(UIButton *)button withEvent:(UIEvent *)event
@@ -169,70 +305,7 @@
     if (indexPath) {
         // Download the video
         ADEvent *event = (ADEvent *)[self objectAtIndexPath:indexPath];
-        self.downloading[event.videoName] = [[ADDownloadProgress alloc] init];
-        NSURL *url = [NSURL fileURLWithPath:[[ADFileHelper downloadsDirectoryPath] stringByAppendingPathComponent:event.videoName]];
-        
-        // Create the download request
-        AWSS3TransferManagerDownloadRequest *downloadRequest = [ADS3Helper downloadRequestForEvent:event andDownloadURL:url];
-        
-        // Construct the completion block
-        id (^handler)(BFTask *task) = ^id(BFTask *task) {
-            if (task.error){
-                if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
-                    switch (task.error.code) {
-                        case AWSS3TransferManagerErrorCancelled:
-                        case AWSS3TransferManagerErrorPaused:
-                            break;
-                        default:
-                            NSLog(@"Error: %@", task.error);
-                            break;
-                    }
-                } else {
-                    // Unknown error.
-                    NSLog(@"Error: %@", task.error);
-                }
-            }
-            
-            if (task.result) {
-                //File downloaded successfully.
-                NSLog(@"File downloaded successfully");
-                [self videoWasDownloadedForEvent:event];
-            }
-            return nil;
-        };
-        
-        // Set the progress blocks
-        __weak ADEventsTableViewController *weakSelf = self;
-        downloadRequest.downloadProgress = ^(int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite) {
-            ADDownloadProgress *progress = weakSelf.downloading[event.videoName];
-            if ([progress secondsSinceLastUpdate] >= 1) {
-                progress.bytesDownloaded = [NSNumber numberWithLong:totalBytesWritten];
-                progress.lastUpdate = [NSDate date];
-                self.downloading[event.videoName] = progress;
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    NSIndexPath *indexPath = [weakSelf indexPathForEvent:event];
-                    if ([weakSelf isIndexPathVisible:indexPath]) {
-                        [weakSelf configureCell:[weakSelf.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
-                    }
-                });
-            }
-        };
-        
-        // Start the process with the transfer manager
-        AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
-        [[transferManager download:downloadRequest] continueWithExecutor:[BFExecutor mainThreadExecutor]
-                                                               withBlock:handler];
-        
-        
-        
-        
-        /*
-        __weak ADEventsTableViewController *weakSelf = self;
-        [ADS3Helper downloadVideoForEvent:event toURL:(NSURL *)url withCompletionBlock:^{
-            [weakSelf videoWasDownloadedForEvent:event];
-        }];
-         */
-        [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+        [self downloadVideoForEvent:event];
     }
 }
 

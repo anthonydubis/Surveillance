@@ -104,6 +104,7 @@
 		9799C8B71B0800200098C0A7 /* ACPStaticImagesAlternative.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8AF1B0800200098C0A7 /* ACPStaticImagesAlternative.m */; };
 		9799C8BE1B081F900098C0A7 /* ADDetailEventViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8BD1B081F900098C0A7 /* ADDetailEventViewController.m */; };
 		9799C8C11B0A0DC00098C0A7 /* ADDownloadProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8C01B0A0DC00098C0A7 /* ADDownloadProgress.m */; };
+		9799C8C41B0A22300098C0A7 /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8C31B0A22300098C0A7 /* UIActionSheet+Blocks.m */; };
 		97CA02351AF5513C00B86C4D /* MonitoringViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97CA02341AF5513C00B86C4D /* MonitoringViewController.m */; };
 		97D489DD1B041E94000569FD /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489DB1B041E94000569FD /* Bolts.framework */; };
 		97D489DE1B041E94000569FD /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489DC1B041E94000569FD /* Parse.framework */; };
@@ -266,6 +267,8 @@
 		9799C8BD1B081F900098C0A7 /* ADDetailEventViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADDetailEventViewController.m; sourceTree = "<group>"; };
 		9799C8BF1B0A0DC00098C0A7 /* ADDownloadProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADDownloadProgress.h; sourceTree = "<group>"; };
 		9799C8C01B0A0DC00098C0A7 /* ADDownloadProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADDownloadProgress.m; sourceTree = "<group>"; };
+		9799C8C21B0A22300098C0A7 /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
+		9799C8C31B0A22300098C0A7 /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
 		97CA02331AF5513C00B86C4D /* MonitoringViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitoringViewController.h; sourceTree = "<group>"; };
 		97CA02341AF5513C00B86C4D /* MonitoringViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringViewController.m; sourceTree = "<group>"; };
 		97D489DB1B041E94000569FD /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
@@ -366,6 +369,8 @@
 		9749EB521AF6BEA8004D9785 /* Utility Classes */ = {
 			isa = PBXGroup;
 			children = (
+				9799C8C21B0A22300098C0A7 /* UIActionSheet+Blocks.h */,
+				9799C8C31B0A22300098C0A7 /* UIActionSheet+Blocks.m */,
 				9769797B1AFAB5BA0029D82D /* UIAlertView+Blocks.h */,
 				9769797C1AFAB5BA0029D82D /* UIAlertView+Blocks.m */,
 				973DB6531B019D3200418444 /* UIImage+DataHandler.h */,
@@ -715,6 +720,7 @@
 				TargetAttributes = {
 					976AFAD71AF3CAC300F91585 = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = 7A6YP6C6D3;
 					};
 					976AFAF31AF3CAC300F91585 = {
 						CreatedOnToolsVersion = 6.3.1;
@@ -809,6 +815,7 @@
 				9799C8911B076B760098C0A7 /* ADS3Helper.m in Sources */,
 				973DB6551B019D3200418444 /* UIImage+DataHandler.m in Sources */,
 				976AFADE1AF3CAC300F91585 /* main.m in Sources */,
+				9799C8C41B0A22300098C0A7 /* UIActionSheet+Blocks.m in Sources */,
 				973DB6501B018B3C00418444 /* DetailEventViewController.m in Sources */,
 				9799C8B51B0800200098C0A7 /* ACPProgressLayer.m in Sources */,
 				9799C83C1B0617120098C0A7 /* ADEvent.m in Sources */,
@@ -951,6 +958,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -959,8 +968,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Surveillance/PrefixHeader.pch;
 				INFOPLIST_FILE = Surveillance/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -969,6 +980,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -977,8 +990,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Surveillance/PrefixHeader.pch;
 				INFOPLIST_FILE = Surveillance/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

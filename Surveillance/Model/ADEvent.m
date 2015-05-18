@@ -57,7 +57,7 @@
     if (self.isStillRecording)
         return @"Still recording...";
     
-    return [NSString stringWithFormat:@"%@ - %@", [self durationString], [self sizeStringForBytes:self.videoSize]];
+    return [NSString stringWithFormat:@"%@ - %@", [self durationString], [self sizeString]];
 }
 
 - (NSString *)durationString
@@ -93,6 +93,11 @@
         return [NSString stringWithFormat:@"%.1f MB", (float)bytes / 1000000];
     else
         return [NSString stringWithFormat:@"%.1f GB", (float)bytes / 1000000000];
+}
+
+- (NSString *)sizeString
+{
+    return [self sizeStringForBytes:self.videoSize];
 }
 
 - (NSString *)percentDownloadedStringForBytesReceived:(NSNumber *)bytes

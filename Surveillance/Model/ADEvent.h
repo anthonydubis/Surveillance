@@ -37,4 +37,9 @@
  */
 - (NSString *)percentDownloadedStringForBytesReceived:(NSNumber *)bytes;
 
+/*
+ * Give the video size in a user presentable string
+ */
+- (NSString *)sizeString;
+
 @end
