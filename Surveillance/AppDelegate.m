@@ -43,6 +43,9 @@
     // Ask the user to login if he's not already
     if (![PFUser currentUser]) [self showLoginScreen];
     
+    // Setup push notifications
+    [ADNotificationHelper setupNotifications];
+    
     return YES;
 }
 
@@ -176,6 +179,7 @@
 
 // Handle notifications received while the app was opened
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    NSLog(@"Remote notification received: %@", userInfo);
     [PFPush handlePush:userInfo];
 }
 
@@ -207,7 +211,6 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     [FBSDKAppEvents activateApp];
-    [ADNotificationHelper setupNotifications];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

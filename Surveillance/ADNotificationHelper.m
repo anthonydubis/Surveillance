@@ -9,8 +9,9 @@
 #import "ADNotificationHelper.h"
 #import <Parse/Parse.h>
 
-NSString *PromptedUserToEnablePushNotificationsPrefKey = @"PromptedUserToEnablePushNotificationsPrefKey";
-NSString *ShowedUserNotificationsPermissionPanelPrefKey = @"ShowedUserNotificationsPermissionPanelPrefKey";
+NSString * PromptedUserToEnablePushNotificationsPrefKey = @"PromptedUserToEnablePushNotificationsPrefKey";
+NSString * ShowedUserNotificationsPermissionPanelPrefKey = @"ShowedUserNotificationsPermissionPanelPrefKey";
+NSString * MotionEventFunction = @"processMotionEvent";
 
 @implementation ADNotificationHelper
 
@@ -21,17 +22,11 @@ NSString *ShowedUserNotificationsPermissionPanelPrefKey = @"ShowedUserNotificati
     if (![PFUser currentUser])
         return;
     
-    // Do nothing if we're already setup for notifications
     if ([[UIApplication sharedApplication] isRegisteredForRemoteNotifications]) {
-        NSLog(@"The user is already enabled for notifications");
-        return;
+        [self registerForNotifications];
     } else if (![[NSUserDefaults standardUserDefaults] boolForKey:PromptedUserToEnablePushNotificationsPrefKey]) {
         // Prompt user to setup push notifications
         [self promptUserToRegisterForPushNotifications];
-    } else {
-        // It looks like Apple will automatically register us if the user enables notifications in his settings
-        // Try registering for notifications to see if the user has enabled this in their settings
-        // [self registerForNotifications];
     }
 }
 
@@ -90,6 +85,38 @@ NSString *ShowedUserNotificationsPermissionPanelPrefKey = @"ShowedUserNotificati
 + (void)userRequestedToEnablePushNotifications
 {
 #warning Implement this
+}
+
+#pragma mark - Sending Notifications
+
++ (void)sendMotionDetectedNotification
+{
+    PFInstallation *installation = [PFInstallation currentInstallation];
+    NSString *message = [NSString stringWithFormat:@"Motion was detected by %@. Recording now...", installation[@"deviceName"]];
+    
+    [PFCloud callFunctionInBackground:MotionEventFunction
+                       withParameters:@{@"message": message, @"sendingDeviceID": installation[@"deviceID"]}
+                                block:^(NSString *success, NSError *error) {
+                                    if (!error) {
+                                        // Push sent successfully
+                                        NSLog(@"Message sent successfully");
+                                    }
+                                }];
+}
+
++ (void)sendMotionEndedNotification
+{
+    PFInstallation *installation = [PFInstallation currentInstallation];
+    NSString *message = [NSString stringWithFormat:@"Motion has ended at %@. Recording stopped.", installation[@"deviceName"]];
+    
+    [PFCloud callFunctionInBackground:MotionEventFunction
+                       withParameters:@{@"message": message, @"sendingDeviceID": installation[@"deviceID"]}
+                                block:^(NSString *success, NSError *error) {
+                                    if (!error) {
+                                        // Push sent successfully
+                                        NSLog(@"Message sent successfully");
+                                    }
+                                }];
 }
 
 @end

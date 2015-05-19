@@ -19,4 +19,11 @@
 // Call this when the user tries to enable push notifications but doesn't have them enabled
 + (void)userRequestedToEnablePushNotifications;
 
+// Send notification to users other devices that motion was detected
++ (void)sendMotionDetectedNotification;
+
+// Send notification to users other devices that motion has ended
++ (void)sendMotionEndedNotification;
+
+
 @end
