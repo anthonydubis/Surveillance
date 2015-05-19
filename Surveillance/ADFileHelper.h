@@ -42,6 +42,7 @@
 
 /*
  * Returns true if we have a local copy of the event video
+ * Note, this is true even if only part of the video has been downloaded
  */
 + (BOOL)haveDownloadedVideoForEvent:(ADEvent *)event;
 

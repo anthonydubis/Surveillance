@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 Anthony Dubis. All rights reserved.
 //
 
-#import "ADDownloadProgress.h"
+#import "ADDownloadTask.h"
 
-@implementation ADDownloadProgress
+@implementation ADDownloadTask
 
 - (id)init
 {
@@ -25,6 +25,15 @@
     self = [self init];
     if (self) {
         self.bytesToBeDownloaded = bytes;
+    }
+    return self;
+}
+
+- (id)initWithDownloadRequest:(AWSS3TransferManagerDownloadRequest *)request andBytesToBeDownloaded:(NSNumber *)bytes
+{
+    self = [self initWithBytesToBeDownloaded:bytes];
+    if (self) {
+        self.downloadRequest = request;
     }
     return self;
 }

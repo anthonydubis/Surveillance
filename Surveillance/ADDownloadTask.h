@@ -9,8 +9,12 @@
 //  it contains information that will help us update the UI.
 
 #import <Foundation/Foundation.h>
+#import <AWSS3/AWSS3.h>
 
-@interface ADDownloadProgress : NSObject
+@interface ADDownloadTask : NSObject
+
+// The download request associated with this information
+@property (nonatomic, strong) AWSS3TransferManagerDownloadRequest *downloadRequest;
 
 // The last time the UI was updated
 @property (nonatomic, strong) NSDate *lastUpdate;
@@ -22,6 +26,8 @@
 @property (nonatomic, strong) NSNumber *bytesToBeDownloaded;
 
 - (id)initWithBytesToBeDownloaded:(NSNumber *)bytes;
+
+- (id)initWithDownloadRequest:(AWSS3TransferManagerDownloadRequest *)request andBytesToBeDownloaded:(NSNumber *)bytes;
 
 // The amount of seconds that have passed since the UI was updated
 - (int)secondsSinceLastUpdate;

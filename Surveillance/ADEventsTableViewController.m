@@ -13,7 +13,7 @@
 #import "ADS3Helper.h"
 #import <AWSS3/AWSS3.h>
 #import "ADDetailEventViewController.h"
-#import "ADDownloadProgress.h"
+#import "ADDownloadTask.h"
 
 @interface ADEventsTableViewController () <EventAndVideoDeletionDeletionDelegate>
 
@@ -79,12 +79,17 @@
     // Set the accessory view
     if (self.downloading[event.videoName])
     {
+        NSLog(@"The task is running");
         // We are downloading the video - this check must come first because a partially downloaded file
         // will cause the haveDownloadedVideoForEvent method to come true
-        ADDownloadProgress *progress = self.downloading[event.videoName];
+        ADDownloadTask *progress = self.downloading[event.videoName];
         cell.detailTextLabel.text = [progress downloadProgressString];
         if ([cell.accessoryView isKindOfClass:[ACPDownloadView class]]) {
-            [self configureDownloadView:(ACPDownloadView *)cell.accessoryView forDownloadingEvent:event];
+            ACPDownloadView *downloadView = (ACPDownloadView *)cell.accessoryView;
+            if (downloadView.currentStatus == ACPDownloadStatusRunning)
+                [self configureDownloadView:downloadView forDownloadingEvent:event];
+            else
+                [downloadView setIndicatorStatus:ACPDownloadStatusRunning];
         } else {
             cell.accessoryType = UITableViewCellAccessoryNone;
             cell.accessoryView = [self accessoryViewForIndexPath:indexPath];
@@ -108,7 +113,7 @@
 
 - (void)configureDownloadView:(ACPDownloadView *)downloadView forDownloadingEvent:(ADEvent *)event
 {
-    ADDownloadProgress *progress = self.downloading[event.videoName];
+    ADDownloadTask *progress = self.downloading[event.videoName];
     [downloadView setProgress:[progress percentageDownloaded] animated:YES];
 }
 
@@ -123,7 +128,7 @@
     accessoryView.backgroundColor = [UIColor clearColor];
     
     // Set it's progress so far
-    ADDownloadProgress *progress = self.downloading[event.videoName];
+    ADDownloadTask *progress = self.downloading[event.videoName];
     if (progress) {
         [accessoryView setIndicatorStatus:ACPDownloadStatusRunning];
         [accessoryView setProgress:[progress percentageDownloaded] animated:YES];
@@ -140,7 +145,9 @@
                 [self downloadVideoForEvent:event];
                 break;
             case ACPDownloadStatusRunning:
-                // Pause or cancel the download
+                // Cancel the download
+#warning There was a sporadic conflict around trying to delete when a "write operation" was occuring...can't reproduce
+                [self cancelDownloadForEvent:event];
                 [downloadView setIndicatorStatus:ACPDownloadStatusNone];
                 break;
             default:
@@ -148,6 +155,27 @@
         }
     }];
     return accessoryView;
+}
+
+- (void)cancelDownloadForEvent:(ADEvent *)event
+{
+    ADDownloadTask *task = self.downloading[event.videoName];
+    if (task) {
+        [[task.downloadRequest cancel] continueWithBlock:^id(BFTask *task) {
+            if (task.error) {
+                NSLog(@"Error: %@",task.error);
+            } else {
+                // Only after a successful cancellation do this work
+                NSIndexPath *indexPath = [self indexPathForEvent:event];
+                if ([ADFileHelper haveDownloadedVideoForEvent:event]) {
+                    [ADFileHelper removeLocalCopyOfVideoForEvent:event];
+                } 
+                [self.downloading removeObjectForKey:event.videoName];
+                [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            }
+            return nil;
+        }];
+    }
 }
 
 #pragma mark - TableView delegate methods
@@ -233,7 +261,13 @@
 
 - (void)downloadVideoForEvent:(ADEvent *)event
 {
-    self.downloading[event.videoName] = [[ADDownloadProgress alloc] initWithBytesToBeDownloaded:event.videoSize];
+    // Handle the case where the event was previously paused
+    ADDownloadTask *task = self.downloading[event.videoName];
+    if (task.downloadRequest.state == AWSS3TransferManagerRequestStatePaused) {
+        [[AWSS3TransferManager defaultS3TransferManager] download:task.downloadRequest];
+        return;
+    }
+    
     NSURL *url = [NSURL fileURLWithPath:[[ADFileHelper downloadsDirectoryPath] stringByAppendingPathComponent:event.videoName]];
     
     // Create the download request
@@ -268,9 +302,9 @@
     // Set the progress blocks
     __weak ADEventsTableViewController *weakSelf = self;
     downloadRequest.downloadProgress = ^(int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite) {
-        ADDownloadProgress *progress = weakSelf.downloading[event.videoName];
+        ADDownloadTask *progress = weakSelf.downloading[event.videoName];
         if ([progress secondsSinceLastUpdate] >= 1) {
-            progress.bytesDownloaded = [NSNumber numberWithLong:totalBytesWritten];
+            progress.bytesDownloaded = [NSNumber numberWithLongLong:totalBytesWritten];
             progress.lastUpdate = [NSDate date];
             self.downloading[event.videoName] = progress;
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -282,15 +316,17 @@
         }
     };
     
+    // Create the ADDownloadEvent
+    self.downloading[event.videoName] = [[ADDownloadTask alloc] initWithDownloadRequest:downloadRequest andBytesToBeDownloaded:event.videoSize];
+    
     // Start the process with the transfer manager
     AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
     [[transferManager download:downloadRequest] continueWithExecutor:[BFExecutor mainThreadExecutor]
                                                            withBlock:handler];
     
-    /*
+    // This updates the ACPDownloadView when the user calls this method by selecting the row rather than the accessory button
     NSIndexPath *indexPath = [self indexPathForEvent:event];
     [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
-     */
 }
 
 - (BOOL)isIndexPathVisible:(NSIndexPath *)indexPath

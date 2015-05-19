@@ -103,7 +103,7 @@
 		9799C8B61B0800200098C0A7 /* ACPStaticImages.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8AD1B0800200098C0A7 /* ACPStaticImages.m */; };
 		9799C8B71B0800200098C0A7 /* ACPStaticImagesAlternative.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8AF1B0800200098C0A7 /* ACPStaticImagesAlternative.m */; };
 		9799C8BE1B081F900098C0A7 /* ADDetailEventViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8BD1B081F900098C0A7 /* ADDetailEventViewController.m */; };
-		9799C8C11B0A0DC00098C0A7 /* ADDownloadProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8C01B0A0DC00098C0A7 /* ADDownloadProgress.m */; };
+		9799C8C11B0A0DC00098C0A7 /* ADDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8C01B0A0DC00098C0A7 /* ADDownloadTask.m */; };
 		9799C8C41B0A22300098C0A7 /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8C31B0A22300098C0A7 /* UIActionSheet+Blocks.m */; };
 		97CA02351AF5513C00B86C4D /* MonitoringViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97CA02341AF5513C00B86C4D /* MonitoringViewController.m */; };
 		97D489DD1B041E94000569FD /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489DB1B041E94000569FD /* Bolts.framework */; };
@@ -265,8 +265,8 @@
 		9799C8B01B0800200098C0A7 /* ACPStaticImagesProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACPStaticImagesProtocol.h; sourceTree = "<group>"; };
 		9799C8BC1B081F900098C0A7 /* ADDetailEventViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADDetailEventViewController.h; sourceTree = "<group>"; };
 		9799C8BD1B081F900098C0A7 /* ADDetailEventViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADDetailEventViewController.m; sourceTree = "<group>"; };
-		9799C8BF1B0A0DC00098C0A7 /* ADDownloadProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADDownloadProgress.h; sourceTree = "<group>"; };
-		9799C8C01B0A0DC00098C0A7 /* ADDownloadProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADDownloadProgress.m; sourceTree = "<group>"; };
+		9799C8BF1B0A0DC00098C0A7 /* ADDownloadTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADDownloadTask.h; sourceTree = "<group>"; };
+		9799C8C01B0A0DC00098C0A7 /* ADDownloadTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADDownloadTask.m; sourceTree = "<group>"; };
 		9799C8C21B0A22300098C0A7 /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
 		9799C8C31B0A22300098C0A7 /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
 		97CA02331AF5513C00B86C4D /* MonitoringViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitoringViewController.h; sourceTree = "<group>"; };
@@ -395,8 +395,8 @@
 				9799C88D1B0760E70098C0A7 /* ADFileHelper.m */,
 				9799C88F1B076B760098C0A7 /* ADS3Helper.h */,
 				9799C8901B076B760098C0A7 /* ADS3Helper.m */,
-				9799C8BF1B0A0DC00098C0A7 /* ADDownloadProgress.h */,
-				9799C8C01B0A0DC00098C0A7 /* ADDownloadProgress.m */,
+				9799C8BF1B0A0DC00098C0A7 /* ADDownloadTask.h */,
+				9799C8C01B0A0DC00098C0A7 /* ADDownloadTask.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -803,7 +803,7 @@
 				9712DB861AFD1B9C00533A1C /* ADFaceDetector.m in Sources */,
 				9799C8B31B0800200098C0A7 /* ACPIndeterminateGoogleLayer.m in Sources */,
 				973DB6441B0179EC00418444 /* MonitoringEventFace.m in Sources */,
-				9799C8C11B0A0DC00098C0A7 /* ADDownloadProgress.m in Sources */,
+				9799C8C11B0A0DC00098C0A7 /* ADDownloadTask.m in Sources */,
 				9799C8B21B0800200098C0A7 /* ACPDownloadView.m in Sources */,
 				97E2F8A11AFC0F6200E472F2 /* MonitoringEvent+AD.m in Sources */,
 				972473571AFE451900D74BF8 /* ThumbnailViewController.m in Sources */,
