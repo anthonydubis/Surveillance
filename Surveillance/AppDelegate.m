@@ -12,6 +12,7 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 #import "ADS3Helper.h"
+#import "ADNotificationHelper.h"
 
 @interface AppDelegate () <PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate>
 
@@ -36,13 +37,19 @@
     // [Optional] Track statistics around application opens.
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
-    // Ask the user to login if he's not already
-    if (![PFUser currentUser]) [self showLoginScreen];
-    
     // Setup AWS
     [ADS3Helper setupAWSS3Service];
     
+    // Ask the user to login if he's not already
+    if (![PFUser currentUser]) [self showLoginScreen];
+    
     return YES;
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    // Store the deviceToken in the current installation and save it to Parse.
+    NSLog(@"Application did register for remote notifications");
+    [ADNotificationHelper didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
 
 - (void)showTabBarAsRootViewController
@@ -89,7 +96,7 @@
 
 // Sent to the delegate to determine whether the log in request should be submitted to the server.
 - (BOOL)logInViewController:(PFLogInViewController *)logInController shouldBeginLogInWithUsername:(NSString *)username password:(NSString *)password {
-    NSLog(@"Should being login with user name");
+    NSLog(@"Should begin login with user name");
     // Check if both fields are completed
     if (username && password && username.length != 0 && password.length != 0) {
         return YES; // Begin login process
@@ -105,6 +112,7 @@
 
 // Sent to the delegate when a PFUser is logged in.
 - (void)logInViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user {
+    [ADNotificationHelper setupNotifications];
     [self showTabBarAsRootViewController];
 }
 
@@ -115,7 +123,8 @@
 
 // Sent to the delegate when the log in screen is dismissed.
 - (void)logInViewControllerDidCancelLogIn:(PFLogInViewController *)logInController {
-    [self showTabBarAsRootViewController];
+    // For now, don't allow cancellations
+    // [self showTabBarAsRootViewController];
 }
 
 #pragma mark - Handling Signup
@@ -148,6 +157,7 @@
 
 // Sent to the delegate when a PFUser is signed up.
 - (void)signUpViewController:(PFSignUpViewController *)signUpController didSignUpUser:(PFUser *)user {
+    [ADNotificationHelper setupNotifications];
     [self showTabBarAsRootViewController];
 }
 
@@ -158,8 +168,18 @@
 
 // Sent to the delegate when the sign up screen is dismissed.
 - (void)signUpViewControllerDidCancelSignUp:(PFSignUpViewController *)signUpController {
-    [self showTabBarAsRootViewController];
+    // For now, don't allow cancellations
+    // [self showTabBarAsRootViewController];
 }
+
+#pragma mark - Push Notifications
+
+// Handle notifications received while the app was opened
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    [PFPush handlePush:userInfo];
+}
+
+#pragma mark - App life cycle methods
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -187,6 +207,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     [FBSDKAppEvents activateApp];
+    [ADNotificationHelper setupNotifications];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

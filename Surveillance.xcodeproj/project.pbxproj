@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9712DB861AFD1B9C00533A1C /* ADFaceDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 9712DB851AFD1B9C00533A1C /* ADFaceDetector.m */; };
+		971F1AB51B0B85C200ADB5B7 /* ADNotificationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 971F1AB41B0B85C200ADB5B7 /* ADNotificationHelper.m */; };
 		972473511AFD869F00D74BF8 /* CameraStreamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 972473501AFD869F00D74BF8 /* CameraStreamViewController.m */; };
 		972473541AFD91F200D74BF8 /* ADVideoRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 972473531AFD91F200D74BF8 /* ADVideoRecorder.m */; };
 		972473571AFE451900D74BF8 /* ThumbnailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 972473561AFE451900D74BF8 /* ThumbnailViewController.m */; };
@@ -134,6 +135,8 @@
 /* Begin PBXFileReference section */
 		9712DB841AFD1B9C00533A1C /* ADFaceDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADFaceDetector.h; sourceTree = "<group>"; };
 		9712DB851AFD1B9C00533A1C /* ADFaceDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADFaceDetector.m; sourceTree = "<group>"; };
+		971F1AB31B0B85C200ADB5B7 /* ADNotificationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADNotificationHelper.h; sourceTree = "<group>"; };
+		971F1AB41B0B85C200ADB5B7 /* ADNotificationHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADNotificationHelper.m; sourceTree = "<group>"; };
 		9724734F1AFD869F00D74BF8 /* CameraStreamViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraStreamViewController.h; sourceTree = "<group>"; };
 		972473501AFD869F00D74BF8 /* CameraStreamViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraStreamViewController.m; sourceTree = "<group>"; };
 		972473521AFD91F200D74BF8 /* ADVideoRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADVideoRecorder.h; sourceTree = "<group>"; };
@@ -472,6 +475,8 @@
 				9799C89C1B07E6ED0098C0A7 /* cloudDownload@2x.png */,
 				976AFADF1AF3CAC300F91585 /* AppDelegate.h */,
 				976AFAE01AF3CAC300F91585 /* AppDelegate.m */,
+				971F1AB31B0B85C200ADB5B7 /* ADNotificationHelper.h */,
+				971F1AB41B0B85C200ADB5B7 /* ADNotificationHelper.m */,
 				974E160C1AFCCACB00514C57 /* Classes */,
 				976979751AFAB0AE0029D82D /* View Controllers */,
 				976979741AFAB09F0029D82D /* Cells */,
@@ -724,6 +729,7 @@
 					};
 					976AFAF31AF3CAC300F91585 = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = 7A6YP6C6D3;
 						TestTargetID = 976AFAD71AF3CAC300F91585;
 					};
 				};
@@ -819,6 +825,7 @@
 				973DB6501B018B3C00418444 /* DetailEventViewController.m in Sources */,
 				9799C8B51B0800200098C0A7 /* ACPProgressLayer.m in Sources */,
 				9799C83C1B0617120098C0A7 /* ADEvent.m in Sources */,
+				971F1AB51B0B85C200ADB5B7 /* ADNotificationHelper.m in Sources */,
 				9799C8BE1B081F900098C0A7 /* ADDetailEventViewController.m in Sources */,
 				9799C8261B0528CD0098C0A7 /* NSString+FontAwesome.m in Sources */,
 				9799C8251B0528CD0098C0A7 /* BButton.m in Sources */,
@@ -889,7 +896,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development IOS Push Services: com.anthonydubis.surveillance";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development IOS Push Services: com.anthonydubis.surveillance";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -911,6 +919,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -933,7 +942,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development IOS Push Services: com.anthonydubis.surveillance";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development IOS Push Services: com.anthonydubis.surveillance";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -948,6 +958,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -1002,6 +1013,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -1013,6 +1026,7 @@
 				INFOPLIST_FILE = SurveillanceTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Surveillance.app/Surveillance";
 			};
 			name = Debug;
@@ -1021,6 +1035,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -1028,6 +1044,7 @@
 				INFOPLIST_FILE = SurveillanceTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Surveillance.app/Surveillance";
 			};
 			name = Release;
