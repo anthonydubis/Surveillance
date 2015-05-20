@@ -51,7 +51,6 @@ NSString * FaceDetectedFunction = @"processFaceDetectionEvent";
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation setDeviceTokenFromData:deviceToken];
     
-    currentInstallation.channels = @[];
     currentInstallation[@"user"] = [PFUser currentUser];
     currentInstallation[@"model"] = [[UIDevice currentDevice] model];
     currentInstallation[@"deviceName"] = [[UIDevice currentDevice] name];
