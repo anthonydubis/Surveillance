@@ -8,10 +8,12 @@
 
 #import "ADNotificationHelper.h"
 #import <Parse/Parse.h>
+#import "ADEventImage.h"
 
 NSString * PromptedUserToEnablePushNotificationsPrefKey = @"PromptedUserToEnablePushNotificationsPrefKey";
 NSString * ShowedUserNotificationsPermissionPanelPrefKey = @"ShowedUserNotificationsPermissionPanelPrefKey";
 NSString * MotionEventFunction = @"processMotionEvent";
+NSString * FaceDetectedFunction = @"processFaceDetectionEvent";
 
 @implementation ADNotificationHelper
 
@@ -49,7 +51,7 @@ NSString * MotionEventFunction = @"processMotionEvent";
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation setDeviceTokenFromData:deviceToken];
     
-    currentInstallation.channels = @[[[PFUser currentUser] objectId]];
+    currentInstallation.channels = @[];
     currentInstallation[@"user"] = [PFUser currentUser];
     currentInstallation[@"model"] = [[UIDevice currentDevice] model];
     currentInstallation[@"deviceName"] = [[UIDevice currentDevice] name];
@@ -115,6 +117,44 @@ NSString * MotionEventFunction = @"processMotionEvent";
                                     if (!error) {
                                         // Push sent successfully
                                         NSLog(@"Message sent successfully");
+                                    }
+                                }];
+}
+
++ (void)sendCameraWasDisabledWhileRecordingNotification
+{
+    PFInstallation *installation = [PFInstallation currentInstallation];
+    NSString *message = [NSString stringWithFormat:@"A person disabled the camera at %@. Recording stopped.", installation[@"deviceName"]];
+    
+    [PFCloud callFunctionInBackground:MotionEventFunction
+                       withParameters:@{@"message": message, @"sendingDeviceID": installation[@"deviceID"]}
+                                block:^(NSString *success, NSError *error) {
+                                    if (!error) {
+                                        // Push sent successfully
+                                        NSLog(@"Message sent successfully");
+                                    }
+                                }];
+}
+
++ (void)sendFaceDetectedNotificationWithEventImage:(ADEventImage *)eventImage
+{
+    PFInstallation *installation = [PFInstallation currentInstallation];
+    
+    // Start the message with the number of people detected
+    NSString *message = @"A person was ";
+    if (eventImage.numFaces.intValue > 1)
+        message = [NSString stringWithFormat:@"%@ people were ", eventImage.numFaces];
+    
+    // End it with the camera name
+    message = [message stringByAppendingString:[NSString stringWithFormat:@"detected by %@.", installation[@"deviceName"]]];
+    
+    [PFCloud callFunctionInBackground:FaceDetectedFunction
+                       withParameters:@{@"message": message, @"sendingDeviceID": installation[@"deviceID"],
+                                        @"eventImageID" : eventImage.objectId}
+                                block:^(NSString *success, NSError *error) {
+                                    if (!error) {
+                                        // Push sent successfully
+                                        NSLog(@"Face message sent successfully");
                                     }
                                 }];
 }

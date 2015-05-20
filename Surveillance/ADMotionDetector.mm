@@ -136,7 +136,7 @@ const float LowMotionSensitivityPct      = 0.006;
 
 - (BOOL)hasMotionEnded
 {
-    NSLog(@"Check to see if motion ended. ConsecutiveNoMotionOutcomes: %i, against needed for all clear %i", self.consecutiveNoMotionOutcomes, ConsecutiveNoMotionOutcomesForAllClear);
+    // NSLog(@"Check to see if motion ended. ConsecutiveNoMotionOutcomes: %i, against needed for all clear %i", self.consecutiveNoMotionOutcomes, ConsecutiveNoMotionOutcomesForAllClear);
     BOOL hasMotionEnded = self.consecutiveNoMotionOutcomes > ConsecutiveNoMotionOutcomesForAllClear;
     if (hasMotionEnded) {
         self.consecutiveNoMotionOutcomes = 0;

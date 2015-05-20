@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class ADEventImage;
+
 @interface ADNotificationHelper : NSObject
 
 // Call this when the user has logged in so ADNotificationHelper can get notifications setup
@@ -25,5 +27,10 @@
 // Send notification to users other devices that motion has ended
 + (void)sendMotionEndedNotification;
 
+// Send notification to users other devices when the camera was disabled while recording
++ (void)sendCameraWasDisabledWhileRecordingNotification;
+
+// Send a notification to the user with an image for an event (such as a picture taken when a face is detected)
++ (void)sendFaceDetectedNotificationWithEventImage:(ADEventImage *)eventImage;
 
 @end

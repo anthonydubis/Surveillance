@@ -16,9 +16,11 @@
 #import "UIImage+DataHandler.h"
 #import "ADFileHelper.h"
 #import "ADS3Helper.h"
+#import "ADNotificationHelper.h"
 
 // Parse Related
 #import "ADEvent.h"
+#import "ADEventImage.h"
 
 #import "ThumbnailViewController.h"
 
@@ -31,6 +33,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     BOOL isPreparingToRecord;    // is the assetWriter being prepared to record
     BOOL isRecording;            // is the assetWriter recording
     BOOL isLookingForFace;       // is the faceDetector currently processing a face
+    BOOL shouldSendFace;         // is YES if we aren't currently sending a face off in a notification
     int maxNumSimultaneousFaces; // the max number of faces found in a single frame so far
 }
 
@@ -57,6 +60,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     self.navigationItem.title = @"Setting Up";
+    shouldSendFace = YES;
 }
 
 // This is called when the view is on screen (or at least, about to be) and the views have been resized to fill the screen
@@ -84,6 +88,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 #warning Do something with faces
         }
         [self stopRecording];
+        [ADNotificationHelper sendCameraWasDisabledWhileRecordingNotification];
 //        NSLog(@"Does video recorder exist?: %@", self.videoRecorder);
 //        [self.videoRecorder stopRecordingWithCompletionHandler:^{
 //            if ([[NSFileManager defaultManager] fileExistsAtPath:self.recordingURL.path]) {
@@ -136,6 +141,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         if (!isPreparingToRecord && [self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer]) {
             isPreparingToRecord = YES;
             [self startRecording];
+            [ADNotificationHelper sendMotionDetectedNotification];
         }
     }
     
@@ -146,12 +152,14 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             [self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer];
             if ([self.motionDetector hasMotionEnded]) {
                 [self stopRecordingAndPrepareForNewRecording];
+                [ADNotificationHelper sendMotionEndedNotification];
                 return;
             }
         }
         [self.videoRecorder appendFrameFromPixelBuffer:pixelBuffer];
         
         if (!isLookingForFace) {
+            NSLog(@"Looking for a face");
             isLookingForFace = YES;
             CFRetain(sampleBuffer);
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -172,23 +180,30 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     if (numFaces) {
         [self.beep play];
         if (numFaces.intValue > maxNumSimultaneousFaces) {
-            UIImage *image = (UIImage *)detectionResults[ADFaceDetectorImageWithFaces];
-            self.imageWithFaces = [UIImage copyUIImage:image];
+            // Get a copy of the image
+            UIImage *image = [UIImage copyUIImage:(UIImage *)detectionResults[ADFaceDetectorImageWithFaces]];
+            
+            // Create the PFFile object to hold it
+            NSData *jpeg = UIImageJPEGRepresentation(image, 1);
+            PFFile *file = [PFFile fileWithName:@"eventImage.jpeg" data:jpeg];
+            
+            // Save everything in the background - only begin looking for new faces when this finishes
+            [file saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (succeeded) {
+                    ADEventImage *eventImage = [ADEventImage objectForNewEventImageForEvent:self.event];
+                    eventImage.image = file;
+                    eventImage.numFaces = numFaces;
+                    [eventImage saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                        if (succeeded) {
+                            NSLog(@"Saved a new event image");
+                            [ADNotificationHelper sendFaceDetectedNotificationWithEventImage:eventImage];
+                        }
+                    }];
+                }
+            }];
             maxNumSimultaneousFaces = numFaces.intValue;
         }
     }
-    
-    /*
-     // From when we were experimenting with thumbnails
-    if (detectedFaces.count > 0) {
-        [self.beep play];
-        for (UIImage *image in detectedFaces) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self performSegueWithIdentifier:@"ThumbnailSegue" sender:image];
-            });
-        }
-    }
-     */
 }
 
 - (void)startRecording
