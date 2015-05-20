@@ -13,6 +13,7 @@
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 #import "ADS3Helper.h"
 #import "ADNotificationHelper.h"
+#import "ThumbnailViewController.h"
 
 @interface AppDelegate () <PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate>
 
@@ -179,8 +180,27 @@
 
 // Handle notifications received while the app was opened
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    NSLog(@"Remote notification received: %@", userInfo);
-    [PFPush handlePush:userInfo];
+    NSString *eventImageID = [userInfo objectForKey:@"p"];
+    if (!eventImageID) {
+        [PFPush handlePush:userInfo];
+    } else {
+        PFObject *eventImage = [PFObject objectWithoutDataWithClassName:@"EventImage" objectId:eventImageID];
+        
+        // Fetch photo object
+        [eventImage fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+            // Show photo view controller
+            if (error) {
+                // Error
+            } else if ([PFUser currentUser]) {
+                ThumbnailViewController *imageVC = [[UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]]
+                                                    instantiateViewControllerWithIdentifier:@"ImageViewController"];
+                imageVC.eventImage = (ADEventImage *)object;
+                [self.window.rootViewController presentViewController:imageVC animated:YES completion:nil];
+            } else {
+                // 
+            }
+        }];
+    }
 }
 
 #pragma mark - App life cycle methods

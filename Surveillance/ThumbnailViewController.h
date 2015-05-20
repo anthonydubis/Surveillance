@@ -8,9 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+@class ADEventImage;
+
 @interface ThumbnailViewController : UIViewController
 
-@property (nonatomic, strong) UIImage *thumbnailImage;
+@property (nonatomic, strong) ADEventImage *eventImage;
 @property (weak, nonatomic) IBOutlet UIImageView *thumbnailImageView;
+
+- (IBAction)dismiss:(UIBarButtonItem *)sender;
 
 @end

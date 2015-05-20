@@ -7,6 +7,8 @@
 //
 
 #import "ThumbnailViewController.h"
+#import <ParseUI/ParseUI.h>
+#import "ADEventImage.h"
 
 @interface ThumbnailViewController ()
 
@@ -20,12 +22,15 @@
 }
 
 - (void)viewDidLayoutSubviews {
-    self.thumbnailImageView.image = self.thumbnailImage;
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    PFImageView *imageView = [[PFImageView alloc] initWithFrame:self.thumbnailImageView.frame];
+    [self.view addSubview:imageView];
+    [self.thumbnailImageView removeFromSuperview];
+    self.thumbnailImageView = imageView;
+    
+    imageView.image = [UIImage imageNamed:@"empty.jpg"]; // placeholder image
+    imageView.file = self.eventImage.image; // remote image
+    
+    [imageView loadInBackground];
 }
 
 /*
@@ -37,5 +42,10 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+- (IBAction)dismiss:(UIBarButtonItem *)sender
+{
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
 
 @end

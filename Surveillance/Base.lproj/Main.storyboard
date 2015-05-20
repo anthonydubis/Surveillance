@@ -277,7 +277,6 @@
                     </navigationItem>
                     <connections>
                         <outlet property="previewView" destination="lkQ-fN-fpL" id="l3L-QO-2qY"/>
-                        <segue destination="tcm-9C-ItT" kind="presentation" identifier="ThumbnailSegue" id="Wuh-NW-rha"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xFL-D5-Vmh" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -287,7 +286,7 @@
         <!--Thumbnail View Controller-->
         <scene sceneID="6Yr-AF-NOB">
             <objects>
-                <viewController id="tcm-9C-ItT" customClass="ThumbnailViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ImageViewController" id="tcm-9C-ItT" customClass="ThumbnailViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="MfF-ZL-xcJ"/>
                         <viewControllerLayoutGuide type="bottom" id="gev-Wg-0GB"/>
@@ -297,14 +296,29 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="H6C-cd-Pqp">
-                                <rect key="frame" x="0.0" y="-8" width="600" height="600"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                             </imageView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="caq-BB-EsZ">
+                                <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                                <items>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="iyE-Ie-l7N"/>
+                                    <barButtonItem title="Dismiss" id="Vmm-Ea-HwB">
+                                        <connections>
+                                            <action selector="dismiss:" destination="tcm-9C-ItT" id="xB5-oN-f5o"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="gev-Wg-0GB" firstAttribute="top" secondItem="caq-BB-EsZ" secondAttribute="bottom" id="FbV-RF-poK"/>
                             <constraint firstAttribute="height" secondItem="H6C-cd-Pqp" secondAttribute="height" id="GEM-LK-n0y"/>
+                            <constraint firstItem="caq-BB-EsZ" firstAttribute="leading" secondItem="hza-JR-tcl" secondAttribute="leadingMargin" constant="-16" id="Gj1-VT-gP2"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="caq-BB-EsZ" secondAttribute="trailing" constant="-16" id="JSR-xF-0mX"/>
                             <constraint firstAttribute="width" secondItem="H6C-cd-Pqp" secondAttribute="width" id="KEl-58-XGx"/>
-                            <constraint firstAttribute="centerY" secondItem="H6C-cd-Pqp" secondAttribute="centerY" constant="8" id="NdV-cL-hni"/>
+                            <constraint firstAttribute="centerY" secondItem="H6C-cd-Pqp" secondAttribute="centerY" id="NdV-cL-hni"/>
+                            <constraint firstItem="caq-BB-EsZ" firstAttribute="top" secondItem="MfF-ZL-xcJ" secondAttribute="bottom" constant="536" id="c6V-vX-vac"/>
                             <constraint firstAttribute="centerX" secondItem="H6C-cd-Pqp" secondAttribute="centerX" id="fLL-o7-KR3"/>
                         </constraints>
                     </view>
@@ -314,7 +328,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MG9-MX-wE1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2418" y="325"/>
+            <point key="canvasLocation" x="-1688" y="-219"/>
         </scene>
         <!--Events-->
         <scene sceneID="am5-lW-x2D">

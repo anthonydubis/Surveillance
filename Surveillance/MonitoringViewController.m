@@ -22,8 +22,6 @@
 #import "ADEvent.h"
 #import "ADEventImage.h"
 
-#import "ThumbnailViewController.h"
-
 // How often should we check to see if motion still exists, in seconds
 const int MotionDetectionFrequencyWhenRecording = 1;
 
@@ -289,14 +287,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 - (IBAction)dismissSelf:(id)sender
 {
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqual:@"ThumbnailSegue"]) {
-        ThumbnailViewController *tvc = segue.destinationViewController;
-        tvc.thumbnailImage = (UIImage *)sender;
-    }
 }
 
 #pragma mark - Getters/Setters
