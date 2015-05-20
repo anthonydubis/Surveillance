@@ -10,10 +10,11 @@
 
 @class ADEventImage;
 
-@interface ThumbnailViewController : UIViewController
+@interface ADImageViewController : UIViewController
 
 @property (nonatomic, strong) ADEventImage *eventImage;
-@property (weak, nonatomic) IBOutlet UIImageView *thumbnailImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *capturedImageView;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicatorView;
 
 - (IBAction)dismiss:(UIBarButtonItem *)sender;
 

@@ -59,6 +59,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     self.navigationItem.title = @"Setting Up";
     shouldSendFace = YES;
+    
 }
 
 // This is called when the view is on screen (or at least, about to be) and the views have been resized to fill the screen

@@ -241,7 +241,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VXy-UX-3ag" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-65" y="325"/>
+            <point key="canvasLocation" x="747" y="325"/>
         </scene>
         <!--Monitoring-->
         <scene sceneID="shb-S2-jlT">
@@ -281,12 +281,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xFL-D5-Vmh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1583" y="325"/>
+            <point key="canvasLocation" x="2395" y="325"/>
         </scene>
-        <!--Thumbnail View Controller-->
+        <!--Image View Controller-->
         <scene sceneID="6Yr-AF-NOB">
             <objects>
-                <viewController storyboardIdentifier="ImageViewController" id="tcm-9C-ItT" customClass="ThumbnailViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ImageViewController" id="tcm-9C-ItT" customClass="ADImageViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="MfF-ZL-xcJ"/>
                         <viewControllerLayoutGuide type="bottom" id="gev-Wg-0GB"/>
@@ -296,39 +296,39 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="H6C-cd-Pqp">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <rect key="frame" x="-4" y="64" width="608" height="492"/>
                             </imageView>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="caq-BB-EsZ">
-                                <rect key="frame" x="0.0" y="556" width="600" height="44"/>
-                                <items>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="iyE-Ie-l7N"/>
-                                    <barButtonItem title="Dismiss" id="Vmm-Ea-HwB">
-                                        <connections>
-                                            <action selector="dismiss:" destination="tcm-9C-ItT" id="xB5-oN-f5o"/>
-                                        </connections>
-                                    </barButtonItem>
-                                </items>
-                            </toolbar>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="5AW-X2-u4H">
+                                <rect key="frame" x="282" y="291" width="37" height="37"/>
+                            </activityIndicatorView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="gev-Wg-0GB" firstAttribute="top" secondItem="caq-BB-EsZ" secondAttribute="bottom" id="FbV-RF-poK"/>
-                            <constraint firstAttribute="height" secondItem="H6C-cd-Pqp" secondAttribute="height" id="GEM-LK-n0y"/>
-                            <constraint firstItem="caq-BB-EsZ" firstAttribute="leading" secondItem="hza-JR-tcl" secondAttribute="leadingMargin" constant="-16" id="Gj1-VT-gP2"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="caq-BB-EsZ" secondAttribute="trailing" constant="-16" id="JSR-xF-0mX"/>
-                            <constraint firstAttribute="width" secondItem="H6C-cd-Pqp" secondAttribute="width" id="KEl-58-XGx"/>
-                            <constraint firstAttribute="centerY" secondItem="H6C-cd-Pqp" secondAttribute="centerY" id="NdV-cL-hni"/>
-                            <constraint firstItem="caq-BB-EsZ" firstAttribute="top" secondItem="MfF-ZL-xcJ" secondAttribute="bottom" constant="536" id="c6V-vX-vac"/>
-                            <constraint firstAttribute="centerX" secondItem="H6C-cd-Pqp" secondAttribute="centerX" id="fLL-o7-KR3"/>
+                            <constraint firstItem="H6C-cd-Pqp" firstAttribute="centerY" secondItem="5AW-X2-u4H" secondAttribute="centerY" constant="0.5" id="GzS-XS-1yL"/>
+                            <constraint firstItem="H6C-cd-Pqp" firstAttribute="leading" secondItem="hza-JR-tcl" secondAttribute="leadingMargin" constant="-20" id="LhO-Vu-R4k"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="H6C-cd-Pqp" secondAttribute="trailing" constant="-20" id="kec-3G-xJ8"/>
+                            <constraint firstItem="gev-Wg-0GB" firstAttribute="top" secondItem="H6C-cd-Pqp" secondAttribute="bottom" id="qGf-EG-KiR"/>
+                            <constraint firstItem="H6C-cd-Pqp" firstAttribute="centerX" secondItem="5AW-X2-u4H" secondAttribute="centerX" constant="-0.5" id="uKz-LC-3GE"/>
+                            <constraint firstItem="H6C-cd-Pqp" firstAttribute="top" secondItem="MfF-ZL-xcJ" secondAttribute="bottom" id="vLv-Ym-Mgx"/>
                         </constraints>
                     </view>
+                    <toolbarItems>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="RFs-8H-dJ7"/>
+                        <barButtonItem title="Dismiss" id="HqO-Y2-Et1">
+                            <connections>
+                                <action selector="dismiss:" destination="tcm-9C-ItT" id="21j-UL-UaE"/>
+                            </connections>
+                        </barButtonItem>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" id="g8Q-x7-FhG"/>
                     <connections>
-                        <outlet property="thumbnailImageView" destination="H6C-cd-Pqp" id="0tc-Cm-qNw"/>
+                        <outlet property="activityIndicatorView" destination="5AW-X2-u4H" id="n1t-rQ-4uJ"/>
+                        <outlet property="capturedImageView" destination="H6C-cd-Pqp" id="HqB-w3-Wy5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MG9-MX-wE1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1688" y="-219"/>
+            <point key="canvasLocation" x="-876" y="-219"/>
         </scene>
         <!--Events-->
         <scene sceneID="am5-lW-x2D">
@@ -366,7 +366,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uFa-aI-34q" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-877" y="325"/>
+            <point key="canvasLocation" x="-65" y="325"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="5NP-Wo-H8L">
@@ -384,7 +384,28 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eU8-Ce-Dq0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="771" y="325"/>
+            <point key="canvasLocation" x="1583" y="325"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="X9f-1X-zUA">
+            <objects>
+                <navigationController storyboardIdentifier="ImageViewControllerNavCon" automaticallyAdjustsScrollViewInsets="NO" toolbarHidden="NO" id="A7S-gU-Od7" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="AaN-Kp-dpL">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="qNw-aQ-2r4">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="tcm-9C-ItT" kind="relationship" relationship="rootViewController" id="5MC-xw-iWy"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UmG-hY-qBj" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1688" y="-219"/>
         </scene>
     </scenes>
     <resources>

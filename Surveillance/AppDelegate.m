@@ -13,7 +13,7 @@
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 #import "ADS3Helper.h"
 #import "ADNotificationHelper.h"
-#import "ThumbnailViewController.h"
+#import "ADImageViewController.h"
 
 @interface AppDelegate () <PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate>
 
@@ -23,20 +23,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    // [Optional] Power your app with Local Datastore. For more info, go to
-    // https://parse.com/docs/ios_guide#localdatastore/iOS
-    // [Parse enableLocalDatastore];
-    
-    // Initialize Parse and Facebook
-    [Parse setApplicationId:@"RsfKbEwIOCNz8cCYmESlj5hXIV89HFuZtuZ6Jj2f"
-                  clientKey:@"WvyRze50fd8hyuZ0NPxNAs5R9b1OPw5FvIyyBKX4"];
-    [PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];
-        
-    // Set default ACL so all objects created can only be read/written to by the current user
-    [PFACL setDefaultACL:[PFACL ACL] withAccessForCurrentUser:YES];
-    
-    // [Optional] Track statistics around application opens.
-    [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+    // Setup Parse first
+    [self setupParseWithLaunchOptions:launchOptions];
     
     // Setup AWS
     [ADS3Helper setupAWSS3Service];
@@ -47,7 +35,30 @@
     // Setup push notifications
     [ADNotificationHelper setupNotifications];
     
+    // Handle notifications, if any exist
+    NSDictionary *notificationPayload = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
+    if (notificationPayload)
+        [self handleNotification:notificationPayload whileActive:NO];
+    
     return YES;
+}
+
+- (void)setupParseWithLaunchOptions:(NSDictionary *)launchOptions
+{
+    // [Optional] Power your app with Local Datastore. For more info, go to
+    // https://parse.com/docs/ios_guide#localdatastore/iOS
+    // [Parse enableLocalDatastore];
+    
+    // Initialize Parse and Facebook
+    [Parse setApplicationId:@"RsfKbEwIOCNz8cCYmESlj5hXIV89HFuZtuZ6Jj2f"
+                  clientKey:@"WvyRze50fd8hyuZ0NPxNAs5R9b1OPw5FvIyyBKX4"];
+    [PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];
+    
+    // Set default ACL so all objects created can only be read/written to by the current user
+    [PFACL setDefaultACL:[PFACL ACL] withAccessForCurrentUser:YES];
+    
+    // [Optional] Track statistics around application opens.
+    [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
@@ -180,27 +191,56 @@
 
 // Handle notifications received while the app was opened
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    NSString *eventImageID = [userInfo objectForKey:@"p"];
-    if (!eventImageID) {
-        [PFPush handlePush:userInfo];
-    } else {
-        PFObject *eventImage = [PFObject objectWithoutDataWithClassName:@"EventImage" objectId:eventImageID];
+    [self handleNotification:userInfo whileActive:YES];
+}
+
+- (void)handleNotification:(NSDictionary *)userInfo whileActive:(BOOL)wasActive
+{
+    NSDictionary *aps = userInfo[@"aps"];
+    NSString *message = aps[@"alert"];
+    if ([userInfo objectForKey:@"p"]) {
+        // This is a face notification
+        NSString *eventImageID = [userInfo objectForKey:@"p"];
+        if (wasActive) {
+            // Ask user if he wants to see the image
+            [UIAlertView showWithTitle:nil
+                               message:message
+                     cancelButtonTitle:@"No"
+                     otherButtonTitles:@[@"View Image"]
+                              tapBlock:^(UIAlertView *av, NSInteger buttonIndex) {
+                                  if (buttonIndex != av.cancelButtonIndex) {
+                                      [self presentEventImageWithID:eventImageID];
+                                  }
+                              }];
+        } else {
+            // Immediately show the image
+            [self presentEventImageWithID:eventImageID];
+        }
         
-        // Fetch photo object
-        [eventImage fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-            // Show photo view controller
-            if (error) {
-                // Error
-            } else if ([PFUser currentUser]) {
-                ThumbnailViewController *imageVC = [[UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]]
-                                                    instantiateViewControllerWithIdentifier:@"ImageViewController"];
-                imageVC.eventImage = (ADEventImage *)object;
-                [self.window.rootViewController presentViewController:imageVC animated:YES completion:nil];
-            } else {
-                // 
-            }
-        }];
+    } else {
+        // [PFPush handlePush:userInfo];
     }
+}
+
+- (void)presentEventImageWithID:(NSString *)eventImageID
+{
+    PFObject *eventImage = [PFObject objectWithoutDataWithClassName:@"EventImage" objectId:eventImageID];
+    
+    // Fetch photo object
+    [eventImage fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+        // Show photo view controller
+        if (error) {
+            // Error - perhaps the image was removed
+        } else if ([PFUser currentUser]) {
+            UINavigationController *navCon = [[UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]]
+                                              instantiateViewControllerWithIdentifier:@"ImageViewControllerNavCon"];
+            ADImageViewController *imageVC = (ADImageViewController *)navCon.topViewController;
+            imageVC.eventImage = (ADEventImage *)object;
+            [self.window.rootViewController presentViewController:navCon animated:YES completion:nil];
+        } else {
+            //
+        }
+    }];
 }
 
 #pragma mark - App life cycle methods

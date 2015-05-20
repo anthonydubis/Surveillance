@@ -11,7 +11,7 @@
 		971F1AB51B0B85C200ADB5B7 /* ADNotificationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 971F1AB41B0B85C200ADB5B7 /* ADNotificationHelper.m */; };
 		972473511AFD869F00D74BF8 /* CameraStreamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 972473501AFD869F00D74BF8 /* CameraStreamViewController.m */; };
 		972473541AFD91F200D74BF8 /* ADVideoRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 972473531AFD91F200D74BF8 /* ADVideoRecorder.m */; };
-		972473571AFE451900D74BF8 /* ThumbnailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 972473561AFE451900D74BF8 /* ThumbnailViewController.m */; };
+		972473571AFE451900D74BF8 /* ADImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 972473561AFE451900D74BF8 /* ADImageViewController.m */; };
 		973A92731B0C068B0032D4ED /* ADEventImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 973A92721B0C068B0032D4ED /* ADEventImage.m */; };
 		973DB6441B0179EC00418444 /* MonitoringEventFace.m in Sources */ = {isa = PBXBuildFile; fileRef = 973DB6431B0179EC00418444 /* MonitoringEventFace.m */; };
 		973DB6471B017A1000418444 /* MonitoringEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 973DB6461B017A1000418444 /* MonitoringEvent.m */; };
@@ -140,8 +140,8 @@
 		972473501AFD869F00D74BF8 /* CameraStreamViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraStreamViewController.m; sourceTree = "<group>"; };
 		972473521AFD91F200D74BF8 /* ADVideoRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADVideoRecorder.h; sourceTree = "<group>"; };
 		972473531AFD91F200D74BF8 /* ADVideoRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADVideoRecorder.m; sourceTree = "<group>"; };
-		972473551AFE451900D74BF8 /* ThumbnailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbnailViewController.h; sourceTree = "<group>"; };
-		972473561AFE451900D74BF8 /* ThumbnailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThumbnailViewController.m; sourceTree = "<group>"; };
+		972473551AFE451900D74BF8 /* ADImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADImageViewController.h; sourceTree = "<group>"; };
+		972473561AFE451900D74BF8 /* ADImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADImageViewController.m; sourceTree = "<group>"; };
 		973A92711B0C068B0032D4ED /* ADEventImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADEventImage.h; sourceTree = "<group>"; };
 		973A92721B0C068B0032D4ED /* ADEventImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADEventImage.m; sourceTree = "<group>"; };
 		973DB6411B01790500418444 /* Surveillance 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Surveillance 2.xcdatamodel"; sourceTree = "<group>"; };
@@ -431,8 +431,8 @@
 				972473501AFD869F00D74BF8 /* CameraStreamViewController.m */,
 				97CA02331AF5513C00B86C4D /* MonitoringViewController.h */,
 				97CA02341AF5513C00B86C4D /* MonitoringViewController.m */,
-				972473551AFE451900D74BF8 /* ThumbnailViewController.h */,
-				972473561AFE451900D74BF8 /* ThumbnailViewController.m */,
+				972473551AFE451900D74BF8 /* ADImageViewController.h */,
+				972473561AFE451900D74BF8 /* ADImageViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -806,7 +806,7 @@
 				9799C8C11B0A0DC00098C0A7 /* ADDownloadTask.m in Sources */,
 				9799C8B21B0800200098C0A7 /* ACPDownloadView.m in Sources */,
 				97E2F8A11AFC0F6200E472F2 /* MonitoringEvent+AD.m in Sources */,
-				972473571AFE451900D74BF8 /* ThumbnailViewController.m in Sources */,
+				972473571AFE451900D74BF8 /* ADImageViewController.m in Sources */,
 				973DB6471B017A1000418444 /* MonitoringEvent.m in Sources */,
 				973A92731B0C068B0032D4ED /* ADEventImage.m in Sources */,
 				97E62DBD1AF6E58200CECBCB /* SegmentedControlCell.m in Sources */,
