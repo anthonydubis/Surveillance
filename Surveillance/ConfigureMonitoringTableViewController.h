@@ -10,4 +10,6 @@
 
 @interface ConfigureMonitoringTableViewController : UITableViewController
 
+- (IBAction)startMonitoring:(UIBarButtonItem *)sender;
+
 @end

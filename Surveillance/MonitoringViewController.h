@@ -14,4 +14,12 @@
 
 @property (nonatomic, assign) MotionDetectorSensitivity motionSensitivity;
 
+@property (nonatomic, assign) BOOL beepWhenRecordingStarts;
+@property (nonatomic, assign) BOOL beepWhenRecordingStops;
+@property (nonatomic, assign) BOOL beepWhenFaceDetected;
+@property (nonatomic, assign) BOOL notifyOnMotionStart;
+@property (nonatomic, assign) BOOL notifyOnMotionEnd;
+@property (nonatomic, assign) BOOL notifyOnFaceDetection;
+@property (nonatomic, assign) BOOL notifyWhenCameraDisabled;
+
 @end

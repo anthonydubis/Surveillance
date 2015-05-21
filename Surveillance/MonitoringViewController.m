@@ -31,7 +31,6 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     BOOL isPreparingToRecord;    // is the assetWriter being prepared to record
     BOOL isRecording;            // is the assetWriter recording
     BOOL isLookingForFace;       // is the faceDetector currently processing a face
-    BOOL shouldSendFace;         // is YES if we aren't currently sending a face off in a notification
     int maxNumSimultaneousFaces; // the max number of faces found in a single frame so far
 }
 
@@ -39,7 +38,6 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 @property (nonatomic, strong) ADVideoRecorder *videoRecorder;
 @property (nonatomic, strong) ADMotionDetector *motionDetector;
 @property (nonatomic, strong) ADFaceDetector *faceDetector;
-@property (nonatomic, strong) UIImage *imageWithFaces;
 @property (nonatomic, strong) NSURL *recordingURL;
 
 // Integrating parse
@@ -58,8 +56,6 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     self.navigationItem.title = @"Setting Up";
-    shouldSendFace = YES;
-    
 }
 
 // This is called when the view is on screen (or at least, about to be) and the views have been resized to fill the screen
@@ -78,24 +74,10 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     
     // If recording, finish up. Then rollback the context to remove uncommited events
     if (isRecording) {
-        if (self.imageWithFaces) {
-            /*
-            [MonitoringEventFace newFaceWithData:UIImageJPEGRepresentation(self.imageWithFaces, 1)
-                                        forEvent:self.event
-                                       inContext:self.appDelegate.managedObjectContext];
-             */
-#warning Do something with faces
-        }
         [self stopRecording];
-        [ADNotificationHelper sendCameraWasDisabledWhileRecordingNotification];
-//        NSLog(@"Does video recorder exist?: %@", self.videoRecorder);
-//        [self.videoRecorder stopRecordingWithCompletionHandler:^{
-//            if ([[NSFileManager defaultManager] fileExistsAtPath:self.recordingURL.path]) {
-//                NSLog(@"The video was written");
-//            } else {
-//                NSLog(@"The video was not written");
-//            }
-//        }];
+        if (_notifyWhenCameraDisabled) {
+            [ADNotificationHelper sendCameraWasDisabledWhileRecordingNotification];
+        }
     }
 }
 
@@ -140,7 +122,9 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         if (!isPreparingToRecord && [self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer]) {
             isPreparingToRecord = YES;
             [self startRecording];
-            [ADNotificationHelper sendMotionDetectedNotification];
+            if (_notifyOnMotionStart) {
+                [ADNotificationHelper sendMotionDetectedNotification];
+            }
         }
     }
     
@@ -151,14 +135,15 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             [self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer];
             if ([self.motionDetector hasMotionEnded]) {
                 [self stopRecordingAndPrepareForNewRecording];
-                [ADNotificationHelper sendMotionEndedNotification];
+                if (_notifyOnMotionEnd) {
+                    [ADNotificationHelper sendMotionEndedNotification];
+                }
                 return;
             }
         }
         [self.videoRecorder appendFrameFromPixelBuffer:pixelBuffer];
         
         if (!isLookingForFace) {
-            NSLog(@"Looking for a face");
             isLookingForFace = YES;
             CFRetain(sampleBuffer);
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -177,8 +162,13 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 {
     NSNumber *numFaces = (NSNumber *)detectionResults[ADFaceDetectorNumberOfFacesDetected];
     if (numFaces) {
-        [self.beep play];
-        if (numFaces.intValue > maxNumSimultaneousFaces) {
+        // Beep if the user asked you to do so
+        if (_beepWhenFaceDetected) {
+            [self.beep play];
+        }
+        
+        // Sending a notification
+        if (_notifyOnFaceDetection && numFaces.intValue > maxNumSimultaneousFaces) {
             // Get a copy of the image
             UIImage *image = [UIImage copyUIImage:(UIImage *)detectionResults[ADFaceDetectorImageWithFaces]];
             
@@ -207,7 +197,10 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 - (void)startRecording
 {
-    [self.beep play];
+    // Beep if the user specified that you should
+    if (_beepWhenRecordingStarts) {
+        [self.beep play];
+    }
     
     // Create the parse object and save it
     self.event = [ADEvent objectForNewEvent];
@@ -224,14 +217,12 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 - (void)stopRecording
 {
-    [self.beep play];
-    isRecording = NO;
-    if (self.imageWithFaces) {
-#warning Do something with faces
-//        [MonitoringEventFace newFaceWithData:UIImageJPEGRepresentation(self.imageWithFaces, 1)
-//                                    forEvent:self.event
-//                                   inContext:self.appDelegate.managedObjectContext];
+    // Beep if the user specified that you should
+    if (_beepWhenRecordingStops) {
+        [self.beep play];
     }
+    
+    isRecording = NO;
     [self.videoRecorder stopRecordingWithCompletionHandler:^{
         [self updateEventForEndOfRecording];
         [ADS3Helper uploadVideoAtURL:self.recordingURL forEvent:self.event];
@@ -240,15 +231,12 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 - (void)stopRecordingAndPrepareForNewRecording
 {
-    [self.beep play];
-    isRecording = NO;
-    if (self.imageWithFaces) {
-#warning Do something with faces
-        //        [MonitoringEventFace newFaceWithData:UIImageJPEGRepresentation(self.imageWithFaces, 1)
-        //                                    forEvent:self.event
-        //                                   inContext:self.appDelegate.managedObjectContext];
+    // Beep if the user specified that you should
+    if (_beepWhenRecordingStops) {
+        [self.beep play];
     }
     
+    isRecording = NO;
     // Upload video and prepare for new recording
     [self.videoRecorder stopRecordingWithCompletionHandler:^{
         [self updateEventForEndOfRecording];
@@ -276,7 +264,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 {
     self.event = nil;
     self.recordingURL = nil;
-    self.imageWithFaces = nil;
     [self.motionDetector setBackgroundWithPixelBuffer:nil];
     [self.videoRecorder prepareToRecordWithNewURL:self.recordingURL];
     isMonitoring = YES;

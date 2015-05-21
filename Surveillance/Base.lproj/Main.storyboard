@@ -193,7 +193,7 @@
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jae-0f-UCa">
                                             <rect key="frame" x="8" y="14" width="527" height="21"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
@@ -220,6 +220,29 @@
                                     <outlet property="textLabel" destination="jae-0f-UCa" id="bNN-vl-PeW"/>
                                 </connections>
                             </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="ButtonCell" id="p4g-gl-bVA" customClass="FlatButtonTableViewCell">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="p4g-gl-bVA" id="pcb-el-ipW">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Start Monitoring" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8ax-Sl-1ix">
+                                            <rect key="frame" x="225" y="13" width="150" height="24"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" red="0.0" green="0.47843137254901957" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <constraints>
+                                        <constraint firstAttribute="centerY" secondItem="8ax-Sl-1ix" secondAttribute="centerY" constant="-0.5" id="52J-K2-BRn"/>
+                                        <constraint firstAttribute="centerX" secondItem="8ax-Sl-1ix" secondAttribute="centerX" id="pcj-3L-bsK"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="textLabel" destination="8ax-Sl-1ix" id="6ug-T1-RVs"/>
+                                </connections>
+                            </tableViewCell>
                         </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="LS8-FL-CfW" id="Afi-BN-ekT"/>
@@ -227,12 +250,16 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Monitoring Settings" id="83E-AZ-iKb">
-                        <barButtonItem key="rightBarButtonItem" title="Start" style="done" id="zCm-zR-lgv">
+                        <barButtonItem key="leftBarButtonItem" title="Info" id="UH0-f0-okw"/>
+                        <barButtonItem key="rightBarButtonItem" title="Start" id="gmi-cB-l7w">
                             <connections>
-                                <segue destination="SnD-NC-ZCP" kind="presentation" identifier="AVStartMonitoring" id="TKP-gK-SwD"/>
+                                <action selector="startMonitoring:" destination="LS8-FL-CfW" id="Y4T-xk-hMQ"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <segue destination="SnD-NC-ZCP" kind="presentation" identifier="StartMonitoringSegue" id="XZD-3b-Dc2"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VXy-UX-3ag" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
