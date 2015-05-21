@@ -154,13 +154,6 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
         return nil;
 }
 
-#define CELL_HEIGHT 55.0;
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return CELL_HEIGHT;
-}
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 4;
 }

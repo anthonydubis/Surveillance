@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ADSurveillanceTableViewController.h"
 
-@interface ConfigureMonitoringTableViewController : UITableViewController
+@interface ConfigureMonitoringTableViewController : ADSurveillanceTableViewController
 
 - (IBAction)startMonitoring:(UIBarButtonItem *)sender;
 

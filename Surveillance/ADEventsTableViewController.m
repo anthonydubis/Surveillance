@@ -62,6 +62,20 @@
     return query;
 }
 
+#pragma mark - TableView delegate methods
+
+#define CELL_HEIGHT 55.0;
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return CELL_HEIGHT;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return @"Captured Events";
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
@@ -73,8 +87,8 @@
 {
     ADEvent *event = (ADEvent *)[self objectAtIndexPath:indexPath];
     cell.textLabel.text = [NSDateFormatter localizedStringFromDate:event.startedRecordingAt
-                                                         dateStyle:NSDateFormatterShortStyle
-                                                         timeStyle:NSDateFormatterLongStyle];
+                                                         dateStyle:NSDateFormatterMediumStyle
+                                                         timeStyle:NSDateFormatterMediumStyle];
     
     // Set the accessory view
     if (self.downloading[event.videoName])
@@ -117,7 +131,7 @@
     [downloadView setProgress:[progress percentageDownloaded] animated:YES];
 }
 
-#define ACCESSORY_SIZE 30.0
+#define ACCESSORY_SIZE 35.0
 
 - (UIView *)accessoryViewForIndexPath:(NSIndexPath *)indexPath
 {

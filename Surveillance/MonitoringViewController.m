@@ -56,6 +56,10 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     self.navigationItem.title = @"Setting Up";
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appHasEnteredBackground)
+                                                 name:UIApplicationDidEnterBackgroundNotification
+                                               object:nil];
 }
 
 // This is called when the view is on screen (or at least, about to be) and the views have been resized to fill the screen
@@ -67,17 +71,30 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     [self performSelector:@selector(beginMonitoring) withObject:nil afterDelay:5.0];
 }
 
+- (void)appHasEnteredBackground
+{
+#warning You also need to handle case where app terminates while recording
+#warning Also need to handle what happens when the app becoems active again on this screen
+    [self endMonitoring];
+}
+
 // Cal when the view leaves the screen
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    [self endMonitoring];
+}
+
+- (void)endMonitoring
+{
+    // Notify the user that the camera was disabled
+    if (_notifyWhenCameraDisabled) {
+        [ADNotificationHelper sendCameraWasDisabledWhileRecordingNotification];
+    }
     
     // If recording, finish up. Then rollback the context to remove uncommited events
     if (isRecording) {
         [self stopRecording];
-        if (_notifyWhenCameraDisabled) {
-            [ADNotificationHelper sendCameraWasDisabledWhileRecordingNotification];
-        }
     }
 }
 

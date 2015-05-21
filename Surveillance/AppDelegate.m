@@ -14,6 +14,7 @@
 #import "ADS3Helper.h"
 #import "ADNotificationHelper.h"
 #import "ADImageViewController.h"
+#import "ADLoginViewController.h"
 
 @interface AppDelegate () <PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate>
 
@@ -93,20 +94,25 @@
 
 - (void)showLoginScreen
 {
-    PFLogInViewController *logInViewController = [[PFLogInViewController alloc] init];
-    logInViewController.fields = PFLogInFieldsUsernameAndPassword | PFLogInFieldsLogInButton | PFLogInFieldsSignUpButton | PFLogInFieldsPasswordForgotten | PFLogInFieldsFacebook;
-    logInViewController.emailAsUsername = YES;
-    // Set the logo
-    // [logInViewController.logInView setLogo:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo.png"]]];
-    logInViewController.delegate = self;
+    ADLoginViewController *loginVC = [[ADLoginViewController alloc] init];
+    loginVC.fields = PFLogInFieldsUsernameAndPassword | PFLogInFieldsLogInButton | PFLogInFieldsSignUpButton | PFLogInFieldsPasswordForgotten | PFLogInFieldsFacebook;
+    loginVC.emailAsUsername = YES;
+    loginVC.delegate = self;
+    
+//    [logInViewController.logInView setLogo:logoView];
+//    logInViewController.logInView.logo.contentMode = UIViewContentModeScaleAspectFit;
+//    logInViewController.delegate = self;
+//    logInViewController.logInView.logo.backgroundColor = [UIColor redColor];
+    
     
     PFSignUpViewController *signUpViewController = [[PFSignUpViewController alloc] init];
+    // [signUpViewController.signUpView setLogo:logoView];
     signUpViewController.fields = PFSignUpFieldsUsernameAndPassword | PFSignUpFieldsSignUpButton;
     signUpViewController.emailAsUsername = YES;
     signUpViewController.delegate = self;
-    [logInViewController setSignUpController:signUpViewController];
+    [loginVC setSignUpController:signUpViewController];
     
-    self.window.rootViewController = logInViewController;
+    self.window.rootViewController = loginVC;
 }
 
 // Sent to the delegate to determine whether the log in request should be submitted to the server.

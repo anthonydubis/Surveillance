@@ -41,6 +41,9 @@
 		976AFB5E1AF40B5800F91585 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976AFB5D1AF40B5800F91585 /* CoreMedia.framework */; };
 		976AFB601AF40B5F00F91585 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976AFB5F1AF40B5F00F91585 /* CoreVideo.framework */; };
 		976AFB621AF40B6600F91585 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976AFB611AF40B6600F91585 /* QuartzCore.framework */; };
+		978147331B0E573500FFB16F /* ADLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 978147321B0E573500FFB16F /* ADLoginViewController.m */; };
+		9781473C1B0E713F00FFB16F /* ADSettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9781473B1B0E713F00FFB16F /* ADSettingsTableViewController.m */; };
+		9781473F1B0E791A00FFB16F /* ADSurveillanceTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9781473E1B0E791A00FFB16F /* ADSurveillanceTableViewController.m */; };
 		9799C8251B0528CD0098C0A7 /* BButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8201B0528CD0098C0A7 /* BButton.m */; };
 		9799C8261B0528CD0098C0A7 /* NSString+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8221B0528CD0098C0A7 /* NSString+FontAwesome.m */; };
 		9799C8271B0528CD0098C0A7 /* UIColor+BButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8241B0528CD0098C0A7 /* UIColor+BButton.m */; };
@@ -186,6 +189,12 @@
 		976AFB5D1AF40B5800F91585 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		976AFB5F1AF40B5F00F91585 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		976AFB611AF40B6600F91585 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		978147311B0E573500FFB16F /* ADLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADLoginViewController.h; sourceTree = "<group>"; };
+		978147321B0E573500FFB16F /* ADLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADLoginViewController.m; sourceTree = "<group>"; };
+		9781473A1B0E713F00FFB16F /* ADSettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADSettingsTableViewController.h; sourceTree = "<group>"; };
+		9781473B1B0E713F00FFB16F /* ADSettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADSettingsTableViewController.m; sourceTree = "<group>"; };
+		9781473D1B0E791A00FFB16F /* ADSurveillanceTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADSurveillanceTableViewController.h; sourceTree = "<group>"; };
+		9781473E1B0E791A00FFB16F /* ADSurveillanceTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADSurveillanceTableViewController.m; sourceTree = "<group>"; };
 		9799C81F1B0528CD0098C0A7 /* BButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BButton.h; sourceTree = "<group>"; };
 		9799C8201B0528CD0098C0A7 /* BButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BButton.m; sourceTree = "<group>"; };
 		9799C8211B0528CD0098C0A7 /* NSString+FontAwesome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+FontAwesome.h"; sourceTree = "<group>"; };
@@ -423,6 +432,8 @@
 		976979751AFAB0AE0029D82D /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				9781473D1B0E791A00FFB16F /* ADSurveillanceTableViewController.h */,
+				9781473E1B0E791A00FFB16F /* ADSurveillanceTableViewController.m */,
 				9749EB211AF6B284004D9785 /* ConfigureMonitoringTableViewController.h */,
 				9749EB221AF6B284004D9785 /* ConfigureMonitoringTableViewController.m */,
 				9799C8921B07BC860098C0A7 /* ADEventsTableViewController.h */,
@@ -435,6 +446,8 @@
 				97CA02341AF5513C00B86C4D /* MonitoringViewController.m */,
 				972473551AFE451900D74BF8 /* ADImageViewController.h */,
 				972473561AFE451900D74BF8 /* ADImageViewController.m */,
+				9781473A1B0E713F00FFB16F /* ADSettingsTableViewController.h */,
+				9781473B1B0E713F00FFB16F /* ADSettingsTableViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -468,6 +481,8 @@
 				976AFAE01AF3CAC300F91585 /* AppDelegate.m */,
 				971F1AB31B0B85C200ADB5B7 /* ADNotificationHelper.h */,
 				971F1AB41B0B85C200ADB5B7 /* ADNotificationHelper.m */,
+				978147311B0E573500FFB16F /* ADLoginViewController.h */,
+				978147321B0E573500FFB16F /* ADLoginViewController.m */,
 				974E160C1AFCCACB00514C57 /* Classes */,
 				976979751AFAB0AE0029D82D /* View Controllers */,
 				976979741AFAB09F0029D82D /* Cells */,
@@ -796,6 +811,8 @@
 				9799C8941B07BC860098C0A7 /* ADEventsTableViewController.m in Sources */,
 				9712DB861AFD1B9C00533A1C /* ADFaceDetector.m in Sources */,
 				9799C8B31B0800200098C0A7 /* ACPIndeterminateGoogleLayer.m in Sources */,
+				9781473F1B0E791A00FFB16F /* ADSurveillanceTableViewController.m in Sources */,
+				978147331B0E573500FFB16F /* ADLoginViewController.m in Sources */,
 				973DB6441B0179EC00418444 /* MonitoringEventFace.m in Sources */,
 				9799C8C11B0A0DC00098C0A7 /* ADDownloadTask.m in Sources */,
 				9799C8B21B0800200098C0A7 /* ACPDownloadView.m in Sources */,
@@ -808,6 +825,7 @@
 				9799C8B71B0800200098C0A7 /* ACPStaticImagesAlternative.m in Sources */,
 				9799C8B61B0800200098C0A7 /* ACPStaticImages.m in Sources */,
 				973A92761B0D239E0032D4ED /* SwitchTableViewCell.m in Sources */,
+				9781473C1B0E713F00FFB16F /* ADSettingsTableViewController.m in Sources */,
 				9769797D1AFAB5BA0029D82D /* UIAlertView+Blocks.m in Sources */,
 				9799C8911B076B760098C0A7 /* ADS3Helper.m in Sources */,
 				973DB6551B019D3200418444 /* UIImage+DataHandler.m in Sources */,

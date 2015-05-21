@@ -27,6 +27,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.title = [NSDateFormatter localizedStringFromDate:self.event.startedRecordingAt
+                                                dateStyle:NSDateFormatterShortStyle
+                                                timeStyle:NSDateFormatterLongStyle];
 }
 
 - (void)viewDidLayoutSubviews{
