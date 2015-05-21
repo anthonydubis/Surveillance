@@ -27,6 +27,24 @@ const float LowMotionSensitivityPct      = 0.006;
 
 @implementation ADMotionDetector
 
++ (NSString *)nameForSensitivity:(MotionDetectorSensitivity)sensitivity
+{
+    switch (sensitivity) {
+        case MotionDetectorSensitivityHigh:   return @"High";
+        case MotionDetectorSensitivityMedium: return @"Medium";
+        case MotionDetectorSensitivityLow:    return @"Low";
+    }
+}
+
++ (NSString *)descriptionForSensitivity:(MotionDetectorSensitivity)sensitivity
+{
+    switch (sensitivity) {
+        case MotionDetectorSensitivityHigh:   return @"Detects tiny movements";
+        case MotionDetectorSensitivityMedium: return @"Detects moderate movements";
+        case MotionDetectorSensitivityLow:    return @"Detects large movements";
+    }
+}
+
 - (BOOL)isBackgroundSet
 {
     return !self.background.empty();
