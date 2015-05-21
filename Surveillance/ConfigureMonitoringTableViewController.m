@@ -55,32 +55,48 @@ NSString * FooterID          = @"FooterView";
     [self.tableView registerClass:[UITableViewHeaderFooterView class] forHeaderFooterViewReuseIdentifier:FooterID];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-}
-
 #pragma mark - Table view data source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    return 60.0;
+    // Try creating a fake headerview to set these properties.
+    NSLog(@"Height for footer requested: %f", self.view.bounds.size.width);
+    NSString *text = [self textForFooterInSection:section];
+    
+    CGFloat margin = 15.0;
+    CGSize constrainedSize = CGSizeMake(self.view.bounds.size.width - margin * 2, 9999);
+    
+    NSDictionary *attributesDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+                                          [UIFont systemFontOfSize:13.0], NSFontAttributeName,
+                                          nil];
+    
+    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributesDictionary];
+    
+    CGRect requiredRect = [string boundingRectWithSize:constrainedSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+    CGFloat height = requiredRect.size.height;
+    NSLog(@"Returning height %f for section %i", height, section);
+    
+    return height + 12.0;
+}
+
+- (NSString *)textForFooterInSection:(NSInteger)section
+{
+    switch (section) {
+        case 0: return @"The camera's sensitivity determines how much motion must occur in the environment for the camera to begin recording.";
+        case 1: return @"These sounds will play through this device. Please turn up the volume and make sure the device is not silenced.";
+        case 2: return @"These alerts will go to other devices that you have accepted Notifications on.";
+    }
+    return nil;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     // Reuse the instance that was created in viewDidLoad, or make a new one if not enough.
     UITableViewHeaderFooterView *footerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:FooterID];
-    NSString *text;
-    if (section == 0)
-        text = @"The camera's sensitivity determines how much motion must occur in the environment for the camera to begin recording.";
-    else if (section == 1)
-        text = @"These sounds will play through this device. Please turn up the volume and make sure the device is not silenced.";
-    else if (section == 2)
-        text = @"These alerts will go to other devices that you have accepted Notifications on.";
-    
-    footerView.textLabel.text = text;
-    NSLog(@"Font for text label: %@", footerView.textLabel.font);
+    footerView.textLabel.text = [self textForFooterInSection:section];
+    footerView.contentView.backgroundColor = [UIColor redColor];
+    UIFont *font = footerView.textLabel.font;
+    NSLog(@"%@ with system size %f", font, [UIFont systemFontSize]);
     return footerView;
 }
 
