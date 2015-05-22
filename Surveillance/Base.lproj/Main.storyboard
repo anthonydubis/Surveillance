@@ -374,19 +374,27 @@
             </objects>
             <point key="canvasLocation" x="-877" y="1175"/>
         </scene>
-        <!--Table View Controller-->
+        <!--Devices-->
         <scene sceneID="8fk-Mw-Sjc">
             <objects>
-                <tableViewController id="b2d-Q6-uts" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="FEa-7n-qjW">
+                <tableViewController id="b2d-Q6-uts" customClass="ADDevicesTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="FEa-7n-qjW">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="Os6-fV-IiG">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="BasicCell" textLabel="0xl-l5-92p" style="IBUITableViewCellStyleDefault" id="Os6-fV-IiG">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Os6-fV-IiG" id="OEE-5X-Fv9">
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="0xl-l5-92p">
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
                                 </tableViewCellContentView>
                             </tableViewCell>
                         </prototypes>
@@ -395,7 +403,7 @@
                             <outlet property="delegate" destination="b2d-Q6-uts" id="fOy-j4-pjr"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="zCF-8B-urT"/>
+                    <navigationItem key="navigationItem" title="Devices" id="zCF-8B-urT"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6vC-Np-xne" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

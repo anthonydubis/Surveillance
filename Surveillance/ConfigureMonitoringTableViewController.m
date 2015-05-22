@@ -35,7 +35,7 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
 
 
 @interface ConfigureMonitoringTableViewController ()
-{
+{    
     BOOL showSensitivityOptions;
     BOOL beepWhenRecordingStarts;
     BOOL beepWhenRecordingStops;
@@ -315,6 +315,7 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
         [tableView reloadRowsAtIndexPaths:@[[self motionSensitivityIndexPath]] withRowAnimation:UITableViewRowAnimationFade];
     } else if ([self isStartMonitoringIndexPath:indexPath]) {
         [self performSegueWithIdentifier:@"StartMonitoringSegue" sender:nil];
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
 }
 

@@ -88,6 +88,20 @@ NSString * FaceDetectedFunction = @"processFaceDetectionEvent";
 #warning Implement this
 }
 
++ (void)deviceBeganMonitoring
+{
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    currentInstallation[@"isMonitoring"] = @YES;
+    [currentInstallation saveInBackground];
+}
+
++ (void)deviceStoppedMonitoring
+{
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    currentInstallation[@"isMonitoring"] = @NO;
+    [currentInstallation saveInBackground];
+}
+
 #pragma mark - Sending Notifications
 
 + (void)sendMotionDetectedNotification

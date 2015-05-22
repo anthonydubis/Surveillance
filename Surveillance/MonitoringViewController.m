@@ -32,6 +32,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     BOOL isRecording;            // is the assetWriter recording
     BOOL isLookingForFace;       // is the faceDetector currently processing a face
     int maxNumSimultaneousFaces; // the max number of faces found in a single frame so far
+    BOOL endedMonitoring;        // Ensures that the endMonitoring method only gets called once
 }
 
 @property (nonatomic, strong) AVAudioPlayer *beep;
@@ -62,6 +63,11 @@ const int MotionDetectionFrequencyWhenRecording = 1;
                                                object:nil];
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 // This is called when the view is on screen (or at least, about to be) and the views have been resized to fill the screen
 - (void)viewDidLayoutSubviews
 {
@@ -74,27 +80,36 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 - (void)appHasEnteredBackground
 {
 #warning You also need to handle case where app terminates while recording
-#warning Also need to handle what happens when the app becoems active again on this screen
     [self endMonitoring];
+    [self dismissSelf:nil];
 }
 
 // Cal when the view leaves the screen
 - (void)viewWillDisappear:(BOOL)animated
 {
+    NSLog(@"View will disappear");
     [super viewWillDisappear:animated];
     [self endMonitoring];
 }
 
 - (void)endMonitoring
 {
-    // Notify the user that the camera was disabled
-    if (_notifyWhenCameraDisabled) {
-        [ADNotificationHelper sendCameraWasDisabledWhileRecordingNotification];
-    }
-    
-    // If recording, finish up. Then rollback the context to remove uncommited events
-    if (isRecording) {
-        [self stopRecording];
+    if (!endedMonitoring) {
+        // Notify the user that the camera was disabled
+        if (_notifyWhenCameraDisabled) {
+            [ADNotificationHelper sendCameraWasDisabledWhileRecordingNotification];
+        }
+        
+        // If recording, finish up. Then rollback the context to remove uncommited events
+        if (isRecording) {
+            [self stopRecording];
+        }
+        
+        // Set the installation status to no longer monitoring
+        [ADNotificationHelper deviceStoppedMonitoring];
+        
+        // Ensure this only gets called once
+        endedMonitoring = YES;
     }
 }
 
@@ -104,6 +119,9 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     [self.beep play];
     isMonitoring = YES;
     self.navigationItem.title = @"Monitoring...";
+    
+    // Set the installation status to monitoring
+    [ADNotificationHelper deviceBeganMonitoring];
 }
 
 // This is when the view is unloaded - in this simple app, it's likely called when the app terminates

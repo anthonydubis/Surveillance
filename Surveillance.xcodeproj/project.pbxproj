@@ -44,6 +44,7 @@
 		978147331B0E573500FFB16F /* ADLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 978147321B0E573500FFB16F /* ADLoginViewController.m */; };
 		9781473C1B0E713F00FFB16F /* ADSettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9781473B1B0E713F00FFB16F /* ADSettingsTableViewController.m */; };
 		9781473F1B0E791A00FFB16F /* ADSurveillanceTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9781473E1B0E791A00FFB16F /* ADSurveillanceTableViewController.m */; };
+		978147461B0ECB4E00FFB16F /* ADDevicesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 978147451B0ECB4E00FFB16F /* ADDevicesTableViewController.m */; };
 		9799C8251B0528CD0098C0A7 /* BButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8201B0528CD0098C0A7 /* BButton.m */; };
 		9799C8261B0528CD0098C0A7 /* NSString+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8221B0528CD0098C0A7 /* NSString+FontAwesome.m */; };
 		9799C8271B0528CD0098C0A7 /* UIColor+BButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8241B0528CD0098C0A7 /* UIColor+BButton.m */; };
@@ -195,6 +196,8 @@
 		9781473B1B0E713F00FFB16F /* ADSettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADSettingsTableViewController.m; sourceTree = "<group>"; };
 		9781473D1B0E791A00FFB16F /* ADSurveillanceTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADSurveillanceTableViewController.h; sourceTree = "<group>"; };
 		9781473E1B0E791A00FFB16F /* ADSurveillanceTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADSurveillanceTableViewController.m; sourceTree = "<group>"; };
+		978147441B0ECB4E00FFB16F /* ADDevicesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADDevicesTableViewController.h; sourceTree = "<group>"; };
+		978147451B0ECB4E00FFB16F /* ADDevicesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADDevicesTableViewController.m; sourceTree = "<group>"; };
 		9799C81F1B0528CD0098C0A7 /* BButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BButton.h; sourceTree = "<group>"; };
 		9799C8201B0528CD0098C0A7 /* BButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BButton.m; sourceTree = "<group>"; };
 		9799C8211B0528CD0098C0A7 /* NSString+FontAwesome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+FontAwesome.h"; sourceTree = "<group>"; };
@@ -432,6 +435,7 @@
 		976979751AFAB0AE0029D82D /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				978147401B0EBF8100FFB16F /* Vision */,
 				9781473D1B0E791A00FFB16F /* ADSurveillanceTableViewController.h */,
 				9781473E1B0E791A00FFB16F /* ADSurveillanceTableViewController.m */,
 				9749EB211AF6B284004D9785 /* ConfigureMonitoringTableViewController.h */,
@@ -440,14 +444,12 @@
 				9799C8931B07BC860098C0A7 /* ADEventsTableViewController.m */,
 				9799C8BC1B081F900098C0A7 /* ADDetailEventViewController.h */,
 				9799C8BD1B081F900098C0A7 /* ADDetailEventViewController.m */,
-				9724734F1AFD869F00D74BF8 /* CameraStreamViewController.h */,
-				972473501AFD869F00D74BF8 /* CameraStreamViewController.m */,
-				97CA02331AF5513C00B86C4D /* MonitoringViewController.h */,
-				97CA02341AF5513C00B86C4D /* MonitoringViewController.m */,
-				972473551AFE451900D74BF8 /* ADImageViewController.h */,
-				972473561AFE451900D74BF8 /* ADImageViewController.m */,
+				978147441B0ECB4E00FFB16F /* ADDevicesTableViewController.h */,
+				978147451B0ECB4E00FFB16F /* ADDevicesTableViewController.m */,
 				9781473A1B0E713F00FFB16F /* ADSettingsTableViewController.h */,
 				9781473B1B0E713F00FFB16F /* ADSettingsTableViewController.m */,
+				972473551AFE451900D74BF8 /* ADImageViewController.h */,
+				972473561AFE451900D74BF8 /* ADImageViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -521,6 +523,17 @@
 				976AFAF91AF3CAC300F91585 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		978147401B0EBF8100FFB16F /* Vision */ = {
+			isa = PBXGroup;
+			children = (
+				9724734F1AFD869F00D74BF8 /* CameraStreamViewController.h */,
+				972473501AFD869F00D74BF8 /* CameraStreamViewController.m */,
+				97CA02331AF5513C00B86C4D /* MonitoringViewController.h */,
+				97CA02341AF5513C00B86C4D /* MonitoringViewController.m */,
+			);
+			name = Vision;
 			sourceTree = "<group>";
 		};
 		9799C8281B0528D20098C0A7 /* BButton */ = {
@@ -804,6 +817,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				978147461B0ECB4E00FFB16F /* ADDevicesTableViewController.m in Sources */,
 				973DB64D1B017A7600418444 /* MonitoringEventFace+AD.m in Sources */,
 				972473541AFD91F200D74BF8 /* ADVideoRecorder.m in Sources */,
 				972473511AFD869F00D74BF8 /* CameraStreamViewController.m in Sources */,

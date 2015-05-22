@@ -21,6 +21,14 @@
 // Call this when the user tries to enable push notifications but doesn't have them enabled
 + (void)userRequestedToEnablePushNotifications;
 
+// The current installation should be set to is monitoring
++ (void)deviceBeganMonitoring;
+
+// The current installation should be set to no longer monitoring
++ (void)deviceStoppedMonitoring;
+
+// NOTIFICATIONS
+
 // Send notification to users other devices that motion was detected
 + (void)sendMotionDetectedNotification;
 
