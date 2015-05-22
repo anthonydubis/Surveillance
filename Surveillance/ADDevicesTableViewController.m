@@ -7,9 +7,16 @@
 //
 
 #import "ADDevicesTableViewController.h"
-#import <Parse/Parse.h>
+#import "PFInstallation+ADDevice.h"
+#import "DeviceTableViewCell.h"
+#import "ADNotificationHelper.h"
+
+NSString * DeviceCellID = @"DeviceCell";
 
 @interface ADDevicesTableViewController ()
+
+@property (nonatomic, strong) NSMutableArray *activeDevices;
+@property (nonatomic, strong) NSMutableArray *inactiveDevices;
 
 @end
 
@@ -24,83 +31,151 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
-    NSLog(@"Calling function");
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    self.refreshControl.backgroundColor = [UIColor colorWithRed:97/255.0 green:106/255.0 blue:116/255.0 alpha:1.0];
+    self.refreshControl.tintColor = [UIColor whiteColor];
+    [self.refreshControl addTarget:self
+                            action:@selector(loadObjects)
+                  forControlEvents:UIControlEventValueChanged];
+    
+    [self loadObjects];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.tableView reloadData];
+}
+
+- (void)loadObjects {
     [PFCloud callFunctionInBackground:@"getInstallationsForUser"
                        withParameters:nil
                                 block:^(NSArray *results, NSError *error) {
                                     if (!error) {
-                                        for (int i = 0; i < results.count; i++) {
-                                            if ([results[i] isKindOfClass:[PFInstallation class]])
-                                                NSLog(@"%@", results[i]);
+                                        // Remove current objects
+                                        [self.inactiveDevices removeAllObjects];
+                                        [self.activeDevices removeAllObjects];
+                                        
+                                        for (PFInstallation *installation in results) {
+                                            if (installation.isMonitoring) {
+                                                [self.activeDevices addObject:installation];
+                                            } else {
+                                                [self.inactiveDevices addObject:installation];
+                                            }
                                         }
+                                
+                                        if (self.refreshControl) {
+                                            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                                            [formatter setDateFormat:@"MMM d, h:mm a"];
+                                            NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
+                                            NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor whiteColor]
+                                                                                                        forKey:NSForegroundColorAttributeName];
+                                            NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
+                                            self.refreshControl.attributedTitle = attributedTitle;
+                                            
+                                            [self.refreshControl endRefreshing];
+                                        }
+                                        
+                                        [self.tableView reloadData];
                                     } else {
                                         NSLog(@"Error! %@", error);
                                     }
                                 }];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 #pragma mark - Table view data source
 
+#define CELL_HEIGHT 90.0
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return CELL_HEIGHT;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-#warning Potentially incomplete method implementation.
-    // Return the number of sections.
-    return 0;
+    int count = 0;
+    if (self.activeDevices.count) count++;
+    if (self.inactiveDevices.count) count++;
+    return count;;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    if (section == 0 && self.activeDevices.count)
+        return @"Active Devices";
+    else
+        return @"Inactive Devices";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-#warning Incomplete method implementation.
-    // Return the number of rows in the section.
-    return 0;
+    if (section == 0 && self.activeDevices.count)
+        return self.activeDevices.count;
+    else
+        return self.inactiveDevices.count;
 }
 
-/*
+- (PFInstallation *)objectForIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0 && self.activeDevices.count)
+        return [self.activeDevices objectAtIndex:indexPath.row];
+    else
+        return [self.inactiveDevices objectAtIndex:indexPath.row];
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
+    DeviceTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:DeviceCellID forIndexPath:indexPath];
+    [self configureDeviceCell:cell forIndexPath:indexPath];
     return cell;
 }
-*/
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+- (void)configureDeviceCell:(DeviceTableViewCell *)cell forIndexPath:(NSIndexPath *)indexPath
+{
+    PFInstallation *installation = [self objectForIndexPath:indexPath];
+    
+#warning Make sure this works for devices not taking push notifications
+    // Set text labels
+    cell.textLabel.text = installation.deviceName;
+    cell.detailTextLabel.text = (installation.deviceToken) ? @"Notifications enabled" : @"Notifications disabled";
+    cell.statusLabel.text = (installation.isMonitoring) ? @"Status: Monitoring" : @"Status: Inactive";
+    
+    // Set image
+    NSString *imageName = ([installation isiPad]) ? @"iPad" : @"iPhone";
+    cell.imageView.image = [UIImage imageNamed:imageName];
+    
+    // Set the accessory view
+    if (installation.isMonitoring)
+        cell.accessoryType = UITableViewCellAccessoryDetailButton;
+    else
+        cell.accessoryType = UITableViewCellAccessoryNone;
 }
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
+#pragma mark - Table view delegate
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView.delegate tableView:tableView didSelectRowAtIndexPath:indexPath];
 }
-*/
 
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == 0 && self.activeDevices.count)
+        return indexPath;
+    else
+        return nil;
 }
-*/
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [UIActionSheet showFromTabBar:self.tabBarController.tabBar
+                        withTitle:nil
+                cancelButtonTitle:@"Cancel"
+           destructiveButtonTitle:@"Disable Camera"
+                otherButtonTitles:nil
+                         tapBlock:^(UIActionSheet *as, NSInteger buttonIndex) {
+                             if (buttonIndex != as.cancelButtonIndex) {
+                                 PFInstallation *monitoringInstallation = [self objectForIndexPath:indexPath];
+                                 [ADNotificationHelper sendMessageToDisableMonitoringInstallation:monitoringInstallation];
+                             }
+                             [tableView deselectRowAtIndexPath:indexPath animated:YES];
+                         }];
+}
 
 /*
 #pragma mark - Navigation
@@ -111,5 +186,21 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+#pragma mark - Getters / Setters
+
+- (NSMutableArray *)activeDevices
+{
+    if (!_activeDevices)
+        _activeDevices = [[NSMutableArray alloc] init];
+    return _activeDevices;
+}
+
+- (NSMutableArray *)inactiveDevices
+{
+    if (!_inactiveDevices)
+        _inactiveDevices = [[NSMutableArray alloc] init];
+    return _inactiveDevices;
+}
 
 @end

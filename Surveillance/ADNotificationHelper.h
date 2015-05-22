@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class ADEventImage;
+@class PFInstallation;
 
 @interface ADNotificationHelper : NSObject
 
@@ -40,5 +41,8 @@
 
 // Send a notification to the user with an image for an event (such as a picture taken when a face is detected)
 + (void)sendFaceDetectedNotificationWithEventImage:(ADEventImage *)eventImage;
+
+// Send a notification to a monitoring installation to tell it to stop monitoring
++ (void)sendMessageToDisableMonitoringInstallation:(PFInstallation *)monitoringInstallation;
 
 @end

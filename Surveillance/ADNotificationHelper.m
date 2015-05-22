@@ -14,6 +14,7 @@ NSString * PromptedUserToEnablePushNotificationsPrefKey = @"PromptedUserToEnable
 NSString * ShowedUserNotificationsPermissionPanelPrefKey = @"ShowedUserNotificationsPermissionPanelPrefKey";
 NSString * MotionEventFunction = @"processMotionEvent";
 NSString * FaceDetectedFunction = @"processFaceDetectionEvent";
+NSString * DisableDeviceFunction = @"processDisableCommand";
 
 @implementation ADNotificationHelper
 
@@ -168,6 +169,23 @@ NSString * FaceDetectedFunction = @"processFaceDetectionEvent";
                                     if (!error) {
                                         // Push sent successfully
                                         NSLog(@"Face message sent successfully");
+                                    }
+                                }];
+}
+
++ (void)sendMessageToDisableMonitoringInstallation:(PFInstallation *)monitoringInstallation
+{
+    PFInstallation *installation = [PFInstallation currentInstallation];
+    
+    // Start the message with the number of people detected
+    NSString *message = [NSString stringWithFormat:@"Camera was disabled remotely by %@", installation[@"deviceName"]];
+    
+    [PFCloud callFunctionInBackground:DisableDeviceFunction
+                       withParameters:@{@"message": message, @"disableDeviceID": monitoringInstallation[@"deviceID"]}
+                                block:^(NSString *success, NSError *error) {
+                                    if (!error) {
+                                        // Push sent successfully
+                                        NSLog(@"Disable message sent successfully to %@", monitoringInstallation[@"deviceID"]);
                                     }
                                 }];
 }

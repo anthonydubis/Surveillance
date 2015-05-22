@@ -378,24 +378,59 @@
         <scene sceneID="8fk-Mw-Sjc">
             <objects>
                 <tableViewController id="b2d-Q6-uts" customClass="ADDevicesTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="FEa-7n-qjW">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="80" sectionHeaderHeight="10" sectionFooterHeight="10" id="FEa-7n-qjW">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="BasicCell" textLabel="0xl-l5-92p" style="IBUITableViewCellStyleDefault" id="Os6-fV-IiG">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeviceCell" rowHeight="80" id="Os6-fV-IiG" customClass="DeviceTableViewCell">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Os6-fV-IiG" id="OEE-5X-Fv9">
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="0xl-l5-92p">
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Notifications Enabled" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Qc-WN-ZlA">
+                                            <rect key="frame" x="71" y="32" width="128" height="16"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status: Active" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UPq-2p-42u">
+                                            <rect key="frame" x="71" y="49" width="84" height="16"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="iPad" translatesAutoresizingMaskIntoConstraints="NO" id="h8h-xl-7Ag">
+                                            <rect key="frame" x="8" y="7" width="48" height="65"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="65" id="kNr-T2-XOo"/>
+                                                <constraint firstAttribute="width" constant="48" id="t5P-5V-bnG"/>
+                                            </constraints>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Device Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J9P-xl-Cxe">
+                                            <rect key="frame" x="71" y="11" width="105" height="21"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="UPq-2p-42u" firstAttribute="top" secondItem="5Qc-WN-ZlA" secondAttribute="bottom" constant="1" id="EzY-Vl-f30"/>
+                                        <constraint firstItem="J9P-xl-Cxe" firstAttribute="top" secondItem="h8h-xl-7Ag" secondAttribute="top" constant="4" id="Ger-lg-Any"/>
+                                        <constraint firstItem="5Qc-WN-ZlA" firstAttribute="leading" secondItem="h8h-xl-7Ag" secondAttribute="trailing" constant="15" id="Td6-30-l9Y"/>
+                                        <constraint firstItem="5Qc-WN-ZlA" firstAttribute="top" secondItem="J9P-xl-Cxe" secondAttribute="bottom" id="Twp-vf-xy4"/>
+                                        <constraint firstItem="h8h-xl-7Ag" firstAttribute="leading" secondItem="OEE-5X-Fv9" secondAttribute="leadingMargin" id="W8Y-0Z-RCc"/>
+                                        <constraint firstAttribute="centerY" secondItem="h8h-xl-7Ag" secondAttribute="centerY" id="diM-u1-WH0"/>
+                                        <constraint firstItem="J9P-xl-Cxe" firstAttribute="leading" secondItem="h8h-xl-7Ag" secondAttribute="trailing" constant="15" id="fsu-cC-Ytp"/>
+                                        <constraint firstItem="UPq-2p-42u" firstAttribute="leading" secondItem="h8h-xl-7Ag" secondAttribute="trailing" constant="15" id="ypF-Mg-jCE"/>
+                                    </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="detailTextLabel" destination="5Qc-WN-ZlA" id="8EJ-KB-b8f"/>
+                                    <outlet property="imageView" destination="h8h-xl-7Ag" id="0e4-Dt-7kD"/>
+                                    <outlet property="statusLabel" destination="UPq-2p-42u" id="loJ-4t-U5g"/>
+                                    <outlet property="textLabel" destination="J9P-xl-Cxe" id="n4m-5z-zLq"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -570,5 +605,6 @@
         <image name="279-videocamera" width="34" height="20"/>
         <image name="32-iphone" width="16" height="28"/>
         <image name="45-movie-1" width="19" height="25"/>
+        <image name="iPad" width="48" height="65"/>
     </resources>
 </document>

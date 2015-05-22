@@ -40,18 +40,30 @@
     [super viewWillAppear:animated];
     
     [self.tableView reloadData];
+    self.refreshControl.backgroundColor = [UIColor colorWithRed:97/255.0 green:106/255.0 blue:116/255.0 alpha:1.0];
+    self.refreshControl.tintColor = [UIColor whiteColor];
 }
 
 - (void)objectsDidLoad:(nullable NSError *)error
 {
     [super objectsDidLoad:error];
-    NSLog(@"Objects did load");
+
+    if (self.refreshControl) {
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"MMM d, h:mm a"];
+        NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
+        NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor whiteColor]
+                                                                    forKey:NSForegroundColorAttributeName];
+        NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
+        self.refreshControl.attributedTitle = attributedTitle;
+        
+        [self.refreshControl endRefreshing];
+    }
 }
 
 - (void)objectsWillLoad
 {
     [super objectsWillLoad];
-    NSLog(@"Objects will load");
 }
 
 - (PFQuery *)queryForTable {
@@ -71,9 +83,37 @@
     return CELL_HEIGHT;
 }
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    if (self.objects.count) {
+        self.tableView.backgroundView = nil;
+        self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        
+        return 1;
+    } else {
+        // Display a message when the table is empty
+        CGFloat m = 40;
+        UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(m/2, 0, self.view.bounds.size.width-m, self.view.bounds.size.height)];
+        
+        messageLabel.text = @"Your cameras have not captured any events. Please pull down to refresh.";
+        messageLabel.textColor = [UIColor blackColor];
+        messageLabel.numberOfLines = 0;
+        messageLabel.textAlignment = NSTextAlignmentCenter;
+        messageLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
+        [messageLabel sizeToFit];
+        
+        self.tableView.backgroundView = messageLabel;
+        self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    }
+    return 0;
+}
+
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    return @"Captured Events";
+    if (self.objects.count)
+        return @"Captured Events";
+    else
+        return nil;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

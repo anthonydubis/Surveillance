@@ -61,6 +61,11 @@ const int MotionDetectionFrequencyWhenRecording = 1;
                                              selector:@selector(appHasEnteredBackground)
                                                  name:UIApplicationDidEnterBackgroundNotification
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(dismissSelf:)
+                                                 name:@"DisableCameraNotification"
+                                               object:nil];
 }
 
 - (void)dealloc
@@ -95,33 +100,38 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 - (void)endMonitoring
 {
     if (!endedMonitoring) {
+        // Ensure this only gets called once
+        endedMonitoring = YES;
+        
         // Notify the user that the camera was disabled
         if (_notifyWhenCameraDisabled) {
             [ADNotificationHelper sendCameraWasDisabledWhileRecordingNotification];
         }
         
-        // If recording, finish up. Then rollback the context to remove uncommited events
+        // Handle scenarios where you are preparing to record or recording
+        // Should handle false positives here
         if (isRecording) {
+            // Finish up
+            NSLog(@"Was recording when dismissed - end recording");
             [self stopRecording];
         }
         
         // Set the installation status to no longer monitoring
         [ADNotificationHelper deviceStoppedMonitoring];
-        
-        // Ensure this only gets called once
-        endedMonitoring = YES;
     }
 }
 
 // Sets the isMonitoring flag that causes work to be done when processing frames
 - (void)beginMonitoring
 {
-    [self.beep play];
-    isMonitoring = YES;
-    self.navigationItem.title = @"Monitoring...";
-    
-    // Set the installation status to monitoring
-    [ADNotificationHelper deviceBeganMonitoring];
+    if (!endedMonitoring) {
+        [self.beep play];
+        isMonitoring = YES;
+        self.navigationItem.title = @"Monitoring...";
+        
+        // Set the installation status to monitoring
+        [ADNotificationHelper deviceBeganMonitoring];
+    }
 }
 
 // This is when the view is unloaded - in this simple app, it's likely called when the app terminates
@@ -256,6 +266,11 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     if (_beepWhenRecordingStops) {
         [self.beep play];
     }
+
+    // Handle false positives
+//    if (![[NSFileManager defaultManager] fileExistsAtPath:self.recordingURL.path isDirectory:nil]) {
+//        NSLog(@"False positive");
+//    }
     
     isRecording = NO;
     [self.videoRecorder stopRecordingWithCompletionHandler:^{

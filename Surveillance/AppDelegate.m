@@ -217,11 +217,13 @@
 
 // Handle notifications received while the app was opened
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    NSLog(@"Did receive notification");
     [self handleNotification:userInfo whileActive:YES];
 }
 
 - (void)handleNotification:(NSDictionary *)userInfo whileActive:(BOOL)wasActive
 {
+    NSLog(@"Handling notification");
     NSDictionary *aps = userInfo[@"aps"];
     NSString *message = aps[@"alert"];
     if ([userInfo objectForKey:@"p"]) {
@@ -243,8 +245,12 @@
             [self presentEventImageWithID:eventImageID];
         }
         
-    } else {
-        // [PFPush handlePush:userInfo];
+    } else if ([userInfo objectForKey:@"disable"]) {
+#warning Use constants file!
+        NSLog(@"It's a disable command");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DisableCameraNotification" object:nil];
+    }else {
+        [PFPush handlePush:userInfo];
     }
 }
 

@@ -108,6 +108,8 @@
 		9799C8C11B0A0DC00098C0A7 /* ADDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8C01B0A0DC00098C0A7 /* ADDownloadTask.m */; };
 		9799C8C41B0A22300098C0A7 /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8C31B0A22300098C0A7 /* UIActionSheet+Blocks.m */; };
 		97CA02351AF5513C00B86C4D /* MonitoringViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97CA02341AF5513C00B86C4D /* MonitoringViewController.m */; };
+		97CC54151B0F527E009819A5 /* PFInstallation+ADDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 97CC54141B0F527E009819A5 /* PFInstallation+ADDevice.m */; };
+		97CC54241B0F6249009819A5 /* DeviceTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 97CC54231B0F6249009819A5 /* DeviceTableViewCell.m */; };
 		97D489DD1B041E94000569FD /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489DB1B041E94000569FD /* Bolts.framework */; };
 		97D489DE1B041E94000569FD /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489DC1B041E94000569FD /* Parse.framework */; };
 		97D489E01B041ED7000569FD /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489DF1B041ED7000569FD /* CFNetwork.framework */; };
@@ -281,6 +283,10 @@
 		9799C8C31B0A22300098C0A7 /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
 		97CA02331AF5513C00B86C4D /* MonitoringViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitoringViewController.h; sourceTree = "<group>"; };
 		97CA02341AF5513C00B86C4D /* MonitoringViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringViewController.m; sourceTree = "<group>"; };
+		97CC54131B0F527E009819A5 /* PFInstallation+ADDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PFInstallation+ADDevice.h"; sourceTree = "<group>"; };
+		97CC54141B0F527E009819A5 /* PFInstallation+ADDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PFInstallation+ADDevice.m"; sourceTree = "<group>"; };
+		97CC54221B0F6249009819A5 /* DeviceTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceTableViewCell.h; sourceTree = "<group>"; };
+		97CC54231B0F6249009819A5 /* DeviceTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceTableViewCell.m; sourceTree = "<group>"; };
 		97D489DB1B041E94000569FD /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		97D489DC1B041E94000569FD /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		97D489DF1B041ED7000569FD /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -407,6 +413,8 @@
 				9799C8901B076B760098C0A7 /* ADS3Helper.m */,
 				9799C8BF1B0A0DC00098C0A7 /* ADDownloadTask.h */,
 				9799C8C01B0A0DC00098C0A7 /* ADDownloadTask.m */,
+				971F1AB31B0B85C200ADB5B7 /* ADNotificationHelper.h */,
+				971F1AB41B0B85C200ADB5B7 /* ADNotificationHelper.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -428,6 +436,8 @@
 				973A92751B0D239E0032D4ED /* SwitchTableViewCell.m */,
 				973A92771B0E04810032D4ED /* FlatButtonTableViewCell.h */,
 				973A92781B0E04810032D4ED /* FlatButtonTableViewCell.m */,
+				97CC54221B0F6249009819A5 /* DeviceTableViewCell.h */,
+				97CC54231B0F6249009819A5 /* DeviceTableViewCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -481,8 +491,6 @@
 				976AFAEB1AF3CAC300F91585 /* Images.xcassets */,
 				976AFADF1AF3CAC300F91585 /* AppDelegate.h */,
 				976AFAE01AF3CAC300F91585 /* AppDelegate.m */,
-				971F1AB31B0B85C200ADB5B7 /* ADNotificationHelper.h */,
-				971F1AB41B0B85C200ADB5B7 /* ADNotificationHelper.m */,
 				978147311B0E573500FFB16F /* ADLoginViewController.h */,
 				978147321B0E573500FFB16F /* ADLoginViewController.m */,
 				974E160C1AFCCACB00514C57 /* Classes */,
@@ -693,6 +701,8 @@
 				9799C83B1B0617120098C0A7 /* ADEvent.m */,
 				973A92711B0C068B0032D4ED /* ADEventImage.h */,
 				973A92721B0C068B0032D4ED /* ADEventImage.m */,
+				97CC54131B0F527E009819A5 /* PFInstallation+ADDevice.h */,
+				97CC54141B0F527E009819A5 /* PFInstallation+ADDevice.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -825,6 +835,7 @@
 				9799C8941B07BC860098C0A7 /* ADEventsTableViewController.m in Sources */,
 				9712DB861AFD1B9C00533A1C /* ADFaceDetector.m in Sources */,
 				9799C8B31B0800200098C0A7 /* ACPIndeterminateGoogleLayer.m in Sources */,
+				97CC54151B0F527E009819A5 /* PFInstallation+ADDevice.m in Sources */,
 				9781473F1B0E791A00FFB16F /* ADSurveillanceTableViewController.m in Sources */,
 				978147331B0E573500FFB16F /* ADLoginViewController.m in Sources */,
 				973DB6441B0179EC00418444 /* MonitoringEventFace.m in Sources */,
@@ -857,6 +868,7 @@
 				97E02BE71AFB74D900E34B31 /* ADMotionDetector.mm in Sources */,
 				976AFAE41AF3CAC300F91585 /* Surveillance.xcdatamodeld in Sources */,
 				9749EB231AF6B284004D9785 /* ConfigureMonitoringTableViewController.m in Sources */,
+				97CC54241B0F6249009819A5 /* DeviceTableViewCell.m in Sources */,
 				976AFB4F1AF4077000F91585 /* ObservationViewController.mm in Sources */,
 				9799C88E1B0760E70098C0A7 /* ADFileHelper.m in Sources */,
 				9799C8B41B0800200098C0A7 /* ACPIndeterminateLayer.m in Sources */,
