@@ -31,7 +31,8 @@
     [ADS3Helper setupAWSS3Service];
     
     // Ask the user to login if he's not already
-    if (![PFUser currentUser]) [self showLoginScreen];
+    if (![PFUser currentUser])
+        self.window.rootViewController = [self loginViewController];
     
     // Setup push notifications
     [ADNotificationHelper setupNotifications];
@@ -68,6 +69,23 @@
     [ADNotificationHelper didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
 
+- (void)switchToRootViewController:(UIViewController *)toVC
+{
+    UIView *snapShot = [self.window snapshotViewAfterScreenUpdates:YES];
+    
+    [toVC.view addSubview:snapShot];
+    
+    self.window.rootViewController = toVC;
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        snapShot.layer.opacity = 0;
+        snapShot.layer.transform = CATransform3DMakeScale(1.5, 1.5, 1.5);
+    } completion:^(BOOL finished) {
+        [snapShot removeFromSuperview];
+    }];
+
+}
+
 - (void)showTabBarAsRootViewController
 {
     UIViewController *tabBarVC = [[UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]] instantiateInitialViewController];
@@ -76,43 +94,38 @@
         return;
     }
     
-    UIView *snapShot = [self.window snapshotViewAfterScreenUpdates:YES];
-    
-    [tabBarVC.view addSubview:snapShot];
-    
-    self.window.rootViewController = tabBarVC;
-    
-    [UIView animateWithDuration:0.5 animations:^{
-        snapShot.layer.opacity = 0;
-        snapShot.layer.transform = CATransform3DMakeScale(1.5, 1.5, 1.5);
-    } completion:^(BOOL finished) {
-        [snapShot removeFromSuperview];
-    }];
+    [self switchToRootViewController:tabBarVC];
+}
+
+- (UITabBarController *)tabBarController
+{
+    if ([self.window.rootViewController isKindOfClass:[UITabBarController class]]) {
+        return (UITabBarController *)self.window.rootViewController;
+    } else {
+        return [[UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]] instantiateInitialViewController];
+    }
 }
 
 #pragma mark - Handling user login
 
-- (void)showLoginScreen
+- (PFLogInViewController *)loginViewController
 {
-    ADLoginViewController *loginVC = [[ADLoginViewController alloc] init];
-    loginVC.fields = PFLogInFieldsUsernameAndPassword | PFLogInFieldsLogInButton | PFLogInFieldsSignUpButton | PFLogInFieldsPasswordForgotten | PFLogInFieldsFacebook;
-    loginVC.emailAsUsername = YES;
-    loginVC.delegate = self;
+    // Create the loginVC
+    PFLogInViewController *logInViewController = [[PFLogInViewController alloc] init];
+    logInViewController.fields = PFLogInFieldsUsernameAndPassword | PFLogInFieldsLogInButton | PFLogInFieldsSignUpButton | PFLogInFieldsPasswordForgotten | PFLogInFieldsFacebook;
+    logInViewController.emailAsUsername = YES;
+    logInViewController.delegate = self;
+    logInViewController.logInView.logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
     
-//    [logInViewController.logInView setLogo:logoView];
-//    logInViewController.logInView.logo.contentMode = UIViewContentModeScaleAspectFit;
-//    logInViewController.delegate = self;
-//    logInViewController.logInView.logo.backgroundColor = [UIColor redColor];
-    
-    
+    // Create the signUpVC
     PFSignUpViewController *signUpViewController = [[PFSignUpViewController alloc] init];
-    // [signUpViewController.signUpView setLogo:logoView];
+    signUpViewController.signUpView.logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
     signUpViewController.fields = PFSignUpFieldsUsernameAndPassword | PFSignUpFieldsSignUpButton;
     signUpViewController.emailAsUsername = YES;
     signUpViewController.delegate = self;
-    [loginVC setSignUpController:signUpViewController];
+    [logInViewController setSignUpController:signUpViewController];
     
-    self.window.rootViewController = loginVC;
+    return logInViewController;
 }
 
 // Sent to the delegate to determine whether the log in request should be submitted to the server.
@@ -191,6 +204,13 @@
 - (void)signUpViewControllerDidCancelSignUp:(PFSignUpViewController *)signUpController {
     // For now, don't allow cancellations
     // [self showTabBarAsRootViewController];
+}
+
+#pragma mark - Log user out
+
+- (void)userLoggedOut
+{
+    [self switchToRootViewController:[self loginViewController]];
 }
 
 #pragma mark - Push Notifications
