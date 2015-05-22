@@ -198,9 +198,7 @@
 {
     ADEvent *event = (ADEvent *)[self objectAtIndexPath:indexPath];
     if (self.downloading[event.videoName]) {
-        // The video is currently being downloaded
-#warning Let the user pause/cancel the download
-        [UIAlertView showWithTitle:nil message:@"Let the user cancel the download" cancelButtonTitle:@"OK" otherButtonTitles:nil tapBlock:nil];
+        // The video is currently being downloaded - do nothing
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     } else if ([ADFileHelper haveDownloadedVideoForEvent:event]) {
         // Video is downloaded
@@ -380,13 +378,11 @@
 
 - (void)didDeleteLocalVideoForEvent:(ADEvent *)event
 {
-    NSLog(@"Local vid was deleted for event: %@", event);
     [self.tableView reloadData];
 }
 
 - (void)didPermanentlyDeleteEvent:(ADEvent *)event
 {
-    NSLog(@"Event was permanently deleted: %@", event);
     [self loadObjects];
 }
 
