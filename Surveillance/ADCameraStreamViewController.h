@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 
-@interface CameraStreamViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate>
+@interface ADCameraStreamViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *previewView;
 @property (nonatomic, assign) BOOL isUsingFrontFacingCamera;

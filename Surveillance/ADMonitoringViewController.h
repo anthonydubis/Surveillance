@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CameraStreamViewController.h"
+#import "ADCameraStreamViewController.h"
 #import "ADMotionDetector.h"
 
-@interface MonitoringViewController : CameraStreamViewController
+@interface ADMonitoringViewController : ADCameraStreamViewController
 
 @property (nonatomic, assign) MotionDetectorSensitivity motionSensitivity;
 

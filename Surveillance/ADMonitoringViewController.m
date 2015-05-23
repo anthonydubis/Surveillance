@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Anthony Dubis. All rights reserved.
 //
 
-#import "MonitoringViewController.h"
+#import "ADMonitoringViewController.h"
 #import <CoreImage/CoreImage.h>
 #import <ImageIO/ImageIO.h>
 #import <AssertMacros.h>
@@ -25,7 +25,7 @@
 // How often should we check to see if motion still exists, in seconds
 const int MotionDetectionFrequencyWhenRecording = 1;
 
-@interface MonitoringViewController ()
+@interface ADMonitoringViewController ()
 {
     BOOL isMonitoring;           // is the camera focused and monitoring the area
     BOOL isPreparingToRecord;    // is the assetWriter being prepared to record
@@ -46,7 +46,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 
 @end
 
-@implementation MonitoringViewController
+@implementation ADMonitoringViewController
 
 #pragma mark - View lifecycle
 

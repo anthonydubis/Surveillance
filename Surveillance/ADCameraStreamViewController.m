@@ -6,13 +6,13 @@
 //  Copyright (c) 2015 Anthony Dubis. All rights reserved.
 //
 
-#import "CameraStreamViewController.h"
+#import "ADCameraStreamViewController.h"
 
-@interface CameraStreamViewController ()
+@interface ADCameraStreamViewController ()
 
 @end
 
-@implementation CameraStreamViewController
+@implementation ADCameraStreamViewController
 
 // This is called when the view is on screen (or at least, about to be) and the views have been resized to fill the screen
 - (void)viewDidLayoutSubviews

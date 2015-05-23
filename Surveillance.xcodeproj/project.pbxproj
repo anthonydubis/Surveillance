@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		9712DB861AFD1B9C00533A1C /* ADFaceDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 9712DB851AFD1B9C00533A1C /* ADFaceDetector.m */; };
 		971F1AB51B0B85C200ADB5B7 /* ADNotificationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 971F1AB41B0B85C200ADB5B7 /* ADNotificationHelper.m */; };
-		972473511AFD869F00D74BF8 /* CameraStreamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 972473501AFD869F00D74BF8 /* CameraStreamViewController.m */; };
+		972473511AFD869F00D74BF8 /* ADCameraStreamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 972473501AFD869F00D74BF8 /* ADCameraStreamViewController.m */; };
 		972473541AFD91F200D74BF8 /* ADVideoRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 972473531AFD91F200D74BF8 /* ADVideoRecorder.m */; };
 		972473571AFE451900D74BF8 /* ADImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 972473561AFE451900D74BF8 /* ADImageViewController.m */; };
 		973A92731B0C068B0032D4ED /* ADEventImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 973A92721B0C068B0032D4ED /* ADEventImage.m */; };
@@ -20,7 +20,7 @@
 		973DB64D1B017A7600418444 /* MonitoringEventFace+AD.m in Sources */ = {isa = PBXBuildFile; fileRef = 973DB64C1B017A7600418444 /* MonitoringEventFace+AD.m */; };
 		973DB6551B019D3200418444 /* UIImage+DataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 973DB6541B019D3200418444 /* UIImage+DataHandler.m */; };
 		9749EB201AF663D8004D9785 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9749EB1F1AF663D8004D9785 /* AudioToolbox.framework */; };
-		9749EB231AF6B284004D9785 /* ConfigureMonitoringTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9749EB221AF6B284004D9785 /* ConfigureMonitoringTableViewController.m */; };
+		9749EB231AF6B284004D9785 /* ADConfigureMonitoringTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9749EB221AF6B284004D9785 /* ADConfigureMonitoringTableViewController.m */; };
 		974E160B1AFC2E7D00514C57 /* beep-07.wav in Resources */ = {isa = PBXBuildFile; fileRef = 974E160A1AFC2E7D00514C57 /* beep-07.wav */; };
 		976979771AFAB1000029D82D /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976979761AFAB1000029D82D /* MediaPlayer.framework */; };
 		976979791AFAB5690029D82D /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976979781AFAB5690029D82D /* opencv2.framework */; };
@@ -107,7 +107,7 @@
 		9799C8BE1B081F900098C0A7 /* ADDetailEventViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8BD1B081F900098C0A7 /* ADDetailEventViewController.m */; };
 		9799C8C11B0A0DC00098C0A7 /* ADDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8C01B0A0DC00098C0A7 /* ADDownloadTask.m */; };
 		9799C8C41B0A22300098C0A7 /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8C31B0A22300098C0A7 /* UIActionSheet+Blocks.m */; };
-		97CA02351AF5513C00B86C4D /* MonitoringViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97CA02341AF5513C00B86C4D /* MonitoringViewController.m */; };
+		97CA02351AF5513C00B86C4D /* ADMonitoringViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97CA02341AF5513C00B86C4D /* ADMonitoringViewController.m */; };
 		97CC54151B0F527E009819A5 /* PFInstallation+ADDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 97CC54141B0F527E009819A5 /* PFInstallation+ADDevice.m */; };
 		97CC54241B0F6249009819A5 /* DeviceTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 97CC54231B0F6249009819A5 /* DeviceTableViewCell.m */; };
 		97D489DD1B041E94000569FD /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D489DB1B041E94000569FD /* Bolts.framework */; };
@@ -140,8 +140,8 @@
 		9712DB851AFD1B9C00533A1C /* ADFaceDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADFaceDetector.m; sourceTree = "<group>"; };
 		971F1AB31B0B85C200ADB5B7 /* ADNotificationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADNotificationHelper.h; sourceTree = "<group>"; };
 		971F1AB41B0B85C200ADB5B7 /* ADNotificationHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADNotificationHelper.m; sourceTree = "<group>"; };
-		9724734F1AFD869F00D74BF8 /* CameraStreamViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraStreamViewController.h; sourceTree = "<group>"; };
-		972473501AFD869F00D74BF8 /* CameraStreamViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraStreamViewController.m; sourceTree = "<group>"; };
+		9724734F1AFD869F00D74BF8 /* ADCameraStreamViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADCameraStreamViewController.h; sourceTree = "<group>"; };
+		972473501AFD869F00D74BF8 /* ADCameraStreamViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADCameraStreamViewController.m; sourceTree = "<group>"; };
 		972473521AFD91F200D74BF8 /* ADVideoRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADVideoRecorder.h; sourceTree = "<group>"; };
 		972473531AFD91F200D74BF8 /* ADVideoRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADVideoRecorder.m; sourceTree = "<group>"; };
 		972473551AFE451900D74BF8 /* ADImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADImageViewController.h; sourceTree = "<group>"; };
@@ -162,8 +162,8 @@
 		973DB6531B019D3200418444 /* UIImage+DataHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+DataHandler.h"; path = "Surveillance/UIImage+DataHandler.h"; sourceTree = "<group>"; };
 		973DB6541B019D3200418444 /* UIImage+DataHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+DataHandler.m"; path = "Surveillance/UIImage+DataHandler.m"; sourceTree = "<group>"; };
 		9749EB1F1AF663D8004D9785 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		9749EB211AF6B284004D9785 /* ConfigureMonitoringTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigureMonitoringTableViewController.h; sourceTree = "<group>"; };
-		9749EB221AF6B284004D9785 /* ConfigureMonitoringTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigureMonitoringTableViewController.m; sourceTree = "<group>"; };
+		9749EB211AF6B284004D9785 /* ADConfigureMonitoringTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADConfigureMonitoringTableViewController.h; sourceTree = "<group>"; };
+		9749EB221AF6B284004D9785 /* ADConfigureMonitoringTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADConfigureMonitoringTableViewController.m; sourceTree = "<group>"; };
 		974E160A1AFC2E7D00514C57 /* beep-07.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "beep-07.wav"; sourceTree = "<group>"; };
 		976979761AFAB1000029D82D /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		976979781AFAB5690029D82D /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = Surveillance/opencv2.framework; sourceTree = "<group>"; };
@@ -281,8 +281,8 @@
 		9799C8C01B0A0DC00098C0A7 /* ADDownloadTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADDownloadTask.m; sourceTree = "<group>"; };
 		9799C8C21B0A22300098C0A7 /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
 		9799C8C31B0A22300098C0A7 /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
-		97CA02331AF5513C00B86C4D /* MonitoringViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitoringViewController.h; sourceTree = "<group>"; };
-		97CA02341AF5513C00B86C4D /* MonitoringViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringViewController.m; sourceTree = "<group>"; };
+		97CA02331AF5513C00B86C4D /* ADMonitoringViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADMonitoringViewController.h; sourceTree = "<group>"; };
+		97CA02341AF5513C00B86C4D /* ADMonitoringViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADMonitoringViewController.m; sourceTree = "<group>"; };
 		97CC54131B0F527E009819A5 /* PFInstallation+ADDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PFInstallation+ADDevice.h"; sourceTree = "<group>"; };
 		97CC54141B0F527E009819A5 /* PFInstallation+ADDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PFInstallation+ADDevice.m"; sourceTree = "<group>"; };
 		97CC54221B0F6249009819A5 /* DeviceTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceTableViewCell.h; sourceTree = "<group>"; };
@@ -448,8 +448,8 @@
 				978147401B0EBF8100FFB16F /* Vision */,
 				9781473D1B0E791A00FFB16F /* ADSurveillanceTableViewController.h */,
 				9781473E1B0E791A00FFB16F /* ADSurveillanceTableViewController.m */,
-				9749EB211AF6B284004D9785 /* ConfigureMonitoringTableViewController.h */,
-				9749EB221AF6B284004D9785 /* ConfigureMonitoringTableViewController.m */,
+				9749EB211AF6B284004D9785 /* ADConfigureMonitoringTableViewController.h */,
+				9749EB221AF6B284004D9785 /* ADConfigureMonitoringTableViewController.m */,
 				9799C8921B07BC860098C0A7 /* ADEventsTableViewController.h */,
 				9799C8931B07BC860098C0A7 /* ADEventsTableViewController.m */,
 				9799C8BC1B081F900098C0A7 /* ADDetailEventViewController.h */,
@@ -536,10 +536,10 @@
 		978147401B0EBF8100FFB16F /* Vision */ = {
 			isa = PBXGroup;
 			children = (
-				9724734F1AFD869F00D74BF8 /* CameraStreamViewController.h */,
-				972473501AFD869F00D74BF8 /* CameraStreamViewController.m */,
-				97CA02331AF5513C00B86C4D /* MonitoringViewController.h */,
-				97CA02341AF5513C00B86C4D /* MonitoringViewController.m */,
+				9724734F1AFD869F00D74BF8 /* ADCameraStreamViewController.h */,
+				972473501AFD869F00D74BF8 /* ADCameraStreamViewController.m */,
+				97CA02331AF5513C00B86C4D /* ADMonitoringViewController.h */,
+				97CA02341AF5513C00B86C4D /* ADMonitoringViewController.m */,
 			);
 			name = Vision;
 			sourceTree = "<group>";
@@ -830,7 +830,7 @@
 				978147461B0ECB4E00FFB16F /* ADDevicesTableViewController.m in Sources */,
 				973DB64D1B017A7600418444 /* MonitoringEventFace+AD.m in Sources */,
 				972473541AFD91F200D74BF8 /* ADVideoRecorder.m in Sources */,
-				972473511AFD869F00D74BF8 /* CameraStreamViewController.m in Sources */,
+				972473511AFD869F00D74BF8 /* ADCameraStreamViewController.m in Sources */,
 				976AFAE11AF3CAC300F91585 /* AppDelegate.m in Sources */,
 				9799C8941B07BC860098C0A7 /* ADEventsTableViewController.m in Sources */,
 				9712DB861AFD1B9C00533A1C /* ADFaceDetector.m in Sources */,
@@ -863,11 +863,11 @@
 				9799C8261B0528CD0098C0A7 /* NSString+FontAwesome.m in Sources */,
 				9799C8251B0528CD0098C0A7 /* BButton.m in Sources */,
 				9799C8271B0528CD0098C0A7 /* UIColor+BButton.m in Sources */,
-				97CA02351AF5513C00B86C4D /* MonitoringViewController.m in Sources */,
+				97CA02351AF5513C00B86C4D /* ADMonitoringViewController.m in Sources */,
 				9799C8B11B0800200098C0A7 /* ACPDownloadConstants.m in Sources */,
 				97E02BE71AFB74D900E34B31 /* ADMotionDetector.mm in Sources */,
 				976AFAE41AF3CAC300F91585 /* Surveillance.xcdatamodeld in Sources */,
-				9749EB231AF6B284004D9785 /* ConfigureMonitoringTableViewController.m in Sources */,
+				9749EB231AF6B284004D9785 /* ADConfigureMonitoringTableViewController.m in Sources */,
 				97CC54241B0F6249009819A5 /* DeviceTableViewCell.m in Sources */,
 				976AFB4F1AF4077000F91585 /* ObservationViewController.mm in Sources */,
 				9799C88E1B0760E70098C0A7 /* ADFileHelper.m in Sources */,

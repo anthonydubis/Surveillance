@@ -6,10 +6,10 @@
 //  Copyright (c) 2015 Anthony Dubis. All rights reserved.
 //
 
-#import "ConfigureMonitoringTableViewController.h"
+#import "ADConfigureMonitoringTableViewController.h"
 #import "ObservationViewController.h"
 #import "SegmentedControlCell.h"
-#import "MonitoringViewController.h"
+#import "ADMonitoringViewController.h"
 #import "ADMotionDetector.h"
 #import <AWSS3/AWSS3.h>
 #import "ADFileHelper.h"
@@ -34,7 +34,7 @@ NSString * PrefKeyNotifyOnFaceDetected   = @"PrefKeyNotifyOnFaceDetected";
 NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
 
 
-@interface ConfigureMonitoringTableViewController ()
+@interface ADConfigureMonitoringTableViewController ()
 {    
     BOOL showSensitivityOptions;
     BOOL beepWhenRecordingStarts;
@@ -58,7 +58,7 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
 
 @end
 
-@implementation ConfigureMonitoringTableViewController
+@implementation ADConfigureMonitoringTableViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -349,7 +349,7 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
     if ([segue.identifier isEqualToString:@"StartMonitoringSegue"]) {
         [self savePreferences];
         UINavigationController *navCon = (UINavigationController *)segue.destinationViewController;
-        MonitoringViewController *avovc = (MonitoringViewController *)navCon.topViewController;
+        ADMonitoringViewController *avovc = (ADMonitoringViewController *)navCon.topViewController;
         avovc.motionSensitivity = self.motionSensitivity;
 
         avovc.beepWhenRecordingStarts = beepWhenRecordingStarts;
