@@ -4,23 +4,9 @@ COPYRIGHT & LICENSING
 
 Copyright 2015, Anthony Dubis, All rights reserved
 
-This project is owned exclusively by me, Anthony Dubis (anthonydubis@gmail.com),
-and cannot be viewed, copied, distributed, or used in any way without my
-explicit permission.
-
-The state of the project as it was on May 23th, 2015 was submitted for a project
-grade in Cloud Computing & Big Data (COMS 6998 - Columbia University). The
-associated team members, teaching assistants, and instructor have permission to
-view and test the project on their own personal computers and iOS devices for
-the sole purpose of grading. Beyond that, the project cannot be shared with
-anyone else without permission.
-
-The state of the project as it was on May 12th, 2015 was submitted for a project
-grade in Visual Interfaces to Computers (COMS 4735 - Columbia University). The
-associated team member, teaching assistants, and instructor have permission to
-view and test the project on their own personal computers and iOS devices for
-the sole purpose of grading. Beyond that, the project cannot be shared with
-anyone else without permission.
+This project is owned exclusively by Anthony Dubis (anthonydubis@gmail.com)
+and cannot be viewed, copied, distributed, or used in any way without written 
+permission.
 
 ********************************************************************************
 INSTALLATION 

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9712DB861AFD1B9C00533A1C /* ADFaceDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 9712DB851AFD1B9C00533A1C /* ADFaceDetector.m */; };
+		971CF1861B10D1E400659619 /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 971CF1841B10D1E400659619 /* UIActionSheet+Blocks.m */; };
 		971F1AB51B0B85C200ADB5B7 /* ADNotificationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 971F1AB41B0B85C200ADB5B7 /* ADNotificationHelper.m */; };
 		972473511AFD869F00D74BF8 /* ADCameraStreamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 972473501AFD869F00D74BF8 /* ADCameraStreamViewController.m */; };
 		972473541AFD91F200D74BF8 /* ADVideoRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 972473531AFD91F200D74BF8 /* ADVideoRecorder.m */; };
@@ -106,7 +107,6 @@
 		9799C8B71B0800200098C0A7 /* ACPStaticImagesAlternative.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8AF1B0800200098C0A7 /* ACPStaticImagesAlternative.m */; };
 		9799C8BE1B081F900098C0A7 /* ADDetailEventViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8BD1B081F900098C0A7 /* ADDetailEventViewController.m */; };
 		9799C8C11B0A0DC00098C0A7 /* ADDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8C01B0A0DC00098C0A7 /* ADDownloadTask.m */; };
-		9799C8C41B0A22300098C0A7 /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 9799C8C31B0A22300098C0A7 /* UIActionSheet+Blocks.m */; };
 		97CA02351AF5513C00B86C4D /* ADMonitoringViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97CA02341AF5513C00B86C4D /* ADMonitoringViewController.m */; };
 		97CC54151B0F527E009819A5 /* PFInstallation+ADDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 97CC54141B0F527E009819A5 /* PFInstallation+ADDevice.m */; };
 		97CC54241B0F6249009819A5 /* DeviceTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 97CC54231B0F6249009819A5 /* DeviceTableViewCell.m */; };
@@ -138,6 +138,8 @@
 /* Begin PBXFileReference section */
 		9712DB841AFD1B9C00533A1C /* ADFaceDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADFaceDetector.h; sourceTree = "<group>"; };
 		9712DB851AFD1B9C00533A1C /* ADFaceDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADFaceDetector.m; sourceTree = "<group>"; };
+		971CF1841B10D1E400659619 /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
+		971CF1851B10D1E400659619 /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
 		971F1AB31B0B85C200ADB5B7 /* ADNotificationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADNotificationHelper.h; sourceTree = "<group>"; };
 		971F1AB41B0B85C200ADB5B7 /* ADNotificationHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADNotificationHelper.m; sourceTree = "<group>"; };
 		9724734F1AFD869F00D74BF8 /* ADCameraStreamViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADCameraStreamViewController.h; sourceTree = "<group>"; };
@@ -279,8 +281,6 @@
 		9799C8BD1B081F900098C0A7 /* ADDetailEventViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADDetailEventViewController.m; sourceTree = "<group>"; };
 		9799C8BF1B0A0DC00098C0A7 /* ADDownloadTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADDownloadTask.h; sourceTree = "<group>"; };
 		9799C8C01B0A0DC00098C0A7 /* ADDownloadTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADDownloadTask.m; sourceTree = "<group>"; };
-		9799C8C21B0A22300098C0A7 /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
-		9799C8C31B0A22300098C0A7 /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
 		97CA02331AF5513C00B86C4D /* ADMonitoringViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADMonitoringViewController.h; sourceTree = "<group>"; };
 		97CA02341AF5513C00B86C4D /* ADMonitoringViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADMonitoringViewController.m; sourceTree = "<group>"; };
 		97CC54131B0F527E009819A5 /* PFInstallation+ADDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PFInstallation+ADDevice.h"; sourceTree = "<group>"; };
@@ -385,8 +385,8 @@
 		9749EB521AF6BEA8004D9785 /* Utility Classes */ = {
 			isa = PBXGroup;
 			children = (
-				9799C8C21B0A22300098C0A7 /* UIActionSheet+Blocks.h */,
-				9799C8C31B0A22300098C0A7 /* UIActionSheet+Blocks.m */,
+				971CF1841B10D1E400659619 /* UIActionSheet+Blocks.m */,
+				971CF1851B10D1E400659619 /* UIActionSheet+Blocks.h */,
 				9769797B1AFAB5BA0029D82D /* UIAlertView+Blocks.h */,
 				9769797C1AFAB5BA0029D82D /* UIAlertView+Blocks.m */,
 				973DB6531B019D3200418444 /* UIImage+DataHandler.h */,
@@ -855,7 +855,7 @@
 				9799C8911B076B760098C0A7 /* ADS3Helper.m in Sources */,
 				973DB6551B019D3200418444 /* UIImage+DataHandler.m in Sources */,
 				976AFADE1AF3CAC300F91585 /* main.m in Sources */,
-				9799C8C41B0A22300098C0A7 /* UIActionSheet+Blocks.m in Sources */,
+				971CF1861B10D1E400659619 /* UIActionSheet+Blocks.m in Sources */,
 				9799C8B51B0800200098C0A7 /* ACPProgressLayer.m in Sources */,
 				9799C83C1B0617120098C0A7 /* ADEvent.m in Sources */,
 				971F1AB51B0B85C200ADB5B7 /* ADNotificationHelper.m in Sources */,
