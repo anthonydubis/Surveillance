@@ -1,14 +1,4 @@
 ********************************************************************************
-COPYRIGHT & LICENSING 
-********************************************************************************
-
-Copyright 2015, Anthony Dubis, All rights reserved
-
-This project is owned exclusively by Anthony Dubis (anthonydubis@gmail.com)
-and cannot be viewed, copied, distributed, or used in any way without written 
-permission.
-
-********************************************************************************
 INSTALLATION 
 ********************************************************************************
 
@@ -145,3 +135,13 @@ These subclasses and categories are as follows:
 - UIAlertView+Blocks - an alert view with a block-based completion handler 
 - UIImage+DataHandler - a category for deep copying a UIImage 
 - ACPDownload - used to show the user the download progress of their video
+
+********************************************************************************
+COPYRIGHT & LICENSING 
+********************************************************************************
+
+Copyright 2015, Anthony Dubis, All rights reserved
+
+This project is owned exclusively by Anthony Dubis (anthonydubis@gmail.com)
+and cannot be viewed, copied, distributed, or used in any way without written 
+permission.
