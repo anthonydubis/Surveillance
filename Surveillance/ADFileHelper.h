@@ -11,7 +11,17 @@
 
 @interface ADFileHelper : PFObject
 
+/*
+ * Return the documents path for our app
+ * This will hold newly created videos that have not been uploaded to S3 yet
+ */
 + (NSString *)documentsPath;
+
+/*
+ * Return the library cache path for our app
+ * This will hold user downloaded videos (that can be redownloaded if purged)
+ */
++ (NSString *)libraryCachesPath;
 
 /*
  * Returns the directory where videos that still need to be uploaded will be stored

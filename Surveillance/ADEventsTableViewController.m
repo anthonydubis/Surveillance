@@ -133,7 +133,6 @@
     // Set the accessory view
     if (self.downloading[event.videoName])
     {
-        NSLog(@"The task is running");
         // We are downloading the video - this check must come first because a partially downloaded file
         // will cause the haveDownloadedVideoForEvent method to come true
         ADDownloadTask *progress = self.downloading[event.videoName];

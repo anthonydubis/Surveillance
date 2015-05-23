@@ -26,9 +26,15 @@
     return toUploadPath;
 }
 
++ (NSString *)libraryCachesPath
+{
+    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    return [searchPaths objectAtIndex:0];
+}
+
 + (NSString *)downloadsDirectoryPath
 {
-    NSString *documentsPath = [self documentsPath];
+    NSString *documentsPath = [self libraryCachesPath];
     NSString *downloadsPath = [documentsPath stringByAppendingPathComponent:@"Downloads"];
     [self createDirectoryIfNeededPath:downloadsPath];
     
@@ -69,15 +75,15 @@
 
 + (void)listAllFilesAtToUploadDirectory
 {
-    NSLog(@"Listing files at ToUpload directory.");
     NSString *toUploadPath = [self toUploadDirectoryPath];
+    NSLog(@"Listing files at ToUpload directory: %@", toUploadPath);
     [self listAllFilesAtDirectoryPath:toUploadPath];
 }
 
 + (void)listAllFilesInDownloadsDirectory
 {
-    NSLog(@"Listing files at Downloads directory.");
     NSString *downloadsPath = [self downloadsDirectoryPath];
+    NSLog(@"Listing files at Downloads directory: %@", downloadsPath);
     [self listAllFilesAtDirectoryPath:downloadsPath];
 }
 
