@@ -316,6 +316,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     self.recordingURL = nil;
     [self.motionDetector setBackgroundWithPixelBuffer:nil];
     [self.videoRecorder prepareToRecordWithNewURL:self.recordingURL];
+    maxNumSimultaneousFaces = 0;
     isMonitoring = YES;
     dispatch_async(dispatch_get_main_queue(), ^{
         self.title = @"Monitoring...";
