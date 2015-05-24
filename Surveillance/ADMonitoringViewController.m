@@ -89,12 +89,19 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     [self dismissSelf:nil];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+}
+
 // Cal when the view leaves the screen
 - (void)viewWillDisappear:(BOOL)animated
 {
     NSLog(@"View will disappear");
     [super viewWillDisappear:animated];
     [self endMonitoring];
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }
 
 - (void)endMonitoring
