@@ -46,8 +46,8 @@
     // Create the session (manages data flow from input to output
     AVCaptureSession *session = [[AVCaptureSession alloc] init];
     
-    // Capture at 640x480
-    [session setSessionPreset:AVCaptureSessionPreset640x480];
+    // Specify the video quality
+    [session setSessionPreset:AVCaptureSessionPresetMedium];
     
     // Specify an input (one of the cameras)
     AVCaptureDevice *device;
@@ -76,10 +76,20 @@
     // Create the input device
     AVCaptureDeviceInput *deviceInput = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
     
+    // Create the audio input device
+    AVCaptureDevice *audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
+    AVCaptureDeviceInput *audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioDevice error:&error];
+    
     if(!error) {
         // Add the input to the session
         if ([session canAddInput:deviceInput]) {
             [session addInput:deviceInput];
+        }
+        
+        if ([session canAddInput:audioInput]) {
+            [session addInput:audioInput];
+        } else {
+            NSLog(@"Unable to add audio input to session");
         }
         
         // Make a video data output
@@ -104,6 +114,15 @@
         // Get the output for doing face detection.
         [[self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:YES];
         
+        // Create audio output info
+        _audioDataOutput = [[AVCaptureAudioDataOutput alloc] init];
+        [_audioDataOutput setSampleBufferDelegate:self queue:_videoDataOutputQueue];
+        if ([session canAddOutput:_audioDataOutput]) {
+            [session addOutput:_audioDataOutput];
+        } else {
+            NSLog(@"Unable to add audio output");
+        }
+        
         self.previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:session];
         self.previewLayer.backgroundColor = [[UIColor blackColor] CGColor];
         self.previewLayer.videoGravity = AVLayerVideoGravityResizeAspect;
@@ -112,6 +131,10 @@
         [rootLayer setMasksToBounds:YES];
         [self.previewLayer setFrame:[rootLayer bounds]];
         [rootLayer addSublayer:self.previewLayer];
+        
+        _audioConnection = [_audioDataOutput connectionWithMediaType:AVMediaTypeAudio];
+        _videoConnection = [_videoDataOutput connectionWithMediaType:AVMediaTypeVideo];
+        
         [session startRunning];
     }
     

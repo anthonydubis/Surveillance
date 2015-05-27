@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
 
 @interface ADVideoRecorder : NSObject
 
@@ -24,7 +25,7 @@
  * Tell the assetWrtier frames are going to be coming in. Free to append
  * frames after this call.
  */
-- (void)startRecording;
+- (void)startRecordingWithSourceTime:(CMTime)sourceTime;
 
 /*
  * Finish writing the file
@@ -39,7 +40,11 @@
 /*
  * The method called to append frames to the video
  */
-- (void)appendFrameFromPixelBuffer:(CVPixelBufferRef)pixelBuffer;
+- (void)appendFrameFromPixelBuffer:(CVPixelBufferRef)pixelBuffer withPresentationTime:(CMTime)presentationTime;
 
+/*
+ * Append audio frame
+ */
+- (void)appendAudioSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 
 @end

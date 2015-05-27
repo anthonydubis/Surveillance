@@ -33,6 +33,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     BOOL isLookingForFace;       // is the faceDetector currently processing a face
     int maxNumSimultaneousFaces; // the max number of faces found in a single frame so far
     BOOL endedMonitoring;        // Ensures that the endMonitoring method only gets called once
+    CMTime lastSampleTime;
 }
 
 @property (nonatomic, strong) AVAudioPlayer *beep;
@@ -162,51 +163,56 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
        fromConnection:(AVCaptureConnection *)connection
 {
     // Get the image
-    CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-    
-    // Set the background if needed
-    if ((isMonitoring || isRecording) && [self.motionDetector shouldSetBackground]) {
-        [self.motionDetector setBackgroundWithPixelBuffer:pixelBuffer];
-    }
-    
-    // Monitoring phase
-    if (isMonitoring) {
-        if (!isPreparingToRecord && [self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer]) {
-            isPreparingToRecord = YES;
-            [self startRecording];
-            if (_notifyOnMotionStart) {
-                [ADNotificationHelper sendMotionDetectedNotification];
-            }
-        }
-    }
-    
-    // Recording phase
-    if (isRecording) {
-        // Check for motion if we haven't do so in the # of seconds specificed by MotionDetectionFrequencyWhenRecording
-        if ([self.motionDetector intervalSinceLastMotionCheck] < -1 * MotionDetectionFrequencyWhenRecording) {
-            [self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer];
-            if ([self.motionDetector hasMotionEnded]) {
-                [self stopRecordingAndPrepareForNewRecording];
-                if (_notifyOnMotionEnd) {
-                    [ADNotificationHelper sendMotionEndedNotification];
-                }
-                return;
-            }
-        }
-        [self.videoRecorder appendFrameFromPixelBuffer:pixelBuffer];
+    lastSampleTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+    if (connection == self.videoConnection) {
+        CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
         
-        if (!isLookingForFace) {
-            isLookingForFace = YES;
-            CFRetain(sampleBuffer);
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                NSDictionary *detectionResults = [self.faceDetector detectFacesFromSampleBuffer:sampleBuffer
-                                                                                 andPixelBuffer:pixelBuffer
-                                                                         usingFrontFacingCamera:self.isUsingFrontFacingCamera];
-                CFRelease(sampleBuffer);
-                [self handleDetectedFaces:detectionResults];
-                isLookingForFace = NO;
-            });
+        // Set the background if needed
+        if ((isMonitoring || isRecording) && [self.motionDetector shouldSetBackground]) {
+            [self.motionDetector setBackgroundWithPixelBuffer:pixelBuffer];
         }
+        
+        // Monitoring phase
+        if (isMonitoring) {
+            if (!isPreparingToRecord && [self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer]) {
+                isPreparingToRecord = YES;
+                [self startRecording];
+                if (_notifyOnMotionStart) {
+                    [ADNotificationHelper sendMotionDetectedNotification];
+                }
+            }
+        }
+        
+        // Recording phase
+        if (isRecording) {
+            // Check for motion if we haven't do so in the # of seconds specificed by MotionDetectionFrequencyWhenRecording
+            if ([self.motionDetector intervalSinceLastMotionCheck] < -1 * MotionDetectionFrequencyWhenRecording) {
+                [self.motionDetector didMotionOccurInPixelBufferRef:pixelBuffer];
+                if ([self.motionDetector hasMotionEnded]) {
+                    [self stopRecordingAndPrepareForNewRecording];
+                    if (_notifyOnMotionEnd) {
+                        [ADNotificationHelper sendMotionEndedNotification];
+                    }
+                    return;
+                }
+            }
+            [self.videoRecorder appendFrameFromPixelBuffer:pixelBuffer withPresentationTime:lastSampleTime];
+            
+            if (!isLookingForFace) {
+                isLookingForFace = YES;
+                CFRetain(sampleBuffer);
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    NSDictionary *detectionResults = [self.faceDetector detectFacesFromSampleBuffer:sampleBuffer
+                                                                                     andPixelBuffer:pixelBuffer
+                                                                             usingFrontFacingCamera:self.isUsingFrontFacingCamera];
+                    CFRelease(sampleBuffer);
+                    [self handleDetectedFaces:detectionResults];
+                    isLookingForFace = NO;
+                });
+            }
+        }
+    } else {
+        [self.videoRecorder appendAudioSampleBuffer:sampleBuffer];
     }
 }
 
@@ -258,7 +264,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     self.event = [ADEvent objectForNewEvent];
     [self.event saveInBackground];
     
-    [self.videoRecorder startRecording];
+    [self.videoRecorder startRecordingWithSourceTime:lastSampleTime];
     isRecording = YES;
     isMonitoring = NO;
     isPreparingToRecord = NO;

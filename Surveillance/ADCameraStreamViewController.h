@@ -9,12 +9,17 @@
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 
-@interface ADCameraStreamViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate>
+@interface ADCameraStreamViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *previewView;
 @property (nonatomic, assign) BOOL isUsingFrontFacingCamera;
 @property (nonatomic, strong) AVCaptureVideoDataOutput *videoDataOutput;
+@property (nonatomic, strong) AVCaptureConnection *videoConnection;
 @property (nonatomic) dispatch_queue_t videoDataOutputQueue;
+
+@property (nonatomic, strong) AVCaptureAudioDataOutput *audioDataOutput;
+@property (nonatomic, strong) AVCaptureConnection *audioConnection;
+
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *previewLayer;
 
 @end

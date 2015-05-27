@@ -7,7 +7,6 @@
 //
 
 #import "ADVideoRecorder.h"
-#import <AVFoundation/AVFoundation.h>
 #import <AssertMacros.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <CoreImage/CoreImage.h>
@@ -15,10 +14,11 @@
 
 @interface ADVideoRecorder ()
 
-@property (nonatomic, assign) int frameNumber;
 @property (nonatomic, strong) AVAssetWriter *assetWriter;
 @property (nonatomic, strong) AVAssetWriterInput *assetWriterInput;
 @property (nonatomic, strong) AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor;
+
+@property (nonatomic, strong) AVAssetWriterInput *audioWriterInput;
 
 @end
 
@@ -40,7 +40,6 @@
  */
 - (void)setupAssetWriterComponentsWithRecordingURL:(NSURL *)url
 {
-    self.frameNumber = 0;
     NSError *error = nil;
     // Moved this into lazily instantiated getters
     NSDictionary *outputSettings = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -63,20 +62,37 @@
                                sourcePixelBufferAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
                                                             [NSNumber numberWithInt:kCVPixelFormatType_32BGRA],kCVPixelBufferPixelFormatTypeKey, nil]];
     
+    // Create the audioWriterInput
+    AudioChannelLayout acl;
+    bzero(&acl, sizeof(acl));
+    acl.mChannelLayoutTag = kAudioChannelLayoutTag_Stereo;
+    
+    NSDictionary*  audioOutputSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                          [NSNumber numberWithInt: kAudioFormatMPEG4AAC], AVFormatIDKey,
+                                          [NSNumber numberWithInt: 2], AVNumberOfChannelsKey,
+                                          [NSNumber numberWithFloat: 44100.0], AVSampleRateKey,
+                                          [NSData dataWithBytes: &acl length: sizeof( AudioChannelLayout ) ], AVChannelLayoutKey,
+                                          [NSNumber numberWithInt: 64000 ], AVEncoderBitRateKey,
+                                          nil];
+    
+    _audioWriterInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeAudio outputSettings:audioOutputSettings];
+    
     self.assetWriter = [[AVAssetWriter alloc] initWithURL:url
                                                  fileType:AVFileTypeMPEG4
                                                     error:&error];
     [self.assetWriter addInput:self.assetWriterInput];
+    [self.assetWriter addInput:self.audioWriterInput];
     
     /* we need to warn the input to expect real time data incoming, so that it tries
      to avoid being unavailable at inopportune moments */
     self.assetWriterInput.expectsMediaDataInRealTime = YES;
+    _audioWriterInput.expectsMediaDataInRealTime = YES;
 }
 
-- (void)startRecording
+- (void)startRecordingWithSourceTime:(CMTime)sourceTime
 {
     [self.assetWriter startWriting];
-    [self.assetWriter startSessionAtSourceTime:kCMTimeZero];
+    [self.assetWriter startSessionAtSourceTime:sourceTime];
     self.dateTimeRecordingBegan = [NSDate date];
 }
 
@@ -93,10 +109,17 @@
     [self setupAssetWriterComponentsWithRecordingURL:url];
 }
 
-- (void)appendFrameFromPixelBuffer:(CVPixelBufferRef)pixelBuffer
+- (void)appendFrameFromPixelBuffer:(CVPixelBufferRef)pixelBuffer withPresentationTime:(CMTime)presentationTime
 {
     if (self.assetWriterInput.isReadyForMoreMediaData) {
-        [self.pixelBufferAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:CMTimeMake(self.frameNumber++, 30)];
+        [self.pixelBufferAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:presentationTime];
+    }
+}
+
+- (void)appendAudioSampleBuffer:(CMSampleBufferRef)sampleBuffer
+{
+    if (_audioWriterInput.isReadyForMoreMediaData) {
+        [_audioWriterInput appendSampleBuffer:sampleBuffer];
     }
 }
 
