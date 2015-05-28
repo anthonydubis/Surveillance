@@ -350,8 +350,9 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
         [self savePreferences];
         UINavigationController *navCon = (UINavigationController *)segue.destinationViewController;
         ADMonitoringViewController *avovc = (ADMonitoringViewController *)navCon.topViewController;
-        avovc.motionSensitivity = self.motionSensitivity;
 
+        // Configure settings
+        avovc.motionSensitivity = self.motionSensitivity;
         avovc.beepWhenRecordingStarts = beepWhenRecordingStarts;
         avovc.beepWhenRecordingStops = beepWhenRecordingStops;
         avovc.beepWhenFaceDetected = beepWhenFaceDetected;

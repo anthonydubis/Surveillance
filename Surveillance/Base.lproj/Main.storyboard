@@ -293,14 +293,24 @@
                             <constraint firstAttribute="centerY" secondItem="lkQ-fN-fpL" secondAttribute="centerY" id="YOJ-5t-xOd"/>
                         </constraints>
                     </view>
+                    <toolbarItems>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="BJp-f1-5BO"/>
+                        <barButtonItem title="Begin Monitoring" id="WTu-6v-e4Y">
+                            <connections>
+                                <action selector="beginMonitoringButtonPressed:" destination="8vq-su-lud" id="hcb-Gv-9ZZ"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="icx-yg-UYr"/>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" title="Monitoring" id="aKr-7H-xPe">
-                        <barButtonItem key="rightBarButtonItem" title="Finished" id="3tf-lR-JwW">
+                        <barButtonItem key="rightBarButtonItem" title="Disable" id="3tf-lR-JwW">
                             <connections>
                                 <action selector="dismissSelf:" destination="8vq-su-lud" id="hRC-ky-QsP"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="beginMonitoringButton" destination="WTu-6v-e4Y" id="r5p-is-CiV"/>
                         <outlet property="previewView" destination="lkQ-fN-fpL" id="l3L-QO-2qY"/>
                     </connections>
                 </viewController>
@@ -525,18 +535,23 @@
         <!--Navigation Controller-->
         <scene sceneID="5NP-Wo-H8L">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="SnD-NC-ZCP" sceneMemberID="viewController">
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eU8-Ce-Dq0" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" toolbarHidden="NO" id="SnD-NC-ZCP" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="5sj-fW-32T">
+                    <navigationBar key="navigationBar" alpha="0.0" contentMode="scaleToFill" id="5sj-fW-32T">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" alpha="0.0" contentMode="scaleToFill" id="RCt-nm-kkK">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    </toolbar>
                     <connections>
                         <segue destination="8vq-su-lud" kind="relationship" relationship="rootViewController" id="sHy-Q4-jp1"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="eU8-Ce-Dq0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1583" y="325"/>
         </scene>

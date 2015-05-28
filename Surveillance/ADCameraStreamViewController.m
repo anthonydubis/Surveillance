@@ -18,7 +18,30 @@
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
+#warning Try doing this on a background queue
+    self.navigationItem.title = @"Setting Up";
     [self setupAVCapture];
+    self.navigationItem.title = @"Ready to Monitor";
+    
+    UIImage *background44 = [self imageWithColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+    [self.navigationController.navigationBar setBackgroundImage:background44 forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.toolbar setBackgroundImage:background44 forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+}
+
+- (UIImage *)imageWithColor:(UIColor *)color
+{
+    CGRect rect = CGRectMake(0, 0, 1, 1);
+    
+    // create a 1 by 1 pixel context
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);
+    [color setFill];
+    UIRectFill(rect);
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
 }
 
 - (void)viewDidUnload

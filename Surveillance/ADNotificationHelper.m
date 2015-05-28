@@ -138,7 +138,7 @@ NSString * DisableDeviceFunction = @"processDisableCommand";
 + (void)sendCameraWasDisabledWhileRecordingNotification
 {
     PFInstallation *installation = [PFInstallation currentInstallation];
-    NSString *message = [NSString stringWithFormat:@"A person disabled the camera at %@. Recording stopped.", installation[@"deviceName"]];
+    NSString *message = [NSString stringWithFormat:@"A person disabled the camera at %@.", installation[@"deviceName"]];
     
     [PFCloud callFunctionInBackground:MotionEventFunction
                        withParameters:@{@"message": message, @"sendingDeviceID": installation[@"deviceID"]}

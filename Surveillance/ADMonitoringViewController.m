@@ -33,7 +33,9 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     BOOL isLookingForFace;       // is the faceDetector currently processing a face
     int maxNumSimultaneousFaces; // the max number of faces found in a single frame so far
     BOOL endedMonitoring;        // Ensures that the endMonitoring method only gets called once
-    CMTime lastSampleTime;
+    CMTime lastSampleTime;       // The CMTime of the last sample buffer received
+    int countdown;               // The countdown clock to begin monitoring
+    NSTimer *countdownTimer;     // The current countdownTimer
 }
 
 @property (nonatomic, strong) AVAudioPlayer *beep;
@@ -41,6 +43,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 @property (nonatomic, strong) ADMotionDetector *motionDetector;
 @property (nonatomic, strong) ADFaceDetector *faceDetector;
 @property (nonatomic, strong) NSURL *recordingURL;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *beginMonitoringButton;
 
 // Integrating parse
 @property (nonatomic, strong) ADEvent *event;
@@ -57,7 +60,6 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     [super viewDidLoad];
     
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-    self.navigationItem.title = @"Setting Up";
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(appHasEnteredBackground)
                                                  name:UIApplicationDidEnterBackgroundNotification
@@ -72,15 +74,6 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-// This is called when the view is on screen (or at least, about to be) and the views have been resized to fill the screen
-- (void)viewDidLayoutSubviews
-{
-    [super viewDidLayoutSubviews];
-    
-    self.videoRecorder = [[ADVideoRecorder alloc] initWithRecordingURL:self.recordingURL];
-    [self performSelector:@selector(beginMonitoring) withObject:nil afterDelay:5.0];
 }
 
 - (void)appHasEnteredBackground
@@ -339,6 +332,53 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 - (IBAction)dismissSelf:(id)sender
 {
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+#define COUNTDOWN_DURATION 5
+
+- (IBAction)beginMonitoringButtonPressed:(UIBarButtonItem *)sender
+{
+    if (!countdownTimer) {
+        // Beginning countdown
+        self.videoRecorder = [[ADVideoRecorder alloc] initWithRecordingURL:self.recordingURL];
+        countdown = COUNTDOWN_DURATION;
+        [self updateCountdownTitle];
+        countdownTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
+                                                          target:self
+                                                        selector:@selector(countdownToMonitoring)
+                                                        userInfo:nil repeats:NO];
+        sender.title = @"Cancel";
+    } else if (countdownTimer.valid) {
+        // In the middle of the countdown sequence
+        [countdownTimer invalidate];
+        countdownTimer = nil;
+        self.title = @"Ready to Monitor";
+        sender.title = @"Start";
+    } else {
+        // The device was monitoring/recording and we want to stop.
+        NSLog(@"Device is currently monitoring");
+        [self dismissSelf:nil];
+    }
+}
+
+- (void)countdownToMonitoring
+{
+    if (--countdown > 0) {
+        [self updateCountdownTitle];
+        countdownTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
+                                                          target:self
+                                                        selector:@selector(countdownToMonitoring)
+                                                        userInfo:nil repeats:NO];
+    } else {
+        self.title = @"Monitoring...";
+        [self beginMonitoring];
+        self.beginMonitoringButton.title = @"Stop Monitoring";
+    }
+}
+
+- (void)updateCountdownTitle
+{
+    self.title = [NSString stringWithFormat:@"Beginning to Monitoring in %i...", countdown];
 }
 
 #pragma mark - Getters/Setters
