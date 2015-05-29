@@ -294,16 +294,20 @@
                         </constraints>
                     </view>
                     <toolbarItems>
+                        <barButtonItem title="Dim Screen" id="OIh-SP-S4c">
+                            <connections>
+                                <action selector="dimScreen:" destination="8vq-su-lud" id="pNO-jk-SVd"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="BJp-f1-5BO"/>
                         <barButtonItem title="Begin Monitoring" id="WTu-6v-e4Y">
                             <connections>
                                 <action selector="beginMonitoringButtonPressed:" destination="8vq-su-lud" id="hcb-Gv-9ZZ"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="icx-yg-UYr"/>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="Monitoring" id="aKr-7H-xPe">
-                        <barButtonItem key="rightBarButtonItem" title="Disable" id="3tf-lR-JwW">
+                        <barButtonItem key="rightBarButtonItem" title="Disable" style="done" id="3tf-lR-JwW">
                             <connections>
                                 <action selector="dismissSelf:" destination="8vq-su-lud" id="hRC-ky-QsP"/>
                             </connections>
@@ -535,7 +539,6 @@
         <!--Navigation Controller-->
         <scene sceneID="5NP-Wo-H8L">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="eU8-Ce-Dq0" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" toolbarHidden="NO" id="SnD-NC-ZCP" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" alpha="0.0" contentMode="scaleToFill" id="5sj-fW-32T">
@@ -552,6 +555,7 @@
                         <segue destination="8vq-su-lud" kind="relationship" relationship="rootViewController" id="sHy-Q4-jp1"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eU8-Ce-Dq0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1583" y="325"/>
         </scene>

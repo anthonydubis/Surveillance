@@ -334,6 +334,17 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (IBAction)dimScreen:(UIBarButtonItem *)sender
+{
+    if ([sender.title isEqualToString:@"Dim Screen"]) {
+        sender.title = @"Brighten Screen";
+        [[UIScreen mainScreen] setBrightness:0.0];
+    } else {
+        sender.title = @"Dim Screen";
+        [[UIScreen mainScreen] setBrightness:0.7];
+    }
+}
+
 #define COUNTDOWN_DURATION 5
 
 - (IBAction)beginMonitoringButtonPressed:(UIBarButtonItem *)sender
