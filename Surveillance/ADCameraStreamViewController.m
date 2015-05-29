@@ -14,6 +14,20 @@
 
 @implementation ADCameraStreamViewController
 
++ (NSString *)nameForVideoQuality:(ADVideoQuality)videoQuality {
+    switch (videoQuality) {
+        case ADVideoQualityLow:      return @"Low";
+        case ADVideoQualityStandard: return @"Standard";
+    }
+}
+
++ (NSString *)descriptionForVideoQuality:(ADVideoQuality)videoQuality {
+    switch (videoQuality) {
+        case ADVideoQualityLow:      return @"Best for cellular connections";
+        case ADVideoQualityStandard: return @"Best for Wifi connections";
+    }
+}
+
 // This is called when the view is on screen (or at least, about to be) and the views have been resized to fill the screen
 - (void)viewDidLayoutSubviews
 {
@@ -70,7 +84,12 @@
     AVCaptureSession *session = [[AVCaptureSession alloc] init];
     
     // Specify the video quality
-    [session setSessionPreset:AVCaptureSessionPresetMedium];
+    if (_videoQuality == ADVideoQualityStandard)
+        [session setSessionPreset:AVCaptureSessionPresetMedium];
+    else if (_videoQuality == ADVideoQualityLow)
+        [session setSessionPreset:AVCaptureSessionPresetLow];
+    else
+        NSLog(@"Didn't specify a video quality");
     
     // Specify an input (one of the cameras)
     AVCaptureDevice *device;

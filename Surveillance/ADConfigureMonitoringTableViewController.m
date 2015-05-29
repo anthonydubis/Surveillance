@@ -25,6 +25,7 @@ NSString * ButtonCellID      = @"ButtonCell";
 
 // Preferences
 NSString * PrefKeyMotionSensitivity      = @"PrefKeyMotionSensitivity";
+NSString * PrefKeyVideoQuality           = @"PrefKeyVideoQuality";
 NSString * PrefKeyBeepOnRecordingStart   = @"PrefKeyBeepOnRecordingStart";
 NSString * PrefKeyBeepOnRecordingStops   = @"PrefKeyBeepOnRecordingStops";
 NSString * PrefKeyBeepOnFaceDetected     = @"PrefKeyBeepOnFaceDetected";
@@ -37,6 +38,7 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
 @interface ADConfigureMonitoringTableViewController ()
 {    
     BOOL showSensitivityOptions;
+    BOOL showVideoQualityOptions;
     BOOL beepWhenRecordingStarts;
     BOOL beepWhenRecordingStops;
     BOOL beepWhenFaceDetected;
@@ -55,6 +57,7 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
 }
 
 @property (nonatomic, assign) MotionDetectorSensitivity motionSensitivity;
+@property (nonatomic, assign) ADVideoQuality videoQuality;
 
 @end
 
@@ -74,7 +77,10 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
     
     // Motion sensitivity
     MotionDetectorSensitivity sensitivity = [defaults integerForKey:PrefKeyMotionSensitivity];
-    self.motionSensitivity = (sensitivity == 0) ? MotionDetectorSensitivityHigh : sensitivity;
+    _motionSensitivity = (sensitivity == 0) ? MotionDetectorSensitivityHigh : sensitivity;
+    
+    ADVideoQuality videoQuality = [defaults integerForKey:PrefKeyVideoQuality];
+    _videoQuality = (videoQuality == 0) ? ADVideoQualityStandard : videoQuality;
     
     // Sounds
     beepWhenRecordingStarts = [defaults boolForKey:PrefKeyBeepOnRecordingStart];
@@ -93,7 +99,7 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     // Return the automatic dimensions for the section with the "Start" button
-    if (section == 3) return UITableViewAutomaticDimension;
+    if (section == 4) return UITableViewAutomaticDimension;
     
     // Calculate the height for the section with footerViews
     NSString *text = [self textForFooterInSection:section];
@@ -117,8 +123,9 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
 {
     switch (section) {
         case 0: return @"The motion sensitivity determines how much motion must occur in the environment for the camera to begin recording.";
-        case 1: return @"These sounds will play through this device. Please turn up the volume and make sure the device is not silenced.";
-        case 2: return @"These alerts will go to other devices that you have accepted Notifications on.";
+        case 1: return @"While the Standard quality is recommended, a lower quality video will decrease the size of the video.";
+        case 2: return @"These sounds will play through this device. Please turn up the volume and make sure the device is not silenced.";
+        case 3: return @"These alerts will go to other devices that you have accepted Notifications on.";
     }
     return nil;
 }
@@ -144,34 +151,28 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    if (section == 0)
-        return @"Motion Sensitivity";
-    else if (section == 1)
-        return @"Play Sound When";
-    else if (section == 2)
-        return @"Send Notifications When";
-    else
-        return nil;
+    switch (section) {
+        case 0: return @"Motion Sensitivity";
+        case 1: return @"Video Quality";
+        case 2: return @"Sounds";
+        case 3: return @"Notifications";
+        default: return nil;
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 4;
+    return 5;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 0) {
-        if (showSensitivityOptions)
-            return 4;
-        else
-            return 1;
-    } else if (section == 1) {
-        return 3;
-    } else if (section == 2) {
-        return 4;
-    } else if (section == 3) {
-        return 1;
+    switch (section) {
+        case 0: return (showSensitivityOptions) ? 4 : 1;
+        case 1: return (showVideoQualityOptions) ? 3 : 1;
+        case 2: return 3;
+        case 3: return 4;
+        case 4: return 1;
+        default: return 0;
     }
-    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -188,14 +189,22 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
             cell = [tableView dequeueReusableCellWithIdentifier:LeftDetailCellID forIndexPath:indexPath];
             [self configureSelectivityOptionCell:cell forIndexPath:indexPath];
         }
-    } else if (s == 1 || s == 2) {
+    } else if (s == 1) {
+        if (r == 0) {
+            cell = [tableView dequeueReusableCellWithIdentifier:RightDetailCellID forIndexPath:indexPath];
+            [self configureSelectedVideoQualityCell:cell forIndexPath:indexPath];
+        } else {
+            cell = [tableView dequeueReusableCellWithIdentifier:LeftDetailCellID forIndexPath:indexPath];
+            [self configureVideoQualityOptionCell:cell forIndexPath:indexPath];
+        }
+    } else if (s == 2 || s == 3) {
         SwitchTableViewCell *switchCell = [tableView dequeueReusableCellWithIdentifier:SwitchCellID forIndexPath:indexPath];
-        if (s == 1)
+        if (s == 2)
             [self configureSoundCell:switchCell forIndexPath:indexPath];
         else
             [self configureNotificationCell:switchCell forIndexPath:indexPath];
         cell = switchCell;
-    } else if (s == 3) {
+    } else if (s == 4) {
         FlatButtonTableViewCell *buttonCell = [tableView dequeueReusableCellWithIdentifier:ButtonCellID forIndexPath:indexPath];
         cell = buttonCell;
     }
@@ -220,6 +229,26 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     else
         cell.accessoryType = UITableViewCellAccessoryNone;
+}
+
+- (void)configureSelectedVideoQualityCell:(UITableViewCell *)cell forIndexPath:(NSIndexPath *)indexPath
+{
+    cell.textLabel.text = @"Video Quality";
+    cell.detailTextLabel.text = [ADCameraStreamViewController nameForVideoQuality:_videoQuality];
+    cell.accessoryType = UITableViewCellAccessoryDetailButton;
+}
+
+- (void)configureVideoQualityOptionCell:(UITableViewCell *)cell forIndexPath:(NSIndexPath *)indexPath
+{
+    ADVideoQuality videoQuality = (ADVideoQuality)indexPath.row;
+    cell.textLabel.text = [ADCameraStreamViewController nameForVideoQuality:videoQuality];
+    cell.detailTextLabel.text = [ADCameraStreamViewController descriptionForVideoQuality:videoQuality];
+    
+    if (_videoQuality == videoQuality) {
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    } else {
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }
 }
 
 - (void)configureSoundCell:(SwitchTableViewCell *)cell forIndexPath:(NSIndexPath *)indexPath
@@ -292,7 +321,7 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 0 || [self isStartMonitoringIndexPath:indexPath])
+    if (indexPath.section <= 1 || [self isStartMonitoringIndexPath:indexPath])
         return indexPath;
     else
         return nil;
@@ -306,13 +335,30 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
             [tableView insertRowsAtIndexPaths:[self sensitivityOptionsIndexPaths] withRowAnimation:UITableViewRowAnimationFade];
         } else {
             [tableView deleteRowsAtIndexPaths:[self sensitivityOptionsIndexPaths] withRowAnimation:UITableViewRowAnimationFade];
-            [tableView deselectRowAtIndexPath:indexPath animated:YES];
         }
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
     } else if ([self isMotionSensitivityOptionIndexPath:indexPath]) {
         self.motionSensitivity = (MotionDetectorSensitivity)indexPath.row;
         showSensitivityOptions = NO;
         [tableView deleteRowsAtIndexPaths:[self sensitivityOptionsIndexPaths] withRowAnimation:UITableViewRowAnimationFade];
         [tableView reloadRowsAtIndexPaths:@[[self motionSensitivityIndexPath]] withRowAnimation:UITableViewRowAnimationFade];
+        
+    } else if ([self isVideoQualityIndexPath:indexPath]) {
+        showVideoQualityOptions = !showVideoQualityOptions;
+        if (showVideoQualityOptions) {
+            [tableView insertRowsAtIndexPaths:[self videoQualityOptionsIndexPaths] withRowAnimation:UITableViewRowAnimationFade];
+        } else {
+            [tableView deleteRowsAtIndexPaths:[self videoQualityOptionsIndexPaths] withRowAnimation:UITableViewRowAnimationFade];
+        }
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+    } else if ([self isVideoQualityOptionIndexPath:indexPath]) {
+        self.videoQuality = (ADVideoQuality)indexPath.row;
+        showVideoQualityOptions = NO;
+        [tableView deleteRowsAtIndexPaths:[self videoQualityOptionsIndexPaths] withRowAnimation:UITableViewRowAnimationFade];
+        [tableView reloadRowsAtIndexPaths:@[[self videoQualityIndexPath]] withRowAnimation:UITableViewRowAnimationFade];
+        
     } else if ([self isStartMonitoringIndexPath:indexPath]) {
         [self performSegueWithIdentifier:@"StartMonitoringSegue" sender:nil];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -339,6 +385,20 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
              [NSIndexPath indexPathForRow:3 inSection:0]];
 }
 
+- (BOOL)isVideoQualityIndexPath:(NSIndexPath *)indexPath
+{   return [[self videoQualityIndexPath] isEqual:indexPath];    }
+
+- (NSIndexPath *)videoQualityIndexPath
+{   return [NSIndexPath indexPathForRow:0 inSection:1]; }
+
+- (NSArray *)videoQualityOptionsIndexPaths
+{
+    return @[[NSIndexPath indexPathForRow:1 inSection:1], [NSIndexPath indexPathForRow:2 inSection:1]];
+}
+
+- (BOOL)isVideoQualityOptionIndexPath:(NSIndexPath *)indexPath
+{   return [[self videoQualityOptionsIndexPaths] containsObject:indexPath]; }
+
 - (BOOL)isStartMonitoringIndexPath:(NSIndexPath *)indexPath
 {   return indexPath.section == ([self.tableView numberOfSections] - 1);    }
 
@@ -352,7 +412,8 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
         ADMonitoringViewController *avovc = (ADMonitoringViewController *)navCon.topViewController;
 
         // Configure settings
-        avovc.motionSensitivity = self.motionSensitivity;
+        avovc.motionSensitivity = _motionSensitivity;
+        avovc.videoQuality = _videoQuality;
         avovc.beepWhenRecordingStarts = beepWhenRecordingStarts;
         avovc.beepWhenRecordingStops = beepWhenRecordingStops;
         avovc.beepWhenFaceDetected = beepWhenFaceDetected;
@@ -368,7 +429,10 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     // Motion sensitivity
-    [defaults setInteger:self.motionSensitivity forKey:PrefKeyMotionSensitivity];
+    [defaults setInteger:_motionSensitivity forKey:PrefKeyMotionSensitivity];
+    
+    // Video quality
+    [defaults setInteger:_videoQuality forKey:PrefKeyVideoQuality];
     
     // Sounds
     [defaults setBool:beepWhenRecordingStarts forKey:PrefKeyBeepOnRecordingStart];
