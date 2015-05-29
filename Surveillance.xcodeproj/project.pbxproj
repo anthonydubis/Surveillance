@@ -13,6 +13,7 @@
 		972473511AFD869F00D74BF8 /* ADCameraStreamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 972473501AFD869F00D74BF8 /* ADCameraStreamViewController.m */; };
 		972473541AFD91F200D74BF8 /* ADVideoRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 972473531AFD91F200D74BF8 /* ADVideoRecorder.m */; };
 		972473571AFE451900D74BF8 /* ADImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 972473561AFE451900D74BF8 /* ADImageViewController.m */; };
+		973344811B18D9C400D3CF7B /* SliderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 973344801B18D9C400D3CF7B /* SliderCell.m */; };
 		973A92731B0C068B0032D4ED /* ADEventImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 973A92721B0C068B0032D4ED /* ADEventImage.m */; };
 		973A92761B0D239E0032D4ED /* SwitchTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 973A92751B0D239E0032D4ED /* SwitchTableViewCell.m */; };
 		973A92791B0E04820032D4ED /* FlatButtonTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 973A92781B0E04810032D4ED /* FlatButtonTableViewCell.m */; };
@@ -148,6 +149,8 @@
 		972473531AFD91F200D74BF8 /* ADVideoRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADVideoRecorder.m; sourceTree = "<group>"; };
 		972473551AFE451900D74BF8 /* ADImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADImageViewController.h; sourceTree = "<group>"; };
 		972473561AFE451900D74BF8 /* ADImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADImageViewController.m; sourceTree = "<group>"; };
+		9733447F1B18D9C400D3CF7B /* SliderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SliderCell.h; sourceTree = "<group>"; };
+		973344801B18D9C400D3CF7B /* SliderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SliderCell.m; sourceTree = "<group>"; };
 		973A92711B0C068B0032D4ED /* ADEventImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADEventImage.h; sourceTree = "<group>"; };
 		973A92721B0C068B0032D4ED /* ADEventImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADEventImage.m; sourceTree = "<group>"; };
 		973A92741B0D239E0032D4ED /* SwitchTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwitchTableViewCell.h; sourceTree = "<group>"; };
@@ -438,6 +441,8 @@
 				973A92781B0E04810032D4ED /* FlatButtonTableViewCell.m */,
 				97CC54221B0F6249009819A5 /* DeviceTableViewCell.h */,
 				97CC54231B0F6249009819A5 /* DeviceTableViewCell.m */,
+				9733447F1B18D9C400D3CF7B /* SliderCell.h */,
+				973344801B18D9C400D3CF7B /* SliderCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -839,6 +844,7 @@
 				9781473F1B0E791A00FFB16F /* ADSurveillanceTableViewController.m in Sources */,
 				978147331B0E573500FFB16F /* ADLoginViewController.m in Sources */,
 				973DB6441B0179EC00418444 /* MonitoringEventFace.m in Sources */,
+				973344811B18D9C400D3CF7B /* SliderCell.m in Sources */,
 				9799C8C11B0A0DC00098C0A7 /* ADDownloadTask.m in Sources */,
 				9799C8B21B0800200098C0A7 /* ACPDownloadView.m in Sources */,
 				97E2F8A11AFC0F6200E472F2 /* MonitoringEvent+AD.m in Sources */,

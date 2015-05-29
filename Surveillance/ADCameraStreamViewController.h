@@ -27,8 +27,9 @@ typedef NS_ENUM(NSInteger, ADVideoQuality)
 @property (nonatomic, strong) AVCaptureConnection *audioConnection;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *previewLayer;
 
-// The specified videoQuality
+// The specified videoQuality and frameRate
 @property (nonatomic, assign) ADVideoQuality videoQuality;
+@property (nonatomic, assign) NSInteger frameRate;
 
 // Returns a string representing the name of the video quality passed in
 + (NSString *)nameForVideoQuality:(ADVideoQuality)videoQuality;

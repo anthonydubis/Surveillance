@@ -222,6 +222,44 @@
                                     <outlet property="textLabel" destination="jae-0f-UCa" id="bNN-vl-PeW"/>
                                 </connections>
                             </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SliderCell" rowHeight="75" id="4IL-bT-Oci" customClass="SliderCell">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4IL-bT-Oci" id="wYN-ZK-V1Y">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Frames per Second" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eEG-WU-JzN">
+                                            <rect key="frame" x="8" y="14" width="154.5" height="20.5"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="1" maxValue="30" translatesAutoresizingMaskIntoConstraints="NO" id="QnF-15-esg">
+                                            <rect key="frame" x="6" y="36.5" width="588" height="31"/>
+                                        </slider>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="30" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Wx-xv-MIy">
+                                            <rect key="frame" x="573" y="14" width="19" height="20.5"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                            <color key="textColor" red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="eEG-WU-JzN" firstAttribute="leading" secondItem="wYN-ZK-V1Y" secondAttribute="leadingMargin" id="15o-MZ-poA"/>
+                                        <constraint firstItem="eEG-WU-JzN" firstAttribute="top" secondItem="wYN-ZK-V1Y" secondAttribute="topMargin" constant="6" id="6o6-uJ-dh9"/>
+                                        <constraint firstItem="6Wx-xv-MIy" firstAttribute="trailing" secondItem="wYN-ZK-V1Y" secondAttribute="trailingMargin" id="bLv-KR-enR"/>
+                                        <constraint firstItem="QnF-15-esg" firstAttribute="leading" secondItem="wYN-ZK-V1Y" secondAttribute="leadingMargin" id="fxI-g9-doD"/>
+                                        <constraint firstItem="QnF-15-esg" firstAttribute="trailing" secondItem="wYN-ZK-V1Y" secondAttribute="trailingMargin" id="h0c-zx-vpw"/>
+                                        <constraint firstItem="6Wx-xv-MIy" firstAttribute="top" secondItem="wYN-ZK-V1Y" secondAttribute="topMargin" constant="6" id="klL-bq-aM7"/>
+                                        <constraint firstItem="QnF-15-esg" firstAttribute="top" secondItem="eEG-WU-JzN" secondAttribute="bottom" constant="2" id="m2g-hJ-2Ib"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="detailTextLabel" destination="6Wx-xv-MIy" id="toV-jT-ddm"/>
+                                    <outlet property="slider" destination="QnF-15-esg" id="MMX-1M-3Tk"/>
+                                    <outlet property="textLabel" destination="eEG-WU-JzN" id="UQQ-AB-Xgo"/>
+                                </connections>
+                            </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="ButtonCell" id="p4g-gl-bVA" customClass="FlatButtonTableViewCell">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>

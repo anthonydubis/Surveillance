@@ -15,6 +15,7 @@
 #import "ADFileHelper.h"
 #import "SwitchTableViewCell.h"
 #import "FlatButtonTableViewCell.h"
+#import "SliderCell.h"
 
 // Cell Identifiers
 NSString * RightDetailCellID = @"RightDetail";
@@ -22,10 +23,12 @@ NSString * LeftDetailCellID  = @"LeftDetail";
 NSString * SwitchCellID      = @"SwitchCell";
 NSString * FooterID          = @"FooterView";
 NSString * ButtonCellID      = @"ButtonCell";
+NSString * SliderCellID      = @"SliderCell";
 
 // Preferences
 NSString * PrefKeyMotionSensitivity      = @"PrefKeyMotionSensitivity";
 NSString * PrefKeyVideoQuality           = @"PrefKeyVideoQuality";
+NSString * PrefKeyPreferredFrameRate     = @"PrefKeyPreferredFrameRate";
 NSString * PrefKeyBeepOnRecordingStart   = @"PrefKeyBeepOnRecordingStart";
 NSString * PrefKeyBeepOnRecordingStops   = @"PrefKeyBeepOnRecordingStops";
 NSString * PrefKeyBeepOnFaceDetected     = @"PrefKeyBeepOnFaceDetected";
@@ -58,6 +61,7 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
 
 @property (nonatomic, assign) MotionDetectorSensitivity motionSensitivity;
 @property (nonatomic, assign) ADVideoQuality videoQuality;
+@property (nonatomic, assign) NSInteger frameRate;
 
 @end
 
@@ -82,6 +86,10 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
     ADVideoQuality videoQuality = [defaults integerForKey:PrefKeyVideoQuality];
     _videoQuality = (videoQuality == 0) ? ADVideoQualityStandard : videoQuality;
     
+    NSInteger frameRate = [defaults integerForKey:PrefKeyPreferredFrameRate];
+    _frameRate = (frameRate == 0) ? 30 : frameRate;
+    
+#warning Set initial values for these
     // Sounds
     beepWhenRecordingStarts = [defaults boolForKey:PrefKeyBeepOnRecordingStart];
     beepWhenRecordingStops  = [defaults boolForKey:PrefKeyBeepOnRecordingStops];
@@ -123,7 +131,7 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
 {
     switch (section) {
         case 0: return @"The motion sensitivity determines how much motion must occur in the environment for the camera to begin recording.";
-        case 1: return @"While the Standard quality is recommended, a lower quality video will decrease the size of the video.";
+        case 1: return @"Standard video quality and a high number of frames captured per second will result in higher quality videos, but they will take up more space.";
         case 2: return @"These sounds will play through this device. Please turn up the volume and make sure the device is not silenced.";
         case 3: return @"These alerts will go to other devices that you have accepted Notifications on.";
     }
@@ -167,12 +175,22 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
         case 0: return (showSensitivityOptions) ? 4 : 1;
-        case 1: return (showVideoQualityOptions) ? 3 : 1;
+        case 1: return (showVideoQualityOptions) ? 4 : 2;
         case 2: return 3;
         case 3: return 4;
         case 4: return 1;
         default: return 0;
     }
+}
+
+#define SLIDER_CELL_HEIGHT 75.0
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([indexPath isEqual:[self frameRateSelectionIndexPath]])
+        return SLIDER_CELL_HEIGHT;
+    else
+        return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -193,6 +211,10 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
         if (r == 0) {
             cell = [tableView dequeueReusableCellWithIdentifier:RightDetailCellID forIndexPath:indexPath];
             [self configureSelectedVideoQualityCell:cell forIndexPath:indexPath];
+        } else if ([indexPath isEqual:[self frameRateSelectionIndexPath]]) {
+            SliderCell *sliderCell = [tableView dequeueReusableCellWithIdentifier:SliderCellID forIndexPath:indexPath];
+            [self configureSliderCell:sliderCell forIndexPath:indexPath];
+            cell = sliderCell;
         } else {
             cell = [tableView dequeueReusableCellWithIdentifier:LeftDetailCellID forIndexPath:indexPath];
             [self configureVideoQualityOptionCell:cell forIndexPath:indexPath];
@@ -249,6 +271,22 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
     } else {
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
+}
+
+
+- (void)configureSliderCell:(SliderCell *)cell forIndexPath:(NSIndexPath *)indexPath
+{
+    cell.textLabel.text = @"Frames Captured per Second";
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%li", (long)_frameRate];
+    cell.slider.value = _frameRate;
+    [cell.slider addTarget:self action:@selector(frameRateChanged:) forControlEvents:UIControlEventValueChanged];
+}
+
+- (void)frameRateChanged:(UISlider *)sender
+{
+    _frameRate = sender.value;
+    SliderCell *cell = (SliderCell *)[self.tableView cellForRowAtIndexPath:[self frameRateSelectionIndexPath]];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%li", (long)_frameRate];
 }
 
 - (void)configureSoundCell:(SwitchTableViewCell *)cell forIndexPath:(NSIndexPath *)indexPath
@@ -321,10 +359,11 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section <= 1 || [self isStartMonitoringIndexPath:indexPath])
-        return indexPath;
-    else
+    NSInteger s = indexPath.section;
+    if (s == 2 || s == 3 || [indexPath isEqual:[self frameRateSelectionIndexPath]])
         return nil;
+    else
+        return indexPath;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -399,6 +438,12 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
 - (BOOL)isVideoQualityOptionIndexPath:(NSIndexPath *)indexPath
 {   return [[self videoQualityOptionsIndexPaths] containsObject:indexPath]; }
 
+- (NSIndexPath *)frameRateSelectionIndexPath
+{
+    NSInteger row = (showVideoQualityOptions) ? 3 : 1;
+    return [NSIndexPath indexPathForRow:row inSection:1];
+}
+
 - (BOOL)isStartMonitoringIndexPath:(NSIndexPath *)indexPath
 {   return indexPath.section == ([self.tableView numberOfSections] - 1);    }
 
@@ -413,6 +458,7 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
 
         // Configure settings
         avovc.motionSensitivity = _motionSensitivity;
+        avovc.frameRate = _frameRate;
         avovc.videoQuality = _videoQuality;
         avovc.beepWhenRecordingStarts = beepWhenRecordingStarts;
         avovc.beepWhenRecordingStops = beepWhenRecordingStops;
@@ -433,6 +479,7 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
     
     // Video quality
     [defaults setInteger:_videoQuality forKey:PrefKeyVideoQuality];
+    [defaults setInteger:_frameRate forKey:PrefKeyPreferredFrameRate];
     
     // Sounds
     [defaults setBool:beepWhenRecordingStarts forKey:PrefKeyBeepOnRecordingStart];
