@@ -36,6 +36,8 @@ const int MotionDetectionFrequencyWhenRecording = 1;
     CMTime lastSampleTime;       // The CMTime of the last sample buffer received
     int countdown;               // The countdown clock to begin monitoring
     NSTimer *countdownTimer;     // The current countdownTimer
+    double captureInterval;      // The interval frames should be captured at: 1 implies every frame, 2 implies every other frame, etc.
+    int frameInInterval;         // The frame number in the current interval
 }
 
 @property (nonatomic, strong) AVAudioPlayer *beep;
@@ -189,7 +191,14 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
                     return;
                 }
             }
-            [self.videoRecorder appendFrameFromPixelBuffer:pixelBuffer withPresentationTime:lastSampleTime];
+            
+            // Append the frame depending on the frame rate
+            if (captureInterval - frameInInterval < 1.0) {
+                [self.videoRecorder appendFrameFromPixelBuffer:pixelBuffer withPresentationTime:lastSampleTime];
+                frameInInterval = 1;
+            } else {
+                frameInInterval++;
+            }
             
             if (!isLookingForFace) {
                 isLookingForFace = YES;
@@ -430,6 +439,13 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         _faceDetector = [[ADFaceDetector alloc] init];
     }
     return _faceDetector;
+}
+
+- (void)setFrameRate:(NSInteger)frameRate
+{
+    _frameRate = frameRate;
+    captureInterval = (double)VIDEO_FRAME_RATE / (double)_frameRate;
+    frameInInterval = captureInterval + 1; // +1 to make sure the first frame gets captured
 }
 
 @end

@@ -13,6 +13,7 @@
 @interface ADMonitoringViewController : ADCameraStreamViewController
 
 @property (nonatomic, assign) MotionDetectorSensitivity motionSensitivity;
+@property (nonatomic, assign) NSInteger frameRate;
 
 @property (nonatomic, assign) BOOL beepWhenRecordingStarts;
 @property (nonatomic, assign) BOOL beepWhenRecordingStops;

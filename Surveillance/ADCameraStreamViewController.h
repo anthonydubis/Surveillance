@@ -15,6 +15,8 @@ typedef NS_ENUM(NSInteger, ADVideoQuality)
     ADVideoQualityStandard
 };
 
+#define VIDEO_FRAME_RATE 30
+
 @interface ADCameraStreamViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *previewView;
@@ -29,7 +31,6 @@ typedef NS_ENUM(NSInteger, ADVideoQuality)
 
 // The specified videoQuality and frameRate
 @property (nonatomic, assign) ADVideoQuality videoQuality;
-@property (nonatomic, assign) NSInteger frameRate;
 
 // Returns a string representing the name of the video quality passed in
 + (NSString *)nameForVideoQuality:(ADVideoQuality)videoQuality;

@@ -111,8 +111,8 @@
     }
     
     [device lockForConfiguration:nil];
-    [device setActiveVideoMinFrameDuration:CMTimeMake(1, (int)_frameRate)];
-    [device setActiveVideoMaxFrameDuration:CMTimeMake(1, (int)_frameRate)];
+    [device setActiveVideoMinFrameDuration:CMTimeMake(1, VIDEO_FRAME_RATE)];
+    [device setActiveVideoMaxFrameDuration:CMTimeMake(1, VIDEO_FRAME_RATE)];
     [device unlockForConfiguration];
     
     // Create the input device
