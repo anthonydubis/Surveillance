@@ -64,6 +64,7 @@ NSString *BucketName = @"surveillance-bucket";
             // The file uploaded successfully. Update the Parse object
             NSLog(@"File uploaded successfully");
             event.s3BucketName = BucketName;
+            event.status = EventStatusUploaded;
             [event saveInBackground];
 #warning You need to handle failures here
             if ([[NSFileManager defaultManager] removeItemAtURL:url error:nil])

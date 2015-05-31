@@ -8,15 +8,20 @@
 
 #import <Parse/Parse.h>
 
+extern NSString * const EventStatusRecording;
+extern NSString * const EventStatusUploading;
+extern NSString * const EventStatusUploaded;
+
 @interface ADEvent : PFObject <PFSubclassing>
 
 @property (nonatomic, strong) NSString *videoName;
 @property (nonatomic, strong) NSString *s3BucketName;
 @property (nonatomic, strong) NSDate *startedRecordingAt;
 @property (nonatomic, strong) PFUser *user;
-@property (nonatomic, assign) BOOL isStillRecording;
+@property (nonatomic, strong) NSString *status;
 @property (nonatomic, strong) NSNumber *videoSize;
 @property (nonatomic, strong) NSNumber *videoDuration;
+@property (nonatomic, strong) PFInstallation *installation;
 
 // Must be overriden by PFObject subclasses
 + (NSString *)parseClassName;

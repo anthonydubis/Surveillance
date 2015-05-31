@@ -9,15 +9,20 @@
 #import "ADEvent.h"
 #import <Parse/PFObject+Subclass.h>
 
+NSString * const EventStatusRecording = @"Recording";
+NSString * const EventStatusUploading = @"Uploading";
+NSString * const EventStatusUploaded  = @"Uploaded";
+
 @implementation ADEvent
 
 @dynamic videoName;
 @dynamic s3BucketName;
 @dynamic startedRecordingAt;
 @dynamic user;
-@dynamic isStillRecording;
+@dynamic status;
 @dynamic videoSize;
 @dynamic videoDuration;
+@dynamic installation;
 
 // This gets called before Parse's setApplicationId:clientKey:
 + (void)load {
@@ -33,9 +38,10 @@
     ADEvent *event = [ADEvent object];
     
     event.startedRecordingAt = [NSDate date];
-    event.isStillRecording = YES;
+    event.status = EventStatusRecording;
     event.user = [PFUser currentUser];
     event.videoName = [self videoNameForEvent:event];
+    event.installation = [PFInstallation currentInstallation];
     
     return event;
 }
@@ -54,10 +60,18 @@
 
 - (NSString *)descriptionOfMetadata
 {
-    if (self.isStillRecording)
+    if ([self.status isEqualToString:EventStatusRecording])
+    {
         return @"Still recording...";
-    
-    return [NSString stringWithFormat:@"%@ - %@", [self durationString], [self sizeString]];
+    }
+    else if ([self.status isEqualToString:EventStatusUploading])
+    {
+        return @"Uploading video to server...";
+    }
+    else
+    {
+        return [NSString stringWithFormat:@"%@ - %@", [self durationString], [self sizeString]];
+    }
 }
 
 - (NSString *)durationString

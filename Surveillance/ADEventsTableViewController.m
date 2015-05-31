@@ -158,8 +158,15 @@
     else
     {
         // The video has not been downloaded yet
-        cell.accessoryView = [self accessoryViewForIndexPath:indexPath];
-        cell.accessoryType = UITableViewCellAccessoryNone;
+        if ([event.status isEqualToString:EventStatusUploaded]) {
+            // The video has been uploaded to the server
+            cell.accessoryView = [self accessoryViewForIndexPath:indexPath];
+            cell.accessoryType = UITableViewCellAccessoryNone;
+        } else {
+            // The video is still recording or being uploaded
+            cell.accessoryView = nil;
+            cell.accessoryType = UITableViewCellAccessoryDetailButton;
+        }
         cell.detailTextLabel.text = [event descriptionOfMetadata];
     }
 }
@@ -233,6 +240,12 @@
 
 #pragma mark - TableView delegate methods
 
+// This is only called when the user taps an accessoryButton for an event that is still recording or is being uploaded to the server
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView.delegate tableView:tableView didSelectRowAtIndexPath:indexPath];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     ADEvent *event = (ADEvent *)[self objectAtIndexPath:indexPath];
@@ -242,23 +255,37 @@
     } else if ([ADFileHelper haveDownloadedVideoForEvent:event]) {
         // Video is downloaded
         [self performSegueWithIdentifier:@"DetailEventSegue" sender:indexPath];
-    } else {
-        // Video hasn't been downloaded yet
-        [UIActionSheet showFromTabBar:self.tabBarController.tabBar
-                            withTitle:nil
-                    cancelButtonTitle:@"Cancel"
-               destructiveButtonTitle:@"Permanently Delete Video"
-                    otherButtonTitles:@[@"Download Video"]
-                             tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
-                                 if (buttonIndex == actionSheet.cancelButtonIndex) {
-                                     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-                                 } else if (buttonIndex == actionSheet.destructiveButtonIndex) {
-                                     [self promptUserToConfirmPermanentDeletion:event];
-                                 } else {
-                                     [self promptUserToConfirmDownloadingVideo:event];
-                                 }
-                             }];
+    } else if ([event.status isEqualToString:EventStatusUploaded]) {
+        // The video has been uploaded to S3 but has not been downloaded to this device
+        [self promptUserToDownloadEvent:event atIndexPath:indexPath];
+    } else if ([event.status isEqualToString:EventStatusRecording]) {
+        // The video is still recording
+        [UIAlertView showWithTitle:@"Video is still Recording"
+                        andMessage:@"You can download the video when it has stopped recording and has been uploaded to the server."];
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    } else if ([event.status isEqualToString:EventStatusUploading]) {
+        [UIAlertView showWithTitle:@"Video is still Uploading"
+                        andMessage:@"You can download the video when it has finished uploading to the server."];
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
+}
+
+- (void)promptUserToDownloadEvent:(ADEvent *)event atIndexPath:(NSIndexPath *)indexPath
+{
+    [UIActionSheet showFromTabBar:self.tabBarController.tabBar
+                        withTitle:nil
+                cancelButtonTitle:@"Cancel"
+           destructiveButtonTitle:@"Permanently Delete Video"
+                otherButtonTitles:@[@"Download Video"]
+                         tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
+                             if (buttonIndex == actionSheet.cancelButtonIndex) {
+                                 [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+                             } else if (buttonIndex == actionSheet.destructiveButtonIndex) {
+                                 [self promptUserToConfirmPermanentDeletion:event];
+                             } else {
+                                 [self promptUserToConfirmDownloadingVideo:event];
+                             }
+                         }];
 }
 
 #warning You need to clean up these deletion methods - possibly toss them in a helper class

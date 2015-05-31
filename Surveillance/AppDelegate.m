@@ -15,6 +15,7 @@
 #import "ADNotificationHelper.h"
 #import "ADImageViewController.h"
 #import "ADLoginViewController.h"
+#import "PFInstallation+ADDevice.h"
 
 @interface AppDelegate () <PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate>
 
@@ -30,12 +31,14 @@
     // Setup AWS
     [ADS3Helper setupAWSS3Service];
     
-    // Ask the user to login if he's not already
-    if (![PFUser currentUser])
+    if (![PFUser currentUser]) {
+        // No user is set - ask the user to login
         self.window.rootViewController = [self loginViewController];
-    
-    // Setup push notifications
-    [ADNotificationHelper setupNotifications];
+    } else {
+        // We have a user, let's setup the device and notifications
+        [PFInstallation setupCurrentInstallation];
+        [ADNotificationHelper setupNotifications];
+    }
     
     // Handle notifications, if any exist
     NSDictionary *notificationPayload = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
@@ -146,6 +149,7 @@
 
 // Sent to the delegate when a PFUser is logged in.
 - (void)logInViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user {
+    [PFInstallation setupCurrentInstallation];
     [ADNotificationHelper setupNotifications];
     [self showTabBarAsRootViewController];
 }
@@ -191,6 +195,7 @@
 
 // Sent to the delegate when a PFUser is signed up.
 - (void)signUpViewController:(PFSignUpViewController *)signUpController didSignUpUser:(PFUser *)user {
+    [PFInstallation setupCurrentInstallation];
     [ADNotificationHelper setupNotifications];
     [self showTabBarAsRootViewController];
 }

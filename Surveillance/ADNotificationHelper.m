@@ -52,13 +52,7 @@ NSString * DisableDeviceFunction = @"processDisableCommand";
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation setDeviceTokenFromData:deviceToken];
     
-    currentInstallation[@"user"] = [PFUser currentUser];
-    currentInstallation[@"model"] = [[UIDevice currentDevice] model];
-    currentInstallation[@"deviceName"] = [[UIDevice currentDevice] name];
-    currentInstallation[@"isMonitoring"] = @NO;
-    currentInstallation[@"deviceID"] = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-    
-    [currentInstallation saveInBackground];
+    [currentInstallation saveEventually];
 }
 
 + (void)promptUserToRegisterForPushNotifications
@@ -87,20 +81,6 @@ NSString * DisableDeviceFunction = @"processDisableCommand";
 + (void)userRequestedToEnablePushNotifications
 {
 #warning Implement this
-}
-
-+ (void)deviceBeganMonitoring
-{
-    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-    currentInstallation[@"isMonitoring"] = @YES;
-    [currentInstallation saveInBackground];
-}
-
-+ (void)deviceStoppedMonitoring
-{
-    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-    currentInstallation[@"isMonitoring"] = @NO;
-    [currentInstallation saveInBackground];
 }
 
 #pragma mark - Sending Notifications

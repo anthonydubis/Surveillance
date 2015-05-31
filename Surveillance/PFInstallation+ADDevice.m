@@ -10,6 +10,39 @@
 
 @implementation PFInstallation (ADDevice)
 
++ (void)setupCurrentInstallation
+{
+    PFInstallation *installation = [PFInstallation currentInstallation];
+    installation.user = [PFUser currentUser];
+    installation.model = [[UIDevice currentDevice] model];
+    installation.deviceName = [[UIDevice currentDevice] name];
+    installation.isMonitoring = NO;
+    installation.deviceID = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+    [installation saveEventually];
+}
+
++ (void)deviceBeganMonitoring
+{
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    currentInstallation[@"isMonitoring"] = @YES;
+    [currentInstallation saveInBackground];
+}
+
++ (void)deviceStoppedMonitoring
+{
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    currentInstallation[@"isMonitoring"] = @NO;
+    [currentInstallation saveInBackground];
+}
+
+- (PFUser *)user {
+    return self[@"user"];
+}
+
+- (void)setUser:(PFUser *)user {
+    self[@"user"] = user;
+}
+
 - (NSString *)deviceName {
     return self[@"deviceName"];
 }
@@ -32,6 +65,14 @@
 
 - (void)setModel:(NSString *)model {
     self[@"model"] = model;
+}
+
+- (NSString *)deviceID {
+    return self[@"deviceID"];
+}
+
+- (void)setDeviceID:(NSString *)deviceID {
+    self[@"deviceID"] = deviceID;
 }
 
 - (BOOL)isiPad {

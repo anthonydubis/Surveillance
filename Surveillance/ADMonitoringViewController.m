@@ -21,6 +21,7 @@
 // Parse Related
 #import "ADEvent.h"
 #import "ADEventImage.h"
+#import "PFInstallation+ADDevice.h"
 
 // How often should we check to see if motion still exists, in seconds
 const int MotionDetectionFrequencyWhenRecording = 1;
@@ -120,7 +121,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
         }
         
         // Set the installation status to no longer monitoring
-        [ADNotificationHelper deviceStoppedMonitoring];
+        [PFInstallation deviceStoppedMonitoring];
     }
 }
 
@@ -133,7 +134,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
         self.navigationItem.title = @"Monitoring...";
         
         // Set the installation status to monitoring
-        [ADNotificationHelper deviceBeganMonitoring];
+        [PFInstallation deviceBeganMonitoring];
     }
 }
 
@@ -318,7 +319,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 // Update the event with metadata and knowledge that the recording has ended
 - (void)updateEventForEndOfRecording
 {
-    self.event.isStillRecording = NO;
+    self.event.status = EventStatusUploading;
     self.event.videoSize = [ADFileHelper sizeOfFileAtURL:self.recordingURL];
     NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:self.event.startedRecordingAt];
     self.event.videoDuration = [NSNumber numberWithInt:duration];
