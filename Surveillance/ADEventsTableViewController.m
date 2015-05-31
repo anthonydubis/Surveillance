@@ -265,7 +265,7 @@
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     } else if ([event.status isEqualToString:EventStatusUploading]) {
         [UIAlertView showWithTitle:@"Video is still Uploading"
-                        andMessage:@"You can download the video when it has finished uploading to the server."];
+                        andMessage:@"You can download the video when it has finished uploading to the server. Make sure the device that recorded the video is on has the Surveillance app open."];
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
 }
