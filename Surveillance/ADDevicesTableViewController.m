@@ -38,6 +38,11 @@ NSString * DeviceCellID = @"DeviceCell";
                             action:@selector(loadObjects)
                   forControlEvents:UIControlEventValueChanged];
     
+    // Always show the current device
+    if ([self.inactiveDevices count] == 0) {
+        [self.inactiveDevices addObject:[PFInstallation currentInstallation]];
+    }
+    
     [self loadObjects];
 }
 
@@ -79,6 +84,9 @@ NSString * DeviceCellID = @"DeviceCell";
                                         [self.tableView reloadData];
                                     } else {
                                         NSLog(@"Error! %@", error);
+                                        [self.refreshControl endRefreshing];
+                                        [UIAlertView showWithTitle:@"Unable to Connect"
+                                                        andMessage:@"We were unable to fetch your devices. Please make sure you have an internet connection and try again."];
                                     }
                                 }];
 }

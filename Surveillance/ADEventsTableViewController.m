@@ -59,6 +59,22 @@
         
         [self.refreshControl endRefreshing];
     }
+    
+    if (![self.objects count]) {
+        // Display a message when the table is empty
+        CGFloat m = 40;
+        UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(m/2, 0, self.view.bounds.size.width-m, self.view.bounds.size.height)];
+        
+        messageLabel.text = @"Your cameras have not captured any events. Please pull down to refresh.";
+        messageLabel.textColor = [UIColor blackColor];
+        messageLabel.numberOfLines = 0;
+        messageLabel.textAlignment = NSTextAlignmentCenter;
+        messageLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
+        [messageLabel sizeToFit];
+        
+        self.tableView.backgroundView = messageLabel;
+        self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    }
 }
 
 - (void)objectsWillLoad
@@ -90,20 +106,6 @@
         self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
         
         return 1;
-    } else {
-        // Display a message when the table is empty
-        CGFloat m = 40;
-        UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(m/2, 0, self.view.bounds.size.width-m, self.view.bounds.size.height)];
-        
-        messageLabel.text = @"Your cameras have not captured any events. Please pull down to refresh.";
-        messageLabel.textColor = [UIColor blackColor];
-        messageLabel.numberOfLines = 0;
-        messageLabel.textAlignment = NSTextAlignmentCenter;
-        messageLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
-        [messageLabel sizeToFit];
-        
-        self.tableView.backgroundView = messageLabel;
-        self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     }
     return 0;
 }
@@ -283,7 +285,8 @@
                              } else if (buttonIndex == actionSheet.destructiveButtonIndex) {
                                  [self promptUserToConfirmPermanentDeletion:event];
                              } else {
-                                 [self promptUserToConfirmDownloadingVideo:event];
+                                 [self downloadVideoForEvent:event];
+                                 [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
                              }
                          }];
 }
@@ -297,7 +300,7 @@
              otherButtonTitles:@[@"Yes"]
                       tapBlock:^(UIAlertView *actionSheet, NSInteger buttonIndex) {
                           if (buttonIndex != actionSheet.cancelButtonIndex) {
-#warning Show that you're doing work (like an activity indicator
+#warning Show that you're doing work (like an activity indicator)
                               [ADS3Helper deleteVideoForEvent:event withCompletionBlock:^{
                                   [self removeLocalCopyAndDeleteParseObject:event];
                               }];
@@ -320,21 +323,6 @@
             [UIAlertView showWithTitle:nil message:@"Deletion failed..." cancelButtonTitle:@"OK" otherButtonTitles:nil tapBlock:nil];
         }
     }];
-}
-
-- (void)promptUserToConfirmDownloadingVideo:(ADEvent *)event
-{
-    [UIAlertView showWithTitle:@"Download Video"
-                       message:[NSString stringWithFormat:@"Are you sure you would like to download this %@ video to your device?", [event sizeString]]
-             cancelButtonTitle:@"No"
-             otherButtonTitles:@[@"Yes"]
-                      tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                          if (buttonIndex != [alertView cancelButtonIndex]) {
-                              [self downloadVideoForEvent:event];
-                          }
-                          [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
-                      }
-     ];
 }
 
 - (void)downloadVideoForEvent:(ADEvent *)event
