@@ -38,4 +38,6 @@ typedef NS_ENUM(NSInteger, ADVideoQuality)
 // Returns a string to describe the video quality passed in
 + (NSString *)descriptionForVideoQuality:(ADVideoQuality)videoQuality;
 
+- (IBAction)switchCameraTapped:(id)sender;
+
 @end
