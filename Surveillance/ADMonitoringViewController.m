@@ -11,12 +11,15 @@
 #import <ImageIO/ImageIO.h>
 #import <AssertMacros.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+
 #import "ADFaceDetector.h"
 #import "ADVideoRecorder.h"
-#import "UIImage+DataHandler.h"
 #import "ADFileHelper.h"
 #import "ADS3Helper.h"
 #import "ADNotificationHelper.h"
+#import "ADStartView.h"
+
+#import "UIImage+DataHandler.h"
 
 // Parse Related
 #import "ADEvent.h"
@@ -25,6 +28,9 @@
 
 // How often should we check to see if motion still exists, in seconds
 const int MotionDetectionFrequencyWhenRecording = 1;
+
+// Countdown to begin monitoring once "start" is tapped
+const int kCountdownTime = 10;
 
 @interface ADMonitoringViewController ()
 {
@@ -39,6 +45,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
   NSTimer *countdownTimer;     // The current countdownTimer
   double captureInterval;      // The interval frames should be captured at: 1 implies every frame, 2 implies every other frame, etc.
   int frameInInterval;         // The frame number in the current interval
+  ADStartView *_startView;     // The prompt that appears on the screen so the user can decide to begin monitoring
 }
 
 @property (nonatomic, strong) AVAudioPlayer *beep;
@@ -46,7 +53,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 @property (nonatomic, strong) ADMotionDetector *motionDetector;
 @property (nonatomic, strong) ADFaceDetector *faceDetector;
 @property (nonatomic, strong) NSURL *recordingURL;
-@property (nonatomic, strong) IBOutlet UIBarButtonItem *beginMonitoringButton;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *finishedBarButtonItem;
 
 // Integrating parse
 @property (nonatomic, strong) ADEvent *event;
@@ -61,6 +68,19 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 - (void)viewDidLoad
 {
   [super viewDidLoad];
+  
+  self.navigationItem.rightBarButtonItem = nil;
+  _startView = [[ADStartView alloc] initWithFrame:CGRectMake(
+                                                             (self.view.frame.size.width - kStartViewWidth) / 2,
+                                                             (self.view.frame.size.height - kStartViewHeight) / 2,
+                                                             kStartViewWidth,
+                                                             kStartViewHeight
+                                                             )];
+  [self _configureStartViewForState:ADStartViewStateReady];
+  [_startView.cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
+  [_startView.startButton addTarget:self action:@selector(startMonitoringTapped:) forControlEvents:UIControlEventTouchUpInside];
+  [_startView.cancelButton addTarget:self action:@selector(dismissSelf:) forControlEvents:UIControlEventTouchUpInside];
+  [self.navigationController.view addSubview:_startView];
   
   [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
   [[NSNotificationCenter defaultCenter] addObserver:self
@@ -90,6 +110,11 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 {
   [super viewWillAppear:animated];
   [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+}
+
+- (void)testTimerAction
+{
+  _startView.titleLabel.text = [NSString stringWithFormat:@"%i", countdown++];
 }
 
 // Cal when the view leaves the screen
@@ -128,6 +153,7 @@ const int MotionDetectionFrequencyWhenRecording = 1;
 // Sets the isMonitoring flag that causes work to be done when processing frames
 - (void)beginMonitoring
 {
+  self.navigationItem.rightBarButtonItem = self.finishedBarButtonItem;
   if (!endedMonitoring) {
     [self.beep play];
     isMonitoring = YES;
@@ -272,7 +298,10 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
   isMonitoring = NO;
   isPreparingToRecord = NO;
   dispatch_async(dispatch_get_main_queue(), ^{
-    self.title = @"Recording...";
+    self.title = @"Motion Detected - Recording...";
+    self.navigationController.navigationBar.titleTextAttributes = @{
+                                                                    NSForegroundColorAttributeName : [UIColor redColor]
+                                                                    };
   });
 }
 
@@ -336,6 +365,10 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
   isMonitoring = YES;
   dispatch_async(dispatch_get_main_queue(), ^{
     self.title = @"Monitoring...";
+    self.navigationController.navigationBar.titleTextAttributes = @{
+                                                                    NSForegroundColorAttributeName : [UIColor whiteColor]
+                                                                    };
+
   });
 }
 
@@ -355,30 +388,43 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
   }
 }
 
-#define COUNTDOWN_DURATION 5
-
-- (IBAction)beginMonitoringButtonPressed:(UIBarButtonItem *)sender
+- (void)startMonitoringTapped:(UIButton *)sender
 {
   if (!countdownTimer) {
     // Beginning countdown
     self.videoRecorder = [[ADVideoRecorder alloc] initWithRecordingURL:self.recordingURL];
-    countdown = COUNTDOWN_DURATION;
+    countdown = kCountdownTime;
+    [self _configureStartViewForState:ADStartViewStateCountdown];
     [self updateCountdownTitle];
     countdownTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
                                                       target:self
                                                     selector:@selector(countdownToMonitoring)
-                                                    userInfo:nil repeats:NO];
-    sender.title = @"Cancel";
+                                                    userInfo:nil
+                                                     repeats:YES];
   } else if (countdownTimer.valid) {
-    // In the middle of the countdown sequence
+    // In the middle of the countdown sequence - reset the startView for a new countdown
     [countdownTimer invalidate];
     countdownTimer = nil;
+    [self _configureStartViewForState:ADStartViewStateReady];
     self.title = @"Ready to Monitor";
-    sender.title = @"Start";
+    [sender setTitle:@"Start" forState:UIControlStateNormal];
+    
   } else {
-    // The device was monitoring/recording and we want to stop.
+    NSAssert(false, @"We should never reach this point");
     NSLog(@"Device is currently monitoring");
     [self dismissSelf:nil];
+  }
+}
+
+- (void)_configureStartViewForState:(ADStartViewState)state
+{
+  _startView.state = state;
+  if (state == ADStartViewStateReady) {
+    _startView.titleLabel.text = @"Direct the camera to the area you want to surveillance and tap \"Start\" to begin monitoring.";
+    [_startView.startButton setTitle:@"Start" forState:UIControlStateNormal];
+  } else if (state == ADStartViewStateCountdown) {
+    [self updateCountdownTitle];
+    [_startView.startButton setTitle:@"Stop" forState:UIControlStateNormal];
   }
 }
 
@@ -386,20 +432,18 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 {
   if (--countdown > 0) {
     [self updateCountdownTitle];
-    countdownTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
-                                                      target:self
-                                                    selector:@selector(countdownToMonitoring)
-                                                    userInfo:nil repeats:NO];
   } else {
-    self.title = @"Monitoring...";
+    [countdownTimer invalidate];
+    countdownTimer = nil;
+    [_startView removeFromSuperview];
+    self.title = @"Monitoring ...";
     [self beginMonitoring];
-    self.beginMonitoringButton.title = @"Stop Monitoring";
   }
 }
 
 - (void)updateCountdownTitle
 {
-  self.title = [NSString stringWithFormat:@"Beginning to Monitoring in %i...", countdown];
+  _startView.titleLabel.text = [NSString stringWithFormat:@"Monitoring in %i...", countdown];
 }
 
 #pragma mark - Getters/Setters

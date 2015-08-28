@@ -124,6 +124,7 @@
 		97E02BE71AFB74D900E34B31 /* ADMotionDetector.mm in Sources */ = {isa = PBXBuildFile; fileRef = 97E02BE61AFB74D900E34B31 /* ADMotionDetector.mm */; };
 		97E2F8A11AFC0F6200E472F2 /* MonitoringEvent+AD.m in Sources */ = {isa = PBXBuildFile; fileRef = 97E2F8A01AFC0F6200E472F2 /* MonitoringEvent+AD.m */; };
 		97E62DBD1AF6E58200CECBCB /* SegmentedControlCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 97E62DBC1AF6E58200CECBCB /* SegmentedControlCell.m */; };
+		97FE5C271B8F29FB00B0157E /* ADStartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 97FE5C261B8F29FB00B0157E /* ADStartView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -306,6 +307,8 @@
 		97E2F8A01AFC0F6200E472F2 /* MonitoringEvent+AD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "MonitoringEvent+AD.m"; path = "Model/MonitoringEvent+AD.m"; sourceTree = "<group>"; };
 		97E62DBB1AF6E58200CECBCB /* SegmentedControlCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SegmentedControlCell.h; sourceTree = "<group>"; };
 		97E62DBC1AF6E58200CECBCB /* SegmentedControlCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SegmentedControlCell.m; sourceTree = "<group>"; };
+		97FE5C251B8F29FB00B0157E /* ADStartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADStartView.h; sourceTree = "<group>"; };
+		97FE5C261B8F29FB00B0157E /* ADStartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADStartView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -402,8 +405,10 @@
 		974E160C1AFCCACB00514C57 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				976979751AFAB0AE0029D82D /* View Controllers */,
 				9799C8B81B0800260098C0A7 /* ACPDownload */,
 				9799C8281B0528D20098C0A7 /* BButton */,
+				97FE5C281B8F2CE000B0157E /* Views */,
 				972473521AFD91F200D74BF8 /* ADVideoRecorder.h */,
 				972473531AFD91F200D74BF8 /* ADVideoRecorder.m */,
 				97E02BE51AFB74D900E34B31 /* ADMotionDetector.h */,
@@ -499,7 +504,6 @@
 				978147311B0E573500FFB16F /* ADLoginViewController.h */,
 				978147321B0E573500FFB16F /* ADLoginViewController.m */,
 				974E160C1AFCCACB00514C57 /* Classes */,
-				976979751AFAB0AE0029D82D /* View Controllers */,
 				976979741AFAB09F0029D82D /* Cells */,
 				97E2F89E1AFC0EE200E472F2 /* Model */,
 				9749EB521AF6BEA8004D9785 /* Utility Classes */,
@@ -712,6 +716,15 @@
 			name = Model;
 			sourceTree = "<group>";
 		};
+		97FE5C281B8F2CE000B0157E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				97FE5C251B8F29FB00B0157E /* ADStartView.h */,
+				97FE5C261B8F29FB00B0157E /* ADStartView.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -862,6 +875,7 @@
 				973DB6551B019D3200418444 /* UIImage+DataHandler.m in Sources */,
 				976AFADE1AF3CAC300F91585 /* main.m in Sources */,
 				971CF1861B10D1E400659619 /* UIActionSheet+Blocks.m in Sources */,
+				97FE5C271B8F29FB00B0157E /* ADStartView.m in Sources */,
 				9799C8B51B0800200098C0A7 /* ACPProgressLayer.m in Sources */,
 				9799C83C1B0617120098C0A7 /* ADEvent.m in Sources */,
 				971F1AB51B0B85C200ADB5B7 /* ADNotificationHelper.m in Sources */,
