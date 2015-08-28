@@ -338,7 +338,7 @@
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="BJp-f1-5BO"/>
-                        <barButtonItem systemItem="camera" id="MPi-Hm-wXd">
+                        <barButtonItem image="SwitchCamera" id="MPi-Hm-wXd">
                             <connections>
                                 <action selector="switchCameraTapped:" destination="8vq-su-lud" id="Wx6-kM-rWs"/>
                             </connections>
@@ -663,6 +663,7 @@
         <image name="279-videocamera" width="34" height="20"/>
         <image name="32-iphone" width="16" height="28"/>
         <image name="45-movie-1" width="19" height="25"/>
+        <image name="SwitchCamera" width="25" height="25"/>
         <image name="iPad" width="48" height="65"/>
     </resources>
 </document>

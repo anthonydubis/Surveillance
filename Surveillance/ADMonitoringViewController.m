@@ -411,7 +411,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     
   } else {
     NSAssert(false, @"We should never reach this point");
-    NSLog(@"Device is currently monitoring");
     [self dismissSelf:nil];
   }
 }
@@ -420,7 +419,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 {
   _startView.state = state;
   if (state == ADStartViewStateReady) {
-    _startView.titleLabel.text = @"Direct the camera to the area you want to surveillance and tap \"Start\" to begin monitoring.";
+    _startView.titleLabel.text = @"Position the device so its camera captures the area you want to monitor and tap \"Start\"";
     [_startView.startButton setTitle:@"Start" forState:UIControlStateNormal];
   } else if (state == ADStartViewStateCountdown) {
     [self updateCountdownTitle];
