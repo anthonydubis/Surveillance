@@ -13,6 +13,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 
 #import "ADFaceDetector.h"
+#import "ADGateKeeper.h"
 #import "ADVideoRecorder.h"
 #import "ADFileHelper.h"
 #import "ADS3Helper.h"
@@ -27,10 +28,10 @@
 #import "PFInstallation+ADDevice.h"
 
 // How often should we check to see if motion still exists, in seconds
-const int MotionDetectionFrequencyWhenRecording = 10;
+const int MotionDetectionFrequencyWhenRecording = 1;
 
 // Countdown to begin monitoring once "start" is tapped
-const int kCountdownTime = 1;
+const int kCountdownTime = 10;
 
 @interface ADMonitoringViewController ()
 {
@@ -83,7 +84,7 @@ const int kCountdownTime = 1;
   [_startView.cancelButton addTarget:self action:@selector(dismissSelf:) forControlEvents:UIControlEventTouchUpInside];
   [self.navigationController.view addSubview:_startView];
   
-  // Start us in the Portrait orientation in case hte current orientation is face up or face down
+  // Start us in the Portrait orientation in case the current orientation is face up or face down
   self.currentOrientation = UIDeviceOrientationPortrait;
   [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
   self.currentOrientation = [[UIDevice currentDevice] orientation];
@@ -262,7 +263,10 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         frameInInterval++;
       }
       
-      if (!isLookingForFace) {
+      NSLog(@"Before face detection loop");
+      // Do face detection
+      if (FaceDetectionEnabled() && !isLookingForFace) {
+        NSLog(@"YOU SHOULDNT BE HERE!");
         isLookingForFace = YES;
         CFRetain(sampleBuffer);
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
