@@ -27,7 +27,7 @@
 #import "PFInstallation+ADDevice.h"
 
 // How often should we check to see if motion still exists, in seconds
-const int MotionDetectionFrequencyWhenRecording = 1;
+const int MotionDetectionFrequencyWhenRecording = 10;
 
 // Countdown to begin monitoring once "start" is tapped
 const int kCountdownTime = 1;
@@ -83,8 +83,10 @@ const int kCountdownTime = 1;
   [_startView.cancelButton addTarget:self action:@selector(dismissSelf:) forControlEvents:UIControlEventTouchUpInside];
   [self.navigationController.view addSubview:_startView];
   
+  // Start us in the Portrait orientation in case hte current orientation is face up or face down
   self.currentOrientation = UIDeviceOrientationPortrait;
   [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+  self.currentOrientation = [[UIDevice currentDevice] orientation];
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(deviceOrientationDidChange)
                                                name:UIDeviceOrientationDidChangeNotification
@@ -456,7 +458,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 {
   _startView.state = state;
   if (state == ADStartViewStateReady) {
-    _startView.titleLabel.text = @"Position the device so its camera captures the area you want to monitor and tap \"Start\"";
+    _startView.titleLabel.text = @"Position and orient the device so its camera captures the desired area and tap \"Start\"";
     [_startView.startButton setTitle:@"Start" forState:UIControlStateNormal];
   } else if (state == ADStartViewStateCountdown) {
     [self updateCountdownTitle];

@@ -142,7 +142,6 @@ CGAffineTransform TransformForOrientation(UIDeviceOrientation orientation, BOOL 
 {
   [self.assetWriterInput markAsFinished];
   [self.assetWriter finishWritingWithCompletionHandler:^{
-    self.dateRecordingBegan = nil;
     handler();
   }];
 }
