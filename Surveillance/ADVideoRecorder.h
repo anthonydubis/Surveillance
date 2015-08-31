@@ -11,38 +11,36 @@
 
 @interface ADVideoRecorder : NSObject
 
-@property (nonatomic, readonly) int frameNumber;
-@property (nonatomic, strong) NSDate *dateTimeRecordingBegan;
+@property (nonatomic, assign) UIDeviceOrientation orientation;
+@property (nonatomic, assign) BOOL isUsingFrontCamera;
 
-#warning Right now, this assumes 30 frames per second - this should be customizable
-
-/*
+/**
  * Create the recorder with an initial URL to record to
  */
-- (id)initWithRecordingURL:(NSURL *)url;
+- (instancetype)initWithRecordingURL:(NSURL *)url;
 
-/*
+/**
  * Tell the assetWrtier frames are going to be coming in. Free to append
  * frames after this call.
  */
 - (void)startRecordingWithSourceTime:(CMTime)sourceTime;
 
-/*
+/**
  * Finish writing the file
  */
 - (void)stopRecordingWithCompletionHandler:(void (^) (void))handler;
 
-/*
+/**
  * Should be called when a new URL is going to be recorded to.
  */
 - (void)prepareToRecordWithNewURL:(NSURL *)url;
 
-/*
+/**
  * The method called to append frames to the video
  */
 - (void)appendFrameFromPixelBuffer:(CVPixelBufferRef)pixelBuffer withPresentationTime:(CMTime)presentationTime;
 
-/*
+/**
  * Append audio frame
  */
 - (void)appendAudioSampleBuffer:(CMSampleBufferRef)sampleBuffer;

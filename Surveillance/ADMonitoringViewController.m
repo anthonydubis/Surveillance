@@ -30,7 +30,7 @@
 const int MotionDetectionFrequencyWhenRecording = 1;
 
 // Countdown to begin monitoring once "start" is tapped
-const int kCountdownTime = 10;
+const int kCountdownTime = 1;
 
 @interface ADMonitoringViewController ()
 {
@@ -48,6 +48,7 @@ const int kCountdownTime = 10;
   ADStartView *_startView;     // The prompt that appears on the screen so the user can decide to begin monitoring
 }
 
+@property (nonatomic, assign) UIDeviceOrientation currentOrientation;
 @property (nonatomic, strong) AVAudioPlayer *beep;
 @property (nonatomic, strong) ADVideoRecorder *videoRecorder;
 @property (nonatomic, strong) ADMotionDetector *motionDetector;
@@ -82,7 +83,13 @@ const int kCountdownTime = 10;
   [_startView.cancelButton addTarget:self action:@selector(dismissSelf:) forControlEvents:UIControlEventTouchUpInside];
   [self.navigationController.view addSubview:_startView];
   
+  self.currentOrientation = UIDeviceOrientationPortrait;
   [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(deviceOrientationDidChange)
+                                               name:UIDeviceOrientationDidChangeNotification
+                                             object:nil];
+
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(appHasEnteredBackground)
                                                name:UIApplicationDidEnterBackgroundNotification
@@ -97,6 +104,7 @@ const int kCountdownTime = 10;
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
+  [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 }
 
 - (void)appHasEnteredBackground
@@ -109,21 +117,47 @@ const int kCountdownTime = 10;
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
+  
   [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
 }
 
-- (void)testTimerAction
-{
-  _startView.titleLabel.text = [NSString stringWithFormat:@"%i", countdown++];
-}
-
-// Cal when the view leaves the screen
 - (void)viewWillDisappear:(BOOL)animated
 {
-  NSLog(@"View will disappear");
   [super viewWillDisappear:animated];
+  
   [self endMonitoring];
   [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+}
+
+- (void)deviceOrientationDidChange
+{
+  UIDeviceOrientation currentOrientation = [[UIDevice currentDevice] orientation];
+  switch (currentOrientation) {
+    case UIDeviceOrientationPortrait:
+    case UIDeviceOrientationLandscapeLeft:
+    case UIDeviceOrientationLandscapeRight:
+    case UIDeviceOrientationPortraitUpsideDown:
+      self.currentOrientation = currentOrientation;
+      break;
+    case UIDeviceOrientationFaceUp:
+    case UIDeviceOrientationFaceDown:
+      if (self.currentOrientation == UIDeviceOrientationPortraitUpsideDown) {
+        self.currentOrientation = UIDeviceOrientationPortrait;
+      }
+      break;
+    default:
+      break;
+  }
+}
+
+- (void)setCurrentOrientation:(UIDeviceOrientation)currentOrientation
+{
+  if (_currentOrientation != currentOrientation) {
+    _currentOrientation = currentOrientation;
+    if (!isRecording) {
+      self.videoRecorder.orientation = _currentOrientation;
+    }
+  }
 }
 
 - (void)endMonitoring
@@ -175,7 +209,6 @@ const int kCountdownTime = 10;
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-  // We support only Portrait.
   return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
@@ -361,6 +394,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
   self.recordingURL = nil;
   [self.motionDetector setBackgroundWithPixelBuffer:nil];
   [self.videoRecorder prepareToRecordWithNewURL:self.recordingURL];
+  self.videoRecorder.orientation = self.currentOrientation;
+  self.videoRecorder.isUsingFrontCamera = self.isUsingFrontFacingCamera;
   maxNumSimultaneousFaces = 0;
   isMonitoring = YES;
   dispatch_async(dispatch_get_main_queue(), ^{
@@ -391,8 +426,10 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 - (void)startMonitoringTapped:(UIButton *)sender
 {
   if (!countdownTimer) {
-    // Beginning countdown
+    // Setup the recorder and begin the countdown
     self.videoRecorder = [[ADVideoRecorder alloc] initWithRecordingURL:self.recordingURL];
+    self.videoRecorder.orientation = self.currentOrientation;
+    self.videoRecorder.isUsingFrontCamera = self.isUsingFrontFacingCamera;
     countdown = kCountdownTime;
     [self _configureStartViewForState:ADStartViewStateCountdown];
     [self updateCountdownTitle];
@@ -443,6 +480,12 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 - (void)updateCountdownTitle
 {
   _startView.titleLabel.text = [NSString stringWithFormat:@"Monitoring in %i...", countdown];
+}
+
+- (IBAction)switchCameraTapped:(id)sender
+{
+  [super switchCameraTapped:sender];
+  self.videoRecorder.isUsingFrontCamera = self.isUsingFrontFacingCamera;
 }
 
 #pragma mark - Getters/Setters

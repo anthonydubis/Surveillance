@@ -179,7 +179,7 @@
     [rootLayer addSublayer:self.previewLayer];
     
     _audioConnection = [_audioDataOutput connectionWithMediaType:AVMediaTypeAudio];
-    _videoConnection = [_videoDataOutput connectionWithMediaType:AVMediaTypeVideo];
+    self.videoConnection = [_videoDataOutput connectionWithMediaType:AVMediaTypeVideo];
     
     [_captureSession startRunning];
   }
@@ -238,7 +238,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
       _videoDeviceInput = newVideoInput;
       [_captureSession addInput:newVideoInput];
       [_captureSession addOutput:self.videoDataOutput];
-      _videoConnection = [_videoDataOutput connectionWithMediaType:AVMediaTypeVideo];
+      self.videoConnection = [_videoDataOutput connectionWithMediaType:AVMediaTypeVideo];
+      self.isUsingFrontFacingCamera = (_videoDeviceInput.device.position == AVCaptureDevicePositionFront);
     }
     
     //Commit all the configuration changes at once
