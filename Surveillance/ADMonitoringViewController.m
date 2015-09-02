@@ -192,7 +192,8 @@ const int kCountdownTime = 10;
 {
   self.navigationItem.rightBarButtonItem = self.finishedBarButtonItem;
   if (!endedMonitoring) {
-    [self.beep play];
+#warning Commented out beep for testing purposes
+    // [self.beep play];
     isMonitoring = YES;
     self.navigationItem.title = @"Monitoring...";
     
