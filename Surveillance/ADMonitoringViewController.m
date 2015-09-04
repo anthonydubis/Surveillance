@@ -264,10 +264,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         frameInInterval++;
       }
       
-      NSLog(@"Before face detection loop");
       // Do face detection
       if (FaceDetectionEnabled() && !isLookingForFace) {
-        NSLog(@"YOU SHOULDNT BE HERE!");
         isLookingForFace = YES;
         CFRetain(sampleBuffer);
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -285,6 +283,10 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
   }
 }
 
+/**
+ As we are not detecting faces due to FaceDetectionEnabled() being false,
+ this method will never be called.
+ */
 - (void)handleDetectedFaces:(NSDictionary *)detectionResults
 {
   NSNumber *numFaces = (NSNumber *)detectionResults[ADFaceDetectorNumberOfFacesDetected];
@@ -331,7 +333,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
   
   // Create the parse object and save it
   self.event = [ADEvent objectForNewEvent];
-  [self.event saveInBackground];
+  [self.event saveEventually];
+  [self.event pinInBackgroundWithName:ADParseMyEventsCacheLabel];
   
   [self.videoRecorder startRecordingWithSourceTime:lastSampleTime];
   isRecording = YES;
@@ -392,7 +395,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
   self.event.videoSize = [ADFileHelper sizeOfFileAtURL:self.recordingURL];
   NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:self.event.startedRecordingAt];
   self.event.videoDuration = [NSNumber numberWithInt:duration];
-  [self.event saveInBackground];
+  [self.event saveEventually];
 }
 
 - (void)prepareForNewRecording

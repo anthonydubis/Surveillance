@@ -13,6 +13,11 @@
 
 @interface ADS3Helper : NSObject
 
+/**
+ Cancel all existing 
+ */
++ (void)cancelAllRequests;
+
 /*
  * Set the credentials to use the S3 Service, as well as the logging setting
  */
@@ -37,7 +42,7 @@
 /*
  * Delete the video for an Event from the S3 Bucket
  */
-+ (void)deleteVideoForEvent:(ADEvent *)event withCompletionBlock:(void(^)(void))completionBlock;
++ (void)deleteVideoForEvent:(ADEvent *)event withSuccessBlock:(void(^)(void))successBlock;
 
 /*
  * Get the size of the video file without having to download it

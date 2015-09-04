@@ -8,9 +8,13 @@
 
 #import <Parse/Parse.h>
 
+#warning Launch Blocking: make these an enum
 extern NSString * const EventStatusRecording;
 extern NSString * const EventStatusUploading;
 extern NSString * const EventStatusUploaded;
+
+// Used to cache data in Parse's local datastore
+extern NSString * const ADParseMyEventsCacheLabel;
 
 @interface ADEvent : PFObject <PFSubclassing>
 

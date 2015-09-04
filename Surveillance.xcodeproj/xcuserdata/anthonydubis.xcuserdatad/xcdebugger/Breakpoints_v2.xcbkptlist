@@ -57,13 +57,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Surveillance/ADS3Helper.m"
-            timestampString = "462825970.559623"
+            filePath = "Surveillance/ADMonitoringViewController.m"
+            timestampString = "462888870.247987"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "66"
-            endingLineNumber = "66"
-            landmarkName = "+uploadVideoAtURL:forEvent:"
+            startingLineNumber = "292"
+            endingLineNumber = "292"
+            landmarkName = "-handleDetectedFaces:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

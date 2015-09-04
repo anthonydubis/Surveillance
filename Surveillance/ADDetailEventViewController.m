@@ -97,11 +97,10 @@
 // Remove the video from the local device and the cloud storage
 - (void)permanentlyDeleteVideo
 {
-    // Specify the block handler
     void(^handler)(UIAlertView *alertView, NSInteger buttonIndex) = ^(UIAlertView *alertView, NSInteger buttonIndex) {
         if (buttonIndex != [alertView cancelButtonIndex]) {
 #warning Show that you're doing work
-            [ADS3Helper deleteVideoForEvent:self.event withCompletionBlock:^{
+            [ADS3Helper deleteVideoForEvent:self.event withSuccessBlock:^{
                 [self removeLocalCopyAndDeleteParseObject];
             }];
         }
@@ -115,10 +114,8 @@
 
 - (void)removeLocalCopyAndDeleteParseObject
 {
-    NSLog(@"Removing local copies");
     [ADFileHelper removeLocalCopyOfVideoForEvent:self.event];
-#warning Do I need to block for this deletion to ensure that ADEventsTVC's query does not fetch it before it's removed from the parse server?
-    [self.event deleteInBackground];
+    [self.event deleteEventually];
     [self.delegate didPermanentlyDeleteEvent:self.event];
     [self.navigationController popViewControllerAnimated:YES];
 }

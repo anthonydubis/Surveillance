@@ -8,6 +8,6 @@
 
 #import <ParseUI/ParseUI.h>
 
-@interface ADEventsTableViewController : PFQueryTableViewController
+@interface ADEventsTableViewController : UITableViewController
 
 @end

@@ -52,7 +52,7 @@
 {
   // [Optional] Power your app with Local Datastore. For more info, go to
   // https://parse.com/docs/ios_guide#localdatastore/iOS
-  // [Parse enableLocalDatastore];
+  [Parse enableLocalDatastore];
   
   // Initialize Parse and Facebook
   [Parse setApplicationId:@"RsfKbEwIOCNz8cCYmESlj5hXIV89HFuZtuZ6Jj2f"
@@ -142,7 +142,7 @@
   [[[UIAlertView alloc] initWithTitle:@"Missing Information"
                               message:@"Make sure you fill out all of the information!"
                              delegate:nil
-                    cancelButtonTitle:@"ok"
+                    cancelButtonTitle:@"OK"
                     otherButtonTitles:nil] show];
   return NO; // Interrupt login process
 }
@@ -186,7 +186,7 @@
     [[[UIAlertView alloc] initWithTitle:@"Missing Information"
                                 message:@"Make sure you fill out all of the information!"
                                delegate:nil
-                      cancelButtonTitle:@"ok"
+                      cancelButtonTitle:@"OK"
                       otherButtonTitles:nil] show];
   }
   
@@ -290,6 +290,7 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
   // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
   // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+  NSLog(@"Entering background.");
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -308,12 +309,14 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
   [FBSDKAppEvents activateApp];
+  NSLog(@"Application will become active");
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
   // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
   // Saves changes in the application's managed object context before the application terminates.
   [self saveContext];
+  NSLog(@"Terminating");
 }
 
 #pragma mark - Core Data stack

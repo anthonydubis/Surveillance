@@ -65,7 +65,7 @@ NSString *BucketName = @"surveillance-bucket";
       NSLog(@"File uploaded successfully");
       event.s3BucketName = BucketName;
       event.status = EventStatusUploaded;
-      [event saveInBackground];
+      [event saveEventually];
 #warning You need to handle failures here
       if ([[NSFileManager defaultManager] removeItemAtURL:url error:nil])
         NSLog(@"Removed file");
@@ -131,7 +131,7 @@ NSString *BucketName = @"surveillance-bucket";
   return downloadRequest;
 }
 
-+ (void)deleteVideoForEvent:(ADEvent *)event withCompletionBlock:(void(^)(void))completionBlock
++ (void)deleteVideoForEvent:(ADEvent *)event withSuccessBlock:(void(^)(void))successBlock
 {
   AWSS3 *s3 = [AWSS3 defaultS3];
   
@@ -145,11 +145,17 @@ NSString *BucketName = @"surveillance-bucket";
                                                       if(task.error != nil){
                                                         if(task.error.code != AWSS3TransferManagerErrorCancelled && task.error.code != AWSS3TransferManagerErrorPaused){
                                                           NSLog(@"%s Error: [%@]",__PRETTY_FUNCTION__, task.error);
+                                                          UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Sorry"
+                                                                                                       message:@"There was an error deleting this video. Please make sure you're connected to the internet and try again."
+                                                                                                      delegate:nil
+                                                                                             cancelButtonTitle:@"OK"
+                                                                                             otherButtonTitles:nil];
+                                                          [av show];
                                                         }
                                                       } else{
-                                                        NSLog(@"Finished the deletion");
-                                                        if (completionBlock != nil)
-                                                          completionBlock();
+                                                        if (successBlock != nil) {
+                                                          successBlock();
+                                                        }
                                                       }
                                                       return nil;
                                                     }];

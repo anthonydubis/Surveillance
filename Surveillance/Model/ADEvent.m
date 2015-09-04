@@ -13,6 +13,8 @@ NSString * const EventStatusRecording = @"Recording";
 NSString * const EventStatusUploading = @"Uploading";
 NSString * const EventStatusUploaded  = @"Uploaded";
 
+NSString * const ADParseMyEventsCacheLabel = @"ADParseMyEventsCacheLabel";
+
 @implementation ADEvent
 
 @dynamic videoName;

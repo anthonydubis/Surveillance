@@ -25,14 +25,14 @@
 {
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     currentInstallation[@"isMonitoring"] = @YES;
-    [currentInstallation saveInBackground];
+    [currentInstallation saveEventually];
 }
 
 + (void)deviceStoppedMonitoring
 {
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     currentInstallation[@"isMonitoring"] = @NO;
-    [currentInstallation saveInBackground];
+    [currentInstallation saveEventually];
 }
 
 - (PFUser *)user {
