@@ -41,6 +41,10 @@
 {
   [super viewWillAppear:animated];
   [self _loadEvents];
+  
+  [ADFileHelper listAllFilesAtToUploadDirectory];
+  [ADFileHelper listAllFilesInDownloadsDirectory];
+  [ADFileHelper listAllFilesInDownloadsTemporaryDirectory];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -304,7 +308,6 @@
       } else {
         // Only after a successful cancellation do this work
         NSIndexPath *indexPath = [self indexPathForEvent:event];
-        [self _removePartialDownloadForEvent:event];
         [self.downloading removeObjectForKey:event.videoName];
         [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
       }
@@ -405,15 +408,9 @@
     return;
   }
   
-  NSURL *url = [NSURL fileURLWithPath:[[ADFileHelper downloadsDirectoryPath] stringByAppendingPathComponent:event.videoName]];
-  
-  // Create the download request
-  AWSS3TransferManagerDownloadRequest *downloadRequest = [ADS3Helper downloadRequestForEvent:event andDownloadURL:url];
-  
   // Construct the completion block
   id (^handler)(BFTask *task) = ^id(BFTask *task) {
     if (task.error) {
-      [weakSelf _removePartialDownloadForEvent:event];
       if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
         switch (task.error.code) {
           case AWSS3TransferManagerErrorCancelled:
@@ -429,9 +426,7 @@
         [weakSelf _alertUserOfFailureToDownloadVideo];
         [weakSelf downloadAttemptFinishedForEvent:event];
       }
-    }
-    
-    if (task.result) {
+    } else if (task.result) {
       //File downloaded successfully.
       NSLog(@"File downloaded successfully");
       [weakSelf downloadAttemptFinishedForEvent:event];
@@ -440,7 +435,7 @@
   };
   
   // Set the progress blocks
-  downloadRequest.downloadProgress = ^(int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite) {
+  AWSNetworkingDownloadProgressBlock progressBlock = ^(int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite) {
     ADDownloadTask *progress = weakSelf.downloading[event.videoName];
     if ([progress secondsSinceLastUpdate] >= 1) {
       progress.bytesDownloaded = [NSNumber numberWithLongLong:totalBytesWritten];
@@ -455,13 +450,10 @@
     }
   };
   
-  // Create the ADDownloadEvent
-  self.downloading[event.videoName] = [[ADDownloadTask alloc] initWithDownloadRequest:downloadRequest andBytesToBeDownloaded:event.videoSize];
+  AWSS3TransferManagerDownloadRequest *request = [ADS3Helper downloadVideoForEvent:event completionBlock:handler progressBlock:progressBlock];
   
-  // Start the process with the transfer manager
-  AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
-  [[transferManager download:downloadRequest] continueWithExecutor:[BFExecutor mainThreadExecutor]
-                                                         withBlock:handler];
+  // Create the ADDownloadEvent
+  self.downloading[event.videoName] = [[ADDownloadTask alloc] initWithDownloadRequest:request andBytesToBeDownloaded:event.videoSize];
   
   // This updates the ACPDownloadView when the user calls this method by selecting the row rather than the accessory button
   NSIndexPath *indexPath = [self indexPathForEvent:event];
@@ -478,13 +470,6 @@
   NSIndexPath *indexPath = [self indexPathForEvent:event];
   [self.downloading removeObjectForKey:event.videoName];
   [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
-}
-
-- (void)_removePartialDownloadForEvent:(ADEvent *)event
-{
-  if ([ADFileHelper haveDownloadedVideoForEvent:event]) {
-    [ADFileHelper removeLocalCopyOfVideoForEvent:event];
-  }
 }
 
 - (NSIndexPath *)indexPathForEvent:(ADEvent *)event

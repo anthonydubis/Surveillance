@@ -29,6 +29,12 @@
  */
 + (NSString *)toUploadDirectoryPath;
 
+/**
+ This temporary directory is used as the place videos are downloaded to. When the download
+ is completed, we should move those videos to the actual downloadsDirectoryPath
+ */
++ (NSString *)downloadsTemporaryDirectoryPath;
+
 /*
  * Returns the directory where videos of the users choosing are stored locally.
  * Creates the Downloads directory if needed.
@@ -49,6 +55,12 @@
  * List all files and sizes in the documents directory
  */
 + (void)listAllFilesInDownloadsDirectory;
+
+/**
+ Lists all files in the temp directory that videos are downloaded to before being moved
+ into their permanent directory.
+ */
++ (void)listAllFilesInDownloadsTemporaryDirectory;
 
 /*
  * Returns true if we have a local copy of the event video

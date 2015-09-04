@@ -82,35 +82,51 @@ NSString *BucketName = @"surveillance-bucket";
                                              withBlock:completionBlock];
 }
 
-+ (void)downloadVideoForEvent:(ADEvent *)event toURL:(NSURL *)toURL withCompletionBlock:(void(^)(void))completionBlock;
++ (AWSS3TransferManagerDownloadRequest *)downloadVideoForEvent:(ADEvent *)event
+                                               completionBlock:(id(^)(BFTask *task))completionBlock
+                                                 progressBlock:(AWSNetworkingDownloadProgressBlock)progressBlock;
 {
+  // Temporary URL to store the data while it's being downloaded
+  NSString *tmpPath = [[ADFileHelper downloadsTemporaryDirectoryPath] stringByAppendingPathComponent:event.videoName];
+  NSURL *tmpUrl = [NSURL fileURLWithPath:tmpPath];
+  
   // Construct the download request.
-  AWSS3TransferManagerDownloadRequest *downloadRequest = [self downloadRequestForEvent:event andDownloadURL:toURL];
+  AWSS3TransferManagerDownloadRequest *downloadRequest = [self downloadRequestForEvent:event andDownloadURL:tmpUrl];
+  downloadRequest.downloadProgress = progressBlock;
   
   // Construct the completion block
   id (^handler)(BFTask *task) = ^id(BFTask *task) {
     if (task.error){
-      if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
-        switch (task.error.code) {
-          case AWSS3TransferManagerErrorCancelled:
-          case AWSS3TransferManagerErrorPaused:
-            break;
-          default:
-            NSLog(@"Error: %@", task.error);
-            break;
+      NSLog(@"Error: %@", task.error);
+      // Remove file from temp directory
+      if ([[NSFileManager defaultManager] fileExistsAtPath:tmpPath]) {
+        NSError *error = nil;
+        [[NSFileManager defaultManager] removeItemAtPath:tmpPath error:&error];
+        if (error) {
+          NSLog(@"ERROR REMOVING DOWNLOAD FROM TMP DIRECTORY: %@", error);
         }
-      } else {
-        // Unknown error.
-        NSLog(@"Error: %@", task.error);
+      }
+    } else if (task.result) {
+      NSLog(@"File downloaded successfully");
+      // Move to permanent directory
+      NSError *error = nil;
+      NSString *finalUrlPath = [[ADFileHelper downloadsDirectoryPath] stringByAppendingPathComponent:event.videoName];
+      // Make sure no final currently exists there
+      if ([[NSFileManager defaultManager] fileExistsAtPath:finalUrlPath]) {
+        [[NSFileManager defaultManager] removeItemAtPath:finalUrlPath error:&error];
+        if (error) {
+          NSLog(@"ERROR REMOVING EXISTING DOWNLOAD FROM DOWNLOAD DIRECTORY: %@", error);
+        }
+      }
+      [[NSFileManager defaultManager] moveItemAtPath:tmpPath
+                                              toPath:finalUrlPath
+                                               error:&error];
+      if (error) {
+        NSLog(@"FAILED TO MOVE DOWNLOAD TO PERMANENT DIRECTORY: %@", error);
       }
     }
-    
-    if (task.result) {
-      //File downloaded successfully.
-      NSLog(@"File downloaded successfully");
-      if (completionBlock != nil) {
-        completionBlock();
-      }
+    if (completionBlock != nil) {
+      completionBlock(task);
     }
     return nil;
   };
@@ -119,6 +135,7 @@ NSString *BucketName = @"surveillance-bucket";
   AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
   [[transferManager download:downloadRequest] continueWithExecutor:[BFExecutor mainThreadExecutor]
                                                          withBlock:handler];
+  return downloadRequest;
 }
 
 + (AWSS3TransferManagerDownloadRequest *)downloadRequestForEvent:(ADEvent *)event andDownloadURL:(NSURL *)url

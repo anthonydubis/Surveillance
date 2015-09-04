@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AWSCore/AWSNetworking.h>
 
 @class ADEvent;
 @class AWSS3TransferManagerDownloadRequest;
@@ -31,7 +32,9 @@
 /*
  * Download the video for an Event
  */
-+ (void)downloadVideoForEvent:(ADEvent *)event toURL:(NSURL *)url withCompletionBlock:(void(^)(void))completionBlock;
++ (AWSS3TransferManagerDownloadRequest *)downloadVideoForEvent:(ADEvent *)event
+                                               completionBlock:(id(^)(BFTask *task))completionBlock
+                                                 progressBlock:(AWSNetworkingDownloadProgressBlock)progressBlock;
 
 /*
  * Get the download request for an event and download URL
