@@ -376,7 +376,7 @@
            otherButtonTitles:@[@"Yes"]
                     tapBlock:^(UIAlertView *actionSheet, NSInteger buttonIndex) {
                       if (buttonIndex != actionSheet.cancelButtonIndex) {
-#warning Show that you're doing work (like an activity indicator)
+#warning Show that you're doing work (like an activity indicator) - and you need an error block
                         [ADS3Helper deleteVideoForEvent:event withSuccessBlock:^{
                           [self removeLocalCopyAndDeleteParseObject:event];
                         }];

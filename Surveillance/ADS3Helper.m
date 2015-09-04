@@ -97,7 +97,6 @@ NSString *BucketName = @"surveillance-bucket";
   // Construct the completion block
   id (^handler)(BFTask *task) = ^id(BFTask *task) {
     if (task.error){
-      NSLog(@"Error: %@", task.error);
       // Remove file from temp directory
       if ([[NSFileManager defaultManager] fileExistsAtPath:tmpPath]) {
         NSError *error = nil;
