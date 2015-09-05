@@ -52,7 +52,6 @@
     
 }
 - (void)handleSingleTap:(UITapGestureRecognizer *)recognizer {
-    NSLog(@"Tap recieved");
     if(self.viewTappedBlock){
         self.viewTappedBlock(self, self.currentStatus);
     }

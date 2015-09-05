@@ -30,6 +30,11 @@ NSString *BucketName = @"surveillance-bucket";
   AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
 }
 
++ (void)cancelAllRequests
+{
+  [[AWSS3TransferManager defaultS3TransferManager] cancelAll];
+}
+
 + (void)uploadVideoAtURL:(NSURL *)url forEvent:(ADEvent *)event
 {
   // Create the upload request

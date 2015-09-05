@@ -418,9 +418,9 @@
             break;
           default:
             [self _alertUserOfFailureToDownloadVideo];
-            [weakSelf downloadAttemptFinishedForEvent:event];
             break;
         }
+        [weakSelf downloadAttemptFinishedForEvent:event];
       } else {
         // Unknown error - likely a lack of internet connection
         [weakSelf _alertUserOfFailureToDownloadVideo];
