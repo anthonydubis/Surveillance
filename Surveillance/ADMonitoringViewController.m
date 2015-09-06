@@ -192,8 +192,7 @@ const int kCountdownTime = 10;
 {
   self.navigationItem.rightBarButtonItem = self.finishedBarButtonItem;
   if (!endedMonitoring) {
-#warning Commented out beep for testing purposes
-    // [self.beep play];
+    [self.beep play];
     isMonitoring = YES;
     self.navigationItem.title = @"Monitoring...";
     
@@ -363,7 +362,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
   isRecording = NO;
   [self.videoRecorder stopRecordingWithCompletionHandler:^{
     [self updateEventForEndOfRecording];
-    [ADS3Helper uploadVideoAtURL:self.recordingURL forEvent:self.event];
+    NSURL *newURL = [ADFileHelper renameFileAtURL:self.recordingURL withName:self.event.videoName];
+    [ADS3Helper uploadVideoAtURL:newURL forEvent:self.event];
   }];
 }
 
@@ -378,7 +378,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
   // Upload video and prepare for new recording
   [self.videoRecorder stopRecordingWithCompletionHandler:^{
     [self updateEventForEndOfRecording];
-    [ADS3Helper uploadVideoAtURL:self.recordingURL forEvent:self.event];
+    NSURL *newURL = [ADFileHelper renameFileAtURL:self.recordingURL withName:self.event.videoName];
+    [ADS3Helper uploadVideoAtURL:newURL forEvent:self.event];
     [self prepareForNewRecording];
   }];
   

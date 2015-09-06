@@ -124,10 +124,54 @@
   return [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
 }
 
++ (NSURL *)renameFileAtURL:(NSURL *)url withName:(NSString *)name
+{
+  NSString *oldPath = url.path;
+  if ([[NSFileManager defaultManager] fileExistsAtPath:oldPath]) {
+    NSString *newPath = [[oldPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:name];
+    NSError *error = nil;
+    [[NSFileManager defaultManager] moveItemAtPath:oldPath toPath:newPath error:&error];
+    if (error) {
+      NSLog(@"ERROR RENAMING FILE THROUGH MOVE: %@", error);
+    } else {
+      return [NSURL fileURLWithPath:newPath];
+    }
+  }
+  return url;
+}
+
 + (NSNumber *)sizeOfFileAtURL:(NSURL *)fileURL
 {
   NSDictionary *fileDictionary = [[NSFileManager defaultManager] attributesOfItemAtPath:[fileURL path] error:nil];
   return [NSNumber numberWithLongLong:[fileDictionary fileSize]];
+}
+
++ (void)removeDownloadsNotAssociatedWithEvents:(NSArray *)events
+{
+  NSDictionary *map = [ADEvent dictionaryOfEventsForVideoNames:events];
+  NSURL *downloadsURL = [NSURL fileURLWithPath:[ADFileHelper downloadsDirectoryPath]];
+  NSDirectoryEnumerator *dirEnumerator = [self directoryEnumeratorForURL:downloadsURL];
+  
+  for (NSURL *url in dirEnumerator) {
+    NSNumber *isDirectory;
+    [url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:NULL];
+    if (![isDirectory boolValue]) {
+      // This is a file - check to see if it should be removed
+      NSString *videoName = [[url path] lastPathComponent];
+      if (!map[videoName]) {
+        [[NSFileManager defaultManager] removeItemAtURL:url
+                                                  error:nil];
+      }
+    }
+  }
+}
+
++ (NSDirectoryEnumerator *)directoryEnumeratorForURL:(NSURL *)url
+{
+  return [[NSFileManager defaultManager] enumeratorAtURL:url
+                              includingPropertiesForKeys:@[NSURLNameKey, NSURLIsDirectoryKey]
+                                                 options:NSDirectoryEnumerationSkipsHiddenFiles
+                                            errorHandler:nil];
 }
 
 @end

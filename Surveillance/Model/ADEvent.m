@@ -60,6 +60,15 @@ NSString * const ADParseMyEventsCacheLabel = @"ADParseMyEventsCacheLabel";
     return videoName;
 }
 
++ (NSDictionary *)dictionaryOfEventsForVideoNames:(NSArray *)events
+{
+  NSMutableDictionary *dict = [NSMutableDictionary new];
+  for (ADEvent *event in events) {
+    dict[event.videoName] = event;
+  }
+  return dict;
+}
+
 - (NSString *)descriptionOfMetadata
 {
     if ([self.status isEqualToString:EventStatusRecording])

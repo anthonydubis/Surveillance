@@ -30,6 +30,7 @@
   
   // Setup AWS
   [ADS3Helper setupAWSS3Service];
+  [ADS3Helper uploadFilesIfNecessary];
   
   if (![PFUser currentUser]) {
     // No user is set - ask the user to login
@@ -295,6 +296,7 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
   // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+  [ADS3Helper uploadFilesIfNecessary];
 }
 
 - (BOOL)application:(UIApplication *)application

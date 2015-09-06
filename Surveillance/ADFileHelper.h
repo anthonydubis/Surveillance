@@ -80,9 +80,27 @@
  */
 + (BOOL)removeLocalCopyOfVideoForEvent:(ADEvent *)event;
 
+/**
+ Convenience method for renaming a file. Returns an NSURL of the renamed file
+ */
++ (NSURL *)renameFileAtURL:(NSURL *)url withName:(NSString *)name;
+
 /*
  * Return the file size of the file at the given URL in bytes
  */
 + (NSNumber *)sizeOfFileAtURL:(NSURL *)fileURL;
+
+/**
+ Remove any downloaded files that are not associated with the array of events passed it.
+ The array of events should be an up-to-date list of events just fetched from the server with
+ the goal of deleting downloads for events that were deleted on other devices.
+ */
++ (void)removeDownloadsNotAssociatedWithEvents:(NSArray *)events;
+
+/**
+ Convenience method for getting the enumerator for all of the non-hidden files at a URL
+ */
++ (NSDirectoryEnumerator *)directoryEnumeratorForURL:(NSURL *)url;
+
 
 @end

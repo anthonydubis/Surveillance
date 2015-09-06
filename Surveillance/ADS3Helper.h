@@ -19,6 +19,11 @@
  */
 + (void)cancelAllRequests;
 
+/**
+ Checks to see if files exist in the ToUpload directory, and uploads any that are found.
+ */
++ (void)uploadFilesIfNecessary;
+
 /*
  * Set the credentials to use the S3 Service, as well as the logging setting
  */

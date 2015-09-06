@@ -35,6 +35,49 @@ NSString *BucketName = @"surveillance-bucket";
   [[AWSS3TransferManager defaultS3TransferManager] cancelAll];
 }
 
++ (void)uploadFilesIfNecessary
+{
+  /*
+   Iterate through files in toUpload directory. If there are any, find the correspond ADEvent.
+   If an ADEvent exists for the file, upload it. If not, the file should probably be deleted.
+   */
+  PFQuery *query = [self _queryForEventsInLocalDatastore];
+  [[query findObjectsInBackground] continueWithSuccessBlock:^id(BFTask *task) {
+    NSDictionary *events = [ADEvent dictionaryOfEventsForVideoNames:task.result];
+    [self _uploadFilesInToUploadDirectoryWithEvents:events];
+    return task;
+  }];
+}
+
++ (PFQuery *)_queryForEventsInLocalDatastore
+{
+  PFQuery *query = [PFQuery queryWithClassName:[ADEvent parseClassName]];
+  [query orderByDescending:@"createdAt"];
+  [query fromLocalDatastore];
+  return query;
+}
+
++ (void)_uploadFilesInToUploadDirectoryWithEvents:(NSDictionary *)events
+{
+  NSURL *toUploadURL = [NSURL fileURLWithPath:[ADFileHelper toUploadDirectoryPath]];
+  NSDirectoryEnumerator *dirEnumerator = [ADFileHelper directoryEnumeratorForURL:toUploadURL];
+  
+  for (NSURL *url in dirEnumerator) {
+    NSString *videoName = [[url path] lastPathComponent];
+    ADEvent *event = events[videoName];
+    if (event) {
+      // Try uploading the video again
+      [self uploadVideoAtURL:url
+                    forEvent:event];
+    } else {
+      // Delete the video because it's not tied to an event
+      [[NSFileManager defaultManager] removeItemAtURL:url
+                                                error:nil];
+    }
+  }
+}
+
+#warning LAUNCH BLOCKER - Handle errors here
 + (void)uploadVideoAtURL:(NSURL *)url forEvent:(ADEvent *)event
 {
   // Create the upload request
@@ -63,9 +106,7 @@ NSString *BucketName = @"surveillance-bucket";
         // Unknown error.
         NSLog(@"Error: %@", task.error);
       }
-    }
-    
-    if (task.result) {
+    } else if (task.result) {
       // The file uploaded successfully. Update the Parse object
       NSLog(@"File uploaded successfully");
       event.s3BucketName = BucketName;

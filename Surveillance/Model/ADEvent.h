@@ -36,6 +36,11 @@ extern NSString * const ADParseMyEventsCacheLabel;
  */
 + (ADEvent *)objectForNewEvent;
 
+/**
+ Returns a dictionary of NSString (videoName) => ADEvent (the event)
+ */
++ (NSDictionary *)dictionaryOfEventsForVideoNames:(NSArray *)events;
+
 /*
  * Gives a user-presentable description of the videos metadata (size/duration)
  */

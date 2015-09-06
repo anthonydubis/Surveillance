@@ -96,6 +96,7 @@
         [self _stopRefreshingWithError:NO];
         [self.tableView reloadData];
       });
+      [ADFileHelper removeDownloadsNotAssociatedWithEvents:task.result];
       // Cache the results
       return [[PFObject unpinAllObjectsInBackgroundWithName:ADParseMyEventsCacheLabel] continueWithSuccessBlock:^id(BFTask *ignored) {
         return [PFObject pinAllInBackground:_events withName:ADParseMyEventsCacheLabel];

@@ -73,8 +73,6 @@ NSString * PrefKeyNotifyOnCameraDisabled = @"PrefKeyNotifyOnCameraDisabled";
 - (void)viewDidLoad {
   [super viewDidLoad];
   [self setupInitialOptions];
-  [ADFileHelper listAllFilesAtToUploadDirectory];
-  [ADFileHelper listAllFilesInDownloadsDirectory];
   
   [self.tableView registerClass:[UITableViewHeaderFooterView class] forHeaderFooterViewReuseIdentifier:FooterID];
 }
