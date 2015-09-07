@@ -11,11 +11,27 @@
 #import "ADEvent.h"
 #import "ADFileHelper.h"
 
-#warning Test what happens when the ID is wrong just so you know we have some level of security
 NSString *CognitoPoolID = @"us-east-1:5bb89c68-9ee9-48b0-aceb-a18d4297aa29";
 NSString *BucketName = @"surveillance-bucket";
 
+@interface ADS3Helper ()
+{
+  NSMutableDictionary *_uploadRequests; // of NSString (videoName) => ADEvent (event)
+}
+
+@end
+
 @implementation ADS3Helper
+
++ (instancetype)sharedInstance
+{
+  static ADS3Helper *sharedInstance = nil;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    sharedInstance = [[self alloc] init];
+  });
+  return sharedInstance;
+}
 
 + (void)setupAWSS3Service
 {
@@ -28,104 +44,6 @@ NSString *BucketName = @"surveillance-bucket";
                                                                        credentialsProvider:credentialsProvider];
   
   AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
-}
-
-+ (void)cancelAllRequests
-{
-  [[AWSS3TransferManager defaultS3TransferManager] cancelAll];
-}
-
-+ (void)uploadFilesIfNecessary
-{
-  /*
-   Iterate through files in toUpload directory. If there are any, find the correspond ADEvent.
-   If an ADEvent exists for the file, upload it. If not, the file should probably be deleted.
-   */
-  PFQuery *query = [self _queryForEventsInLocalDatastore];
-  [[query findObjectsInBackground] continueWithSuccessBlock:^id(BFTask *task) {
-    NSDictionary *events = [ADEvent dictionaryOfEventsForVideoNames:task.result];
-    [self _uploadFilesInToUploadDirectoryWithEvents:events];
-    return task;
-  }];
-}
-
-+ (PFQuery *)_queryForEventsInLocalDatastore
-{
-  PFQuery *query = [PFQuery queryWithClassName:[ADEvent parseClassName]];
-  [query orderByDescending:@"createdAt"];
-  [query fromLocalDatastore];
-  return query;
-}
-
-+ (void)_uploadFilesInToUploadDirectoryWithEvents:(NSDictionary *)events
-{
-  NSURL *toUploadURL = [NSURL fileURLWithPath:[ADFileHelper toUploadDirectoryPath]];
-  NSDirectoryEnumerator *dirEnumerator = [ADFileHelper directoryEnumeratorForURL:toUploadURL];
-  
-  for (NSURL *url in dirEnumerator) {
-    NSString *videoName = [[url path] lastPathComponent];
-    ADEvent *event = events[videoName];
-    if (event) {
-      // Try uploading the video again
-      [self uploadVideoAtURL:url
-                    forEvent:event];
-    } else {
-      // Delete the video because it's not tied to an event
-      [[NSFileManager defaultManager] removeItemAtURL:url
-                                                error:nil];
-    }
-  }
-}
-
-#warning LAUNCH BLOCKER - Handle errors here
-+ (void)uploadVideoAtURL:(NSURL *)url forEvent:(ADEvent *)event
-{
-  // Create the upload request
-  AWSS3TransferManagerUploadRequest *uploadRequest = [AWSS3TransferManagerUploadRequest new];
-  uploadRequest.body = url;
-  uploadRequest.bucket = BucketName;
-  uploadRequest.key = [self keyForEvent:event];
-  
-  // Perform the upload with a transfer manager
-  AWSS3TransferManager *manager = [AWSS3TransferManager defaultS3TransferManager];
-  
-  // Create the completion block
-  id (^completionBlock)(BFTask *task) = ^id(BFTask *task) {
-    if (task.error) {
-      if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
-        switch (task.error.code) {
-          case AWSS3TransferManagerErrorCancelled:
-          case AWSS3TransferManagerErrorPaused:
-            break;
-            
-          default:
-            NSLog(@"Error: %@", task.error);
-            break;
-        }
-      } else {
-        // Unknown error.
-        NSLog(@"Error: %@", task.error);
-      }
-    } else if (task.result) {
-      // The file uploaded successfully. Update the Parse object
-      NSLog(@"File uploaded successfully");
-      event.s3BucketName = BucketName;
-      event.status = EventStatusUploaded;
-      [event saveEventually];
-#warning You need to handle failures here
-      if ([[NSFileManager defaultManager] removeItemAtURL:url error:nil])
-        NSLog(@"Removed file");
-      else
-        NSLog(@"Couldn't remove file.");
-      // Uncomment for debugging purposes
-      // [ADFileHelper listAllFilesAtToUploadDirectory];
-    }
-    return nil;
-  };
-  
-  // Start he upload
-  [[manager upload:uploadRequest] continueWithExecutor:[BFExecutor mainThreadExecutor]
-                                             withBlock:completionBlock];
 }
 
 + (AWSS3TransferManagerDownloadRequest *)downloadVideoForEvent:(ADEvent *)event
@@ -238,5 +156,116 @@ NSString *BucketName = @"surveillance-bucket";
   //    int64_t fileSize = response.contentLength;
   return 0;
 }
+
+- (instancetype)init
+{
+  if (self = [super init]) {
+    _uploadRequests = [NSMutableDictionary new];
+  }
+  return self;
+}
+
+- (void)cancelAllRequests
+{
+  [[AWSS3TransferManager defaultS3TransferManager] cancelAll];
+  [_uploadRequests removeAllObjects];
+}
+
+- (void)uploadFilesIfNecessary
+{
+  /*
+   Iterate through files in toUpload directory. If there are any, find the correspond ADEvent.
+   If an ADEvent exists for the file, upload it. If not, the file should probably be deleted.
+   */
+  PFQuery *query = [self _queryForEventsInLocalDatastore];
+  [[query findObjectsInBackground] continueWithSuccessBlock:^id(BFTask *task) {
+    NSDictionary *events = [ADEvent dictionaryOfEventsForVideoNames:task.result];
+    [self _uploadFilesInToUploadDirectoryWithEvents:events];
+    return task;
+  }];
+}
+
+- (PFQuery *)_queryForEventsInLocalDatastore
+{
+  PFQuery *query = [PFQuery queryWithClassName:[ADEvent parseClassName]];
+  [query orderByDescending:@"createdAt"];
+  [query fromLocalDatastore];
+  return query;
+}
+
+- (void)_uploadFilesInToUploadDirectoryWithEvents:(NSDictionary *)events
+{
+  NSURL *toUploadURL = [NSURL fileURLWithPath:[ADFileHelper toUploadDirectoryPath]];
+  NSDirectoryEnumerator *dirEnumerator = [ADFileHelper directoryEnumeratorForURL:toUploadURL];
+  
+  for (NSURL *url in dirEnumerator) {
+    NSString *videoName = [[url path] lastPathComponent];
+    ADEvent *event = events[videoName];
+    if (event) {
+      // Try uploading the video again
+      [self uploadVideoAtURL:url
+                    forEvent:event];
+    } else {
+      // Delete the video because it's not tied to an event
+      [[NSFileManager defaultManager] removeItemAtURL:url
+                                                error:nil];
+    }
+  }
+}
+
+#warning LAUNCH BLOCKER - Handle errors here
+- (void)uploadVideoAtURL:(NSURL *)url forEvent:(ADEvent *)event
+{
+  // Create the upload request
+  AWSS3TransferManagerUploadRequest *uploadRequest = [AWSS3TransferManagerUploadRequest new];
+  uploadRequest.body = url;
+  uploadRequest.bucket = BucketName;
+  uploadRequest.key = [ADS3Helper keyForEvent:event];
+  
+  // Progress block
+  AWSNetworkingUploadProgressBlock progressBlock = ^(int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite) {
+    NSLog(@"%.2f", (double) totalBytesWritten / (double) totalBytesExpectedToWrite);
+  };
+  
+  // Create the completion block
+  id (^completionBlock)(BFTask *task) = ^id(BFTask *task) {
+    [_uploadRequests removeObjectForKey:event.videoName];
+    if (task.error) {
+      if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
+        switch (task.error.code) {
+          case AWSS3TransferManagerErrorCancelled:
+          case AWSS3TransferManagerErrorPaused:
+            break;
+          default:
+            NSLog(@"Error: %@", task.error);
+            break;
+        }
+      } else {
+        // Unknown error.
+        NSLog(@"Error: %@", task.error);
+      }
+    } else if (task.result) {
+      // The file uploaded successfully. Update the Parse object
+      NSLog(@"File uploaded successfully");
+      event.s3BucketName = BucketName;
+      event.status = EventStatusUploaded;
+      [event saveEventually];
+#warning You need to handle failures here
+      if ([[NSFileManager defaultManager] removeItemAtURL:url error:nil])
+        NSLog(@"Removed file");
+      else
+        NSLog(@"Couldn't remove file.");
+    }
+    return task;
+  };
+  
+  // Start the upload
+  AWSS3TransferManager *manager = [AWSS3TransferManager defaultS3TransferManager];
+  [[manager upload:uploadRequest] continueWithExecutor:[BFExecutor mainThreadExecutor]
+                                             withBlock:completionBlock];
+  uploadRequest.uploadProgress = progressBlock;
+  _uploadRequests[event.videoName] = uploadRequest;
+}
+
 
 @end

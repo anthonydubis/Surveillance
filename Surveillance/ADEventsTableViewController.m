@@ -41,10 +41,8 @@
 {
   [super viewWillAppear:animated];
   [self _loadEvents];
-  
-  [ADFileHelper listAllFilesAtToUploadDirectory];
-  [ADFileHelper listAllFilesInDownloadsDirectory];
-  [ADFileHelper listAllFilesInDownloadsTemporaryDirectory];
+  NSLog(@"Calling for shared instance");
+  [ADS3Helper sharedInstance];
 }
 
 - (void)viewDidAppear:(BOOL)animated

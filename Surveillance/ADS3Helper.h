@@ -15,24 +15,14 @@
 @interface ADS3Helper : NSObject
 
 /**
- Cancel all existing 
+ A singleton instance
  */
-+ (void)cancelAllRequests;
-
-/**
- Checks to see if files exist in the ToUpload directory, and uploads any that are found.
- */
-+ (void)uploadFilesIfNecessary;
++ (instancetype)sharedInstance;
 
 /*
  * Set the credentials to use the S3 Service, as well as the logging setting
  */
 + (void)setupAWSS3Service;
-
-/*
- * Upload the video for an Event
- */
-+ (void)uploadVideoAtURL:(NSURL *)url forEvent:(ADEvent *)event;
 
 /*
  * Download the video for an Event
@@ -56,5 +46,25 @@
  * Get the size of the video file without having to download it
  */
 + (int)getSizeOfVideoForEvent:(ADEvent *)event;
+
+/**
+ Use the shared instance by calling [ADS3Helper sharedInstance]
+ */
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
+
+/**
+ Cancel all existing
+ */
+- (void)cancelAllRequests;
+
+/**
+ Checks to see if files exist in the ToUpload directory, and uploads any that are found.
+ */
+- (void)uploadFilesIfNecessary;
+
+/*
+ * Upload the video for an Event
+ */
+- (void)uploadVideoAtURL:(NSURL *)url forEvent:(ADEvent *)event;
 
 @end

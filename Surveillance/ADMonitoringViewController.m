@@ -363,7 +363,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
   [self.videoRecorder stopRecordingWithCompletionHandler:^{
     [self updateEventForEndOfRecording];
     NSURL *newURL = [ADFileHelper renameFileAtURL:self.recordingURL withName:self.event.videoName];
-    [ADS3Helper uploadVideoAtURL:newURL forEvent:self.event];
+    [[ADS3Helper sharedInstance] uploadVideoAtURL:newURL forEvent:self.event];
   }];
 }
 
@@ -379,7 +379,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
   [self.videoRecorder stopRecordingWithCompletionHandler:^{
     [self updateEventForEndOfRecording];
     NSURL *newURL = [ADFileHelper renameFileAtURL:self.recordingURL withName:self.event.videoName];
-    [ADS3Helper uploadVideoAtURL:newURL forEvent:self.event];
+    [[ADS3Helper sharedInstance] uploadVideoAtURL:newURL forEvent:self.event];
     [self prepareForNewRecording];
   }];
   
