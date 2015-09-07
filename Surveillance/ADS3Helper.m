@@ -224,7 +224,7 @@ NSString *BucketName = @"surveillance-bucket";
   
   // Progress block
   AWSNetworkingUploadProgressBlock progressBlock = ^(int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite) {
-    NSLog(@"%.2f", (double) totalBytesWritten / (double) totalBytesExpectedToWrite);
+    [self _uploadProgressForEvent:event totalBytesWritten:totalBytesWritten totalBytesExpectedToWrite:totalBytesExpectedToWrite];
   };
   
   // Create the completion block
@@ -256,6 +256,7 @@ NSString *BucketName = @"surveillance-bucket";
       else
         NSLog(@"Couldn't remove file.");
     }
+    [self _uploadFinishedForEvent:event];
     return task;
   };
   
@@ -265,7 +266,25 @@ NSString *BucketName = @"surveillance-bucket";
                                              withBlock:completionBlock];
   uploadRequest.uploadProgress = progressBlock;
   _uploadRequests[event.videoName] = uploadRequest;
+  [self _uploadStartedForEvent:event];
 }
 
+#pragma mark - Notifications
+
+- (void)_uploadStartedForEvent:(ADEvent *)event
+{
+  [_delegate didStartUploadingEvent:event];
+}
+
+- (void)_uploadFinishedForEvent:(ADEvent *)event
+{
+  [_delegate didFinishUploadingEvent:event];
+}
+
+- (void)_uploadProgressForEvent:(ADEvent *)event totalBytesWritten:(int64_t)written totalBytesExpectedToWrite:(int64_t)expectedTotal
+{
+  NSNumber *percentage = [NSNumber numberWithDouble:(double)written / (double)expectedTotal];
+  [_delegate uploadProgress:percentage forEvent:event];
+}
 
 @end

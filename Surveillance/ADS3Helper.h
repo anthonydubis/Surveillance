@@ -12,7 +12,15 @@
 @class ADEvent;
 @class AWSS3TransferManagerDownloadRequest;
 
+@protocol ADEventTransferDelegate <NSObject>
+- (void)didStartUploadingEvent:(ADEvent *)event;
+- (void)didFinishUploadingEvent:(ADEvent *)event;
+- (void)uploadProgress:(NSNumber *)percentage forEvent:(ADEvent *)event;
+@end
+
 @interface ADS3Helper : NSObject
+
+@property (nonatomic, weak) id<ADEventTransferDelegate> delegate;
 
 /**
  A singleton instance

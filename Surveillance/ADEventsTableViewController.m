@@ -15,7 +15,7 @@
 #import "ADDetailEventViewController.h"
 #import "ADDownloadTask.h"
 
-@interface ADEventsTableViewController () <EventAndVideoDeletionDeletionDelegate>
+@interface ADEventsTableViewController () <EventAndVideoDeletionDeletionDelegate, ADEventTransferDelegate>
 {
   NSMutableArray *_events; // of ADEvents
 }
@@ -31,10 +31,17 @@
 {
   [super viewDidLoad];
   
+  [[ADS3Helper sharedInstance] setDelegate:self];
+  
   self.refreshControl = [[UIRefreshControl alloc] init];
   self.refreshControl.backgroundColor = [UIColor colorWithRed:97/255.0 green:106/255.0 blue:116/255.0 alpha:1.0];
   self.refreshControl.tintColor = [UIColor whiteColor];
   [self.refreshControl addTarget:self action:@selector(_loadEvents) forControlEvents:UIControlEventValueChanged];
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -512,6 +519,23 @@
     _downloading = [[NSMutableDictionary alloc] init];
   }
   return _downloading;
+}
+
+#pragma mark - Upload / Download Event Announcements
+
+- (void)didStartUploadingEvent:(ADEvent *)event
+{
+  NSLog(@"Upload started");
+}
+
+- (void)didFinishUploadingEvent:(ADEvent *)event
+{
+  NSLog(@"Upload finished");
+}
+
+- (void)uploadProgress:(NSNumber *)percentage forEvent:(ADEvent *)event
+{
+  NSLog(@"Progress for video %@: %@", event.videoName, percentage);
 }
 
 @end
