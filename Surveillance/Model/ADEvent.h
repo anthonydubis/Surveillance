@@ -8,10 +8,12 @@
 
 #import <Parse/Parse.h>
 
-#warning Launch Blocking: make these an enum
-extern NSString * const EventStatusRecording;
-extern NSString * const EventStatusUploading;
-extern NSString * const EventStatusUploaded;
+typedef NS_ENUM(NSUInteger, ADEventStatus) {
+  ADEventStatusRecording,
+  ADEventStatusWaitingToBeUploaded,
+  ADEventStatusUploading,
+  ADEventStatusUploaded,
+};
 
 // Used to cache data in Parse's local datastore
 extern NSString * const ADParseMyEventsCacheLabel;
@@ -22,10 +24,10 @@ extern NSString * const ADParseMyEventsCacheLabel;
 @property (nonatomic, strong) NSString *s3BucketName;
 @property (nonatomic, strong) NSDate *startedRecordingAt;
 @property (nonatomic, strong) PFUser *user;
-@property (nonatomic, strong) NSString *status;
 @property (nonatomic, strong) NSNumber *videoSize;
 @property (nonatomic, strong) NSNumber *videoDuration;
 @property (nonatomic, strong) PFInstallation *installation;
+@property (nonatomic, assign) ADEventStatus status;
 
 // Must be overriden by PFObject subclasses
 + (NSString *)parseClassName;

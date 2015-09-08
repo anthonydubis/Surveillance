@@ -15,7 +15,7 @@
 @protocol ADEventTransferDelegate <NSObject>
 - (void)didStartUploadingEvent:(ADEvent *)event;
 - (void)didFinishUploadingEvent:(ADEvent *)event;
-- (void)uploadProgress:(NSNumber *)percentage forEvent:(ADEvent *)event;
+- (void)uploadProgressBytesWritten:(int64_t)written bytesExpected:(int64_t)expected forEvent:(ADEvent *)event;
 @end
 
 @interface ADS3Helper : NSObject

@@ -392,7 +392,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 // Update the event with metadata and knowledge that the recording has ended
 - (void)updateEventForEndOfRecording
 {
-  self.event.status = EventStatusUploading;
+  self.event.status = ADEventStatusWaitingToBeUploaded;
   self.event.videoSize = [ADFileHelper sizeOfFileAtURL:self.recordingURL];
   NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:self.event.startedRecordingAt];
   self.event.videoDuration = [NSNumber numberWithInt:duration];

@@ -13,15 +13,21 @@
 #import "ADS3Helper.h"
 #import <AWSS3/AWSS3.h>
 #import "ADDetailEventViewController.h"
-#import "ADDownloadTask.h"
+#import "ADTransferTask.h"
+
+const int kProgressUpdateRate = 1;
 
 @interface ADEventsTableViewController () <EventAndVideoDeletionDeletionDelegate, ADEventTransferDelegate>
 {
   NSMutableArray *_events; // of ADEvents
 }
 
-// A dictionary containing the current download progress of remote videos
+/**
+ Dictionaries containing the current download/upload progress of video
+ Keys are [ADEvent videoName] => ADTransferTask
+ */
 @property (nonatomic, strong) NSMutableDictionary *downloading;
+@property (nonatomic, strong) NSMutableDictionary *uploading;
 
 @end
 
@@ -30,8 +36,6 @@
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-  
-  [[ADS3Helper sharedInstance] setDelegate:self];
   
   self.refreshControl = [[UIRefreshControl alloc] init];
   self.refreshControl.backgroundColor = [UIColor colorWithRed:97/255.0 green:106/255.0 blue:116/255.0 alpha:1.0];
@@ -48,13 +52,13 @@
 {
   [super viewWillAppear:animated];
   [self _loadEvents];
-  NSLog(@"Calling for shared instance");
-  [ADS3Helper sharedInstance];
+  [[ADS3Helper sharedInstance] setDelegate:self];
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void)viewDidDisappear:(BOOL)animated
 {
-  [super viewDidAppear:animated];
+  [super viewDidDisappear:animated];
+  [[ADS3Helper sharedInstance] setDelegate:nil];
 }
 
 #pragma mark - Loading Events
@@ -81,6 +85,8 @@
     [self _loadEventsFromNetwork];
     return task;
   }];
+  // Take care of any videos that need to be uploaded
+  [[ADS3Helper sharedInstance] uploadFilesIfNecessary];
 }
 
 - (void)_loadEventsFromNetwork
@@ -220,9 +226,7 @@
   // Set the accessory view
   if (self.downloading[event.videoName])
   {
-    // We are downloading the video - this check must come first because a partially downloaded file
-    // will cause the haveDownloadedVideoForEvent method to come true
-    ADDownloadTask *progress = self.downloading[event.videoName];
+    ADTransferTask *progress = self.downloading[event.videoName];
     cell.detailTextLabel.text = [progress downloadProgressString];
     if ([cell.accessoryView isKindOfClass:[ACPDownloadView class]]) {
       ACPDownloadView *downloadView = (ACPDownloadView *)cell.accessoryView;
@@ -245,23 +249,28 @@
   else
   {
     // The video has not been downloaded yet
-    if ([event.status isEqualToString:EventStatusUploaded]) {
-      // The video has been uploaded to the server
+    if (event.status == ADEventStatusUploaded) {
+      // The video has been uploaded to the server and can be downloaded
       cell.accessoryView = [self accessoryViewForIndexPath:indexPath];
       cell.accessoryType = UITableViewCellAccessoryNone;
     } else {
-      // The video is still recording or being uploaded
+      // The video is still recording, being uploaded, or waiting to be uploaded
       cell.accessoryView = nil;
       cell.accessoryType = UITableViewCellAccessoryDetailButton;
     }
-    cell.detailTextLabel.text = [event descriptionOfMetadata];
+    
+    if (self.uploading[event.videoName]) {
+      cell.detailTextLabel.text = [self.uploading[event.videoName] uploadProgressString];
+    } else {
+      cell.detailTextLabel.text = [event descriptionOfMetadata];
+    }
   }
 }
 
 - (void)configureDownloadView:(ACPDownloadView *)downloadView forDownloadingEvent:(ADEvent *)event
 {
-  ADDownloadTask *progress = self.downloading[event.videoName];
-  [downloadView setProgress:[progress percentageDownloaded] animated:YES];
+  ADTransferTask *progress = self.downloading[event.videoName];
+  [downloadView setProgress:[progress percentageTransferred] animated:YES];
 }
 
 #define ACCESSORY_SIZE 35.0
@@ -275,10 +284,10 @@
   accessoryView.backgroundColor = [UIColor clearColor];
   
   // Set it's progress so far
-  ADDownloadTask *progress = self.downloading[event.videoName];
+  ADTransferTask *progress = self.downloading[event.videoName];
   if (progress) {
     [accessoryView setIndicatorStatus:ACPDownloadStatusRunning];
-    [accessoryView setProgress:[progress percentageDownloaded] animated:YES];
+    [accessoryView setProgress:[progress percentageTransferred] animated:YES];
   } else {
     [accessoryView setIndicatorStatus:ACPDownloadStatusNone];
     [accessoryView setProgress:0.0 animated:NO];
@@ -306,7 +315,7 @@
 
 - (void)cancelDownloadForEvent:(ADEvent *)event
 {
-  ADDownloadTask *task = self.downloading[event.videoName];
+  ADTransferTask *task = self.downloading[event.videoName];
   if (task) {
     [[task.downloadRequest cancel] continueWithBlock:^id(BFTask *task) {
       if (task.error) {
@@ -337,19 +346,21 @@
     // The video is currently being downloaded - do nothing
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
   } else if ([ADFileHelper haveDownloadedVideoForEvent:event]) {
-    // Video is downloaded
     [self performSegueWithIdentifier:@"DetailEventSegue" sender:indexPath];
-  } else if ([event.status isEqualToString:EventStatusUploaded]) {
+  } else if (event.status == ADEventStatusUploaded) {
     // The video has been uploaded to S3 but has not been downloaded to this device
     [self promptUserToDownloadEvent:event atIndexPath:indexPath];
-  } else if ([event.status isEqualToString:EventStatusRecording]) {
-    // The video is still recording
+  } else if (event.status == ADEventStatusRecording) {
     [UIAlertView showWithTitle:@"Video is still Recording"
                     andMessage:@"You can download the video when it has stopped recording and has been uploaded to the server."];
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-  } else if ([event.status isEqualToString:EventStatusUploading]) {
+  } else if (event.status == ADEventStatusUploading) {
     [UIAlertView showWithTitle:@"Video is still Uploading"
-                    andMessage:@"You can download the video when it has finished uploading to the server. Make sure the device that recorded the video is on has the Surveillance app open."];
+                    andMessage:@"You can download the video when it has finished uploading. Make sure the device that recorded the video has an internet connection and has the Surveillance app open."];
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+  } else if (event.status == ADEventStatusWaitingToBeUploaded) {
+    [UIAlertView showWithTitle:@"Waiting to Upload Video"
+                    andMessage:@"This video still needs to be uploaded. Make sure the device that recorded the video has an internet connection and has the Surveillance app open."];
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
   }
 }
@@ -408,7 +419,7 @@
   __weak ADEventsTableViewController *weakSelf = self;
   
   // Handle the case where the event was previously paused
-  ADDownloadTask *task = self.downloading[event.videoName];
+  ADTransferTask *task = self.downloading[event.videoName];
   if (task.downloadRequest.state == AWSS3TransferManagerRequestStatePaused) {
     [[AWSS3TransferManager defaultS3TransferManager] download:task.downloadRequest];
     return;
@@ -442,9 +453,9 @@
   
   // Set the progress blocks
   AWSNetworkingDownloadProgressBlock progressBlock = ^(int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite) {
-    ADDownloadTask *progress = weakSelf.downloading[event.videoName];
-    if ([progress secondsSinceLastUpdate] >= 1) {
-      progress.bytesDownloaded = [NSNumber numberWithLongLong:totalBytesWritten];
+    ADTransferTask *progress = weakSelf.downloading[event.videoName];
+    if ([progress secondsSinceLastUpdate] >= kProgressUpdateRate) {
+      progress.bytesTransferred = [NSNumber numberWithLongLong:totalBytesWritten];
       progress.lastUpdate = [NSDate date];
       self.downloading[event.videoName] = progress;
       dispatch_async(dispatch_get_main_queue(), ^{
@@ -459,7 +470,7 @@
   AWSS3TransferManagerDownloadRequest *request = [ADS3Helper downloadVideoForEvent:event completionBlock:handler progressBlock:progressBlock];
   
   // Create the ADDownloadEvent
-  self.downloading[event.videoName] = [[ADDownloadTask alloc] initWithDownloadRequest:request andBytesToBeDownloaded:event.videoSize];
+  self.downloading[event.videoName] = [[ADTransferTask alloc] initWithDownloadRequest:request andBytesToBeDownloaded:event.videoSize];
   
   // This updates the ACPDownloadView when the user calls this method by selecting the row rather than the accessory button
   NSIndexPath *indexPath = [self indexPathForEvent:event];
@@ -481,7 +492,10 @@
 - (NSIndexPath *)indexPathForEvent:(ADEvent *)event
 {
   NSUInteger row = [_events indexOfObject:event];
-  return [NSIndexPath indexPathForRow:row inSection:0];
+  if (row != NSNotFound) {
+    return [NSIndexPath indexPathForRow:row inSection:0];
+  }
+  return nil;
 }
 
 #pragma mark - Navigation
@@ -511,8 +525,6 @@
 
 #pragma mark - Getters and Setters
 
-// Holds an NSDate for the last time the download progress for an Event is updated
-// The keys are the videoName of ADEvents, which are unique for a user
 - (NSMutableDictionary *)downloading
 {
   if (!_downloading) {
@@ -521,21 +533,51 @@
   return _downloading;
 }
 
+- (NSMutableDictionary *)uploading
+{
+  if (!_uploading) {
+    _uploading = [[NSMutableDictionary alloc] init];
+  }
+  return _uploading;
+}
+
 #pragma mark - Upload / Download Event Announcements
 
 - (void)didStartUploadingEvent:(ADEvent *)event
 {
-  NSLog(@"Upload started");
+  NSIndexPath *indexPath = [self indexPathForEvent:event];
+  if (indexPath) {
+    [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+  }
 }
 
 - (void)didFinishUploadingEvent:(ADEvent *)event
 {
-  NSLog(@"Upload finished");
+  [_uploading removeObjectForKey:event.videoName];
+  NSIndexPath *indexPath = [self indexPathForEvent:event];
+  if (indexPath) {
+    [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+  }
 }
 
-- (void)uploadProgress:(NSNumber *)percentage forEvent:(ADEvent *)event
+- (void)uploadProgressBytesWritten:(int64_t)written bytesExpected:(int64_t)expected forEvent:(ADEvent *)event
 {
-  NSLog(@"Progress for video %@: %@", event.videoName, percentage);
+  NSIndexPath *indexPath = [self indexPathForEvent:event];
+  if (indexPath) {
+    if (self.uploading[event.videoName] == nil) {
+      self.uploading[event.videoName] = [[ADTransferTask alloc] initWithBytesToBeTransferred:@(expected)];
+    }
+    
+    ADTransferTask *transferTask = self.uploading[event.videoName];
+    if ([transferTask secondsSinceLastUpdate] >= kProgressUpdateRate) {
+      transferTask.lastUpdate = [NSDate date];
+      transferTask.bytesTransferred = @(written);
+      UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+      dispatch_async(dispatch_get_main_queue(), ^{
+        cell.detailTextLabel.text = [transferTask uploadProgressString];
+      });
+    }
+  }
 }
 
 @end

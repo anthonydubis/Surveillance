@@ -11,7 +11,9 @@
 #import <Foundation/Foundation.h>
 #import <AWSS3/AWSS3.h>
 
-@interface ADDownloadTask : NSObject
+@interface ADTransferTask : NSObject
+
++ (NSString *)sizeStringForBytes:(NSNumber *)bytesNum;
 
 // The download request associated with this information
 @property (nonatomic, strong) AWSS3TransferManagerDownloadRequest *downloadRequest;
@@ -19,26 +21,27 @@
 // The last time the UI was updated
 @property (nonatomic, strong) NSDate *lastUpdate;
 
-// Number of bytes you've downloaded so far
-@property (nonatomic, strong) NSNumber *bytesDownloaded;
+// Number of bytes you've transferred so far
+@property (nonatomic, strong) NSNumber *bytesTransferred;
 
-// Number of bytes you expect to download
-@property (nonatomic, strong) NSNumber *bytesToBeDownloaded;
+// Number of bytes you expect to transfer
+@property (nonatomic, strong) NSNumber *bytesToBeTransferred;
 
-- (id)initWithBytesToBeDownloaded:(NSNumber *)bytes;
-
+- (id)initWithBytesToBeTransferred:(NSNumber *)bytes;
 - (id)initWithDownloadRequest:(AWSS3TransferManagerDownloadRequest *)request andBytesToBeDownloaded:(NSNumber *)bytes;
 
 // The amount of seconds that have passed since the UI was updated
 - (int)secondsSinceLastUpdate;
 
-// Returns the percentage downloaded so far
-- (double)percentageDownloaded;
+// Returns the percentage transferred so far
+- (double)percentageTransferred;
 
 /*
- * A user presentable string for the number of bytes downloaded, and the percentage
+ * A user presentable string for the number of bytes transferred, and the percentage
  * xx MB of xx MB, xx%
  */
 - (NSString *)downloadProgressString;
+
+- (NSString *)uploadProgressString;
 
 @end

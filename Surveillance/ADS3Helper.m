@@ -202,9 +202,11 @@ NSString *BucketName = @"surveillance-bucket";
     NSString *videoName = [[url path] lastPathComponent];
     ADEvent *event = events[videoName];
     if (event) {
-      // Try uploading the video again
-      [self uploadVideoAtURL:url
-                    forEvent:event];
+      if (!_uploadRequests[event.videoName]) {
+        // Try uploading the video again
+        [self uploadVideoAtURL:url
+                      forEvent:event];
+      }
     } else {
       // Delete the video because it's not tied to an event
       [[NSFileManager defaultManager] removeItemAtURL:url
@@ -214,8 +216,13 @@ NSString *BucketName = @"surveillance-bucket";
 }
 
 #warning LAUNCH BLOCKER - Handle errors here
-- (void)uploadVideoAtURL:(NSURL *)url forEvent:(ADEvent *)event
+- (void)uploadVideoAtURL:(NSURL *)url
+                forEvent:(ADEvent *)event
 {
+  event.status = ADEventStatusUploading;
+  [event saveEventually];
+  [self _uploadStartedForEvent:event];
+  
   // Create the upload request
   AWSS3TransferManagerUploadRequest *uploadRequest = [AWSS3TransferManagerUploadRequest new];
   uploadRequest.body = url;
@@ -231,6 +238,8 @@ NSString *BucketName = @"surveillance-bucket";
   id (^completionBlock)(BFTask *task) = ^id(BFTask *task) {
     [_uploadRequests removeObjectForKey:event.videoName];
     if (task.error) {
+      event.status = ADEventStatusWaitingToBeUploaded;
+      [event saveEventually];
       if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
         switch (task.error.code) {
           case AWSS3TransferManagerErrorCancelled:
@@ -248,7 +257,7 @@ NSString *BucketName = @"surveillance-bucket";
       // The file uploaded successfully. Update the Parse object
       NSLog(@"File uploaded successfully");
       event.s3BucketName = BucketName;
-      event.status = EventStatusUploaded;
+      event.status = ADEventStatusUploaded;
       [event saveEventually];
 #warning You need to handle failures here
       if ([[NSFileManager defaultManager] removeItemAtURL:url error:nil])
@@ -266,7 +275,6 @@ NSString *BucketName = @"surveillance-bucket";
                                              withBlock:completionBlock];
   uploadRequest.uploadProgress = progressBlock;
   _uploadRequests[event.videoName] = uploadRequest;
-  [self _uploadStartedForEvent:event];
 }
 
 #pragma mark - Notifications
@@ -283,8 +291,7 @@ NSString *BucketName = @"surveillance-bucket";
 
 - (void)_uploadProgressForEvent:(ADEvent *)event totalBytesWritten:(int64_t)written totalBytesExpectedToWrite:(int64_t)expectedTotal
 {
-  NSNumber *percentage = [NSNumber numberWithDouble:(double)written / (double)expectedTotal];
-  [_delegate uploadProgress:percentage forEvent:event];
+  [_delegate uploadProgressBytesWritten:written bytesExpected:expectedTotal forEvent:event];
 }
 
 @end
